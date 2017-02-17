@@ -35,9 +35,16 @@ define('PLUGIN_INTERVENTION_VERSION', '1.0.0');
  * @return void
  */
 function plugin_init_intervention() {
-   global $PLUGIN_HOOKS;
+   global $PLUGIN_HOOKS, $CFG_GLPI;
+
+   // Hack for vertical display
+   if (isset($CFG_GLPI['layout_excluded_pages'])) {
+      array_push($CFG_GLPI['layout_excluded_pages'], "type.form.php");
+   }
 
    $PLUGIN_HOOKS['csrf_compliant']['intervention'] = true;
+
+   Plugin::registerClass('PluginInterventionType');
 }
 
 
