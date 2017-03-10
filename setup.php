@@ -37,6 +37,8 @@ define('PLUGIN_INTERVENTION_VERSION', '1.0.0');
 function plugin_init_intervention() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
 
+   $plugin = new Plugin();
+
    // Hack for vertical display
    if (isset($CFG_GLPI['layout_excluded_pages'])) {
       array_push($CFG_GLPI['layout_excluded_pages'], "type.form.php");
@@ -45,6 +47,15 @@ function plugin_init_intervention() {
    $PLUGIN_HOOKS['csrf_compliant']['intervention'] = true;
 
    Plugin::registerClass('PluginInterventionType');
+
+   if (Session::getLoginUserID() && $plugin->isActivated('intervention')) {
+
+      if (Session::haveRight('entity', UPDATE)) {
+
+         Plugin::registerClass('PluginInterventionEntity',
+                                 array('addtabon' => 'Entity'));
+      }
+   }
 }
 
 
@@ -61,7 +72,7 @@ function plugin_version_intervention() {
       'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
       'license'        => 'GPLv3',
       'homepage'       => 'https://github.com/TECLIB/intervention',
-      'minGlpiVersion' => '9.1'
+      'minGlpiVersion' => '9.1.2'
    ];
 }
 
@@ -73,11 +84,11 @@ function plugin_version_intervention() {
  */
 function plugin_intervention_check_prerequisites() {
    // Strict version check (could be less strict, or could allow various version)
-   if (version_compare(GLPI_VERSION, '9.1', 'lt')) {
+   if (version_compare(GLPI_VERSION, '9.1.2', 'lt')) {
       if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '9.1');
+         echo Plugin::messageIncompatible('core', '9.1.2');
       } else {
-         echo "This plugin requires GLPI >= 9.1";
+         echo "This plugin requires GLPI >= 9.1.2";
       }
       return false;
    }
