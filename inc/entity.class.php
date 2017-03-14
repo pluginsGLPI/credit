@@ -82,11 +82,53 @@ class PluginInterventionEntity extends CommonDBTM {
    }
 
    /**
+    * Get all intervention vouchers for entity.
+    *
+    * @param $ID           integer     entities ID
+    * @param $start        integer     first line to retrieve (default 0)
+    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
+    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @return array of vouchers
+   **/
+   static function getAllForEntity($ID, $start=0, $limit=0, $sqlfilter='') {
+      global $DB;
+
+      $query = "SELECT *
+                FROM `" . getTableForItemType(__CLASS__) . "`
+                WHERE `entities_id` = '$ID'";
+      if ($sqlfilter) {
+         $query .= "AND ($sqlfilter) ";
+      }
+      $query .= "ORDER BY `id` DESC";
+
+      if ($limit) {
+         $query .= " LIMIT ".intval($start)."," . intval($limit);
+      }
+
+      $vouchers = array();
+      foreach ($DB->request($query) as $data) {
+         $tmp = array();
+         $tmp['id']         = $data['id'];
+         $tmp['type']       = Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
+                                                         $data['plugin_intervention_types_id']);
+         $tmp['begin_date']         = Html::convDate($data["begin_date"]);
+         $tmp['end_date']           = Html::convDate($data["end_date"]);
+         $tmp['quantity_sold']      = $data['quantity'];
+         $tmp['quantity_consumed']  = 0;
+         $tmp['quantity_remaining'] = 0;
+
+         $vouchers[$tmp['id']] = $tmp;
+      }
+
+      return $vouchers;
+   }
+
+   /**
     * Show intervention vouchers of an entity
     *
     * @param $entity Entity object
    **/
-   function showForEntity(Entity $entity) {
+   static function showForEntity(Entity $entity) {
       global $DB, $CFG_GLPI;
 
       $ID = $entity->getField('id');
@@ -94,11 +136,11 @@ class PluginInterventionEntity extends CommonDBTM {
          return false;
       }
 
-      $canedit       = $entity->canEdit($ID);
-      $nb_per_line   = 3;
-      $rand          = mt_rand();
+      $canedit = $entity->canEdit($ID);
+      $number  = self::countForItem($entity);
 
       if ($canedit) {
+         $rand = mt_rand();
          echo "<div class='firstbloc'>";
          echo "<form name='interventionentity_form$rand' id='interventionentity_form$rand' method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -109,17 +151,16 @@ class PluginInterventionEntity extends CommonDBTM {
                   . __('Intervention voucher type', 'intervention')."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          PluginInterventionType::dropdown(array('name'  => 'plugin_intervention_types_id'));
-         echo "</td><td class='tab_bg_2 center'>".__('Quantity')."</td><td>";
-         Html::autocompletionTextField($this, "quantity", array('value' => '',
-                                                            'size'  => 10));
-         echo "</td><td class='tab_bg_2 center'>".__('Date start')."</td><td>";
-         Html::showDateTimeField("date_start", array('value'      => '',
-                                               'timestep'   => 0,
-                                               'maybeempty' => false));
-         echo "</td><td class='tab_bg_2 center'>".__('Date end')."</td><td>";
-         Html::showDateTimeField("date_end", array('value'      => '',
-                                               'timestep'   => 0,
-                                               'maybeempty' => false));
+         echo "</td><td class='tab_bg_2 center'>".__('Quantity sold', 'intervention')."</td><td>";
+         Dropdown::showNumber("quantity", array('value' => '',
+                                                'min'   => 1,
+                                                'max'   => 200,
+                                                'step'  => 1,
+                                                'toadd' => array(0 => __('Unlimited'))));
+         echo "</td><td class='tab_bg_2 center'>".__('Start date')."</td><td>";
+         Html::showDateField("begin_date", array('value' => ''));
+         echo "</td><td class='tab_bg_2 center'>".__('End date')."</td><td>";
+         Html::showDateField("end_date", array('value' => ''));
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -128,20 +169,148 @@ class PluginInterventionEntity extends CommonDBTM {
          echo "</div>";
       }
 
-      /* WIP
-      $result = $DB->query($query);
-      $nb = $DB->numrows($result);
-
       echo "<div class='spaced'>";
-      if ($cancreate && $nb) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams
-            = array('container'
-                        => 'mass'.__CLASS__.$rand,
-                    'specific_actions'
-                        => array('purge' => _x('button', 'Delete permanently')));
+
+      if ($number < 1) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('No intervention voucher', 'intervention')."</th></tr>";
+         echo "</table>";
+         return;
+      }
+
+      $rand = mt_rand();
+
+      if ($canedit && $number) {
+            Html::openMassiveActionsForm('mass'.get_called_class().$rand);
+            $massiveactionparams
+               = array('num_displayed'
+                           => $number,
+                       'specific_actions'
+                           => array('update' => _x('button', 'Update'),
+                                    'purge'  => _x('button', 'Delete permanently')));
+            Html::showMassiveActions($massiveactionparams);
+      }
+
+      echo "<table class='tab_cadre_fixehov'>";
+      $header_begin  = "<tr>";
+      $header_top    = '';
+      $header_bottom = '';
+      $header_end    = '';
+      if ($canedit) {
+         $header_begin  .= "<th width='10'>";
+         $header_top    .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
+         $header_end    .= "</th>";
+      }
+      $header_end .= "<th>".__('Type')."</th>";
+      $header_end .= "<th>".__('Start date')."</th>";
+      $header_end .= "<th>".__('End date')."</th>";
+      $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
+      $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
+      $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
+      $header_end .= "</tr>\n";
+      echo $header_begin.$header_top.$header_end;
+
+      Session::initNavigateListItems(__CLASS__, sprintf(__('%1$s'), self::getTypeName(1)));
+
+      foreach (self::getAllForEntity($ID) as $data) {
+         Session::addToNavigateListItems(__CLASS__, $data["id"]);
+         echo "<tr class='tab_bg_2'>";
+
+         if ($canedit) {
+            echo "<td width='10'>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            echo "</td>";
+         }
+         echo "<td width='40%'>".$data['type']."</td>".
+              "<td class='tab_date'>".$data['begin_date']."</td>".
+              "<td class='tab_date'>".$data['end_date']."</td>".
+              "<td>".$data['quantity_sold']."</td>".
+              "<td>".$data['quantity_consumed']."</td>";
+         echo "<td>".$data['quantity_remaining']."</td></tr>";
+      }
+
+      echo $header_begin.$header_bottom.$header_end;
+      echo "</table>\n";
+
+      if ($canedit) {
+         $massiveactionparams['ontop'] = false;
          Html::showMassiveActions($massiveactionparams);
-      }*/
+         Html::closeForm();
+      }
+      echo "</div>";
+   }
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+   **/
+   function getSearchOptions() {
+
+      $tab                = parent::getSearchOptions();
+
+      $tab[2]['table']    = $this->getTable();
+      $tab[2]['field']    = 'begin_date';
+      $tab[2]['name']     = __('Start date');
+      $tab[2]['datatype'] = 'date';
+
+      $tab[3]['table']    = $this->getTable();
+      $tab[3]['field']    = 'end_date';
+      $tab[3]['name']     = __('End date');
+      $tab[3]['datatype'] = 'date';
+
+      $tab[4]['table']    = $this->getTable();
+      $tab[4]['field']    = 'quantity';
+      $tab[4]['name']     = __('Quantity sold', 'intervention');
+      $tab[4]['datatype'] = 'decimal';
+
+      $tab[5]['table']    = getTableForItemType('PluginInterventionType');
+      $tab[5]['field']    = 'name';
+      $tab[5]['name']     = __('Intervention voucher type', 'intervention');
+      $tab[5]['datatype'] = 'dropdown';
+
+      return $tab;
+   }
+
+   /**
+    * @see CommonDBTM::prepareInputForAdd()
+   **/
+   function prepareInputForAdd($input) {
+
+      $input = parent::prepareInputForAdd($input);
+
+      if (empty($input['end_date'])
+          || ($input['end_date'] == 'NULL')
+          || ($input['end_date'] < $input['begin_date'])) {
+
+         $msg = __('The end date has been changed automatically.', 'intervention');
+         Session::addMessageAfterRedirect($msg, false, WARNING);
+
+         $input['end_date'] = $input['begin_date'];
+      }
+      return $input;
+   }
+
+
+   /**
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+
+      $input = parent::prepareInputForUpdate($input);
+
+      if (empty($input['end_date'])
+          || ($input['end_date'] == 'NULL')
+          || ($input['end_date'] < $input['begin_date'])) {
+
+         $msg = __('The end date has been changed automatically.', 'intervention');
+         Session::addMessageAfterRedirect($msg, false, WARNING);
+
+         $input['end_date'] = $input['begin_date'];
+      }
+
+      return $input;
    }
 
    /**
@@ -161,14 +330,14 @@ class PluginInterventionEntity extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `entities_id` int(11) NOT NULL DEFAULT '0',
                      `plugin_intervention_types_id` tinyint(1) NOT NULL DEFAULT '0',
-                     `date_start` datetime DEFAULT NULL,
-                     `date_end` datetime DEFAULT NULL,
+                     `begin_date` datetime DEFAULT NULL,
+                     `end_date` datetime DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `entities_id` (`entities_id`),
                      KEY `plugin_intervention_types_id` (`plugin_intervention_types_id`),
-                     KEY `date_start` (`date_start`),
-                     KEY `date_end` (`date_end`)
+                     KEY `begin_date` (`begin_date`),
+                     KEY `end_date` (`end_date`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
