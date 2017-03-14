@@ -51,9 +51,13 @@ function plugin_init_intervention() {
    if (Session::getLoginUserID() && $plugin->isActivated('intervention')) {
 
       if (Session::haveRight('entity', UPDATE)) {
-
          Plugin::registerClass('PluginInterventionEntity',
                                  array('addtabon' => 'Entity'));
+      }
+
+      if (Session::haveRightsOr('ticket', array(Ticket::STEAL, Ticket::OWN))) {
+         Plugin::registerClass('PluginInterventionTicket',
+                                 array('addtabon' => 'Ticket'));
       }
    }
 }
