@@ -35,7 +35,7 @@ class PluginInterventionEntity extends CommonDBTM {
    public static $rightname = 'entity';
 
    static function getTypeName($nb=0) {
-      return _n('Intervention voucher type', 'Intervention vouchers types', $nb, 'intervention');
+      return _n('Intervention voucher', 'Intervention vouchers', $nb, 'intervention');
    }
 
    /**
@@ -64,10 +64,6 @@ class PluginInterventionEntity extends CommonDBTM {
       switch ($item->getType()) {
          case 'Entity' :
             self::showForEntity($item);
-            break;
-
-         case 'Ticket' :
-            self::showForTicket($item);
             break;
       }
       return true;
@@ -109,13 +105,15 @@ class PluginInterventionEntity extends CommonDBTM {
       foreach ($DB->request($query) as $data) {
          $tmp = array();
          $tmp['id']         = $data['id'];
+         $tmp['name']       = $data['name'];
          $tmp['type']       = Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
                                                          $data['plugin_intervention_types_id']);
          $tmp['begin_date']         = Html::convDate($data["begin_date"]);
          $tmp['end_date']           = Html::convDate($data["end_date"]);
-         $tmp['quantity_sold']      = $data['quantity'];
-         $tmp['quantity_consumed']  = 0;
-         $tmp['quantity_remaining'] = 0;
+
+         $tmp['sold']       = ($data['quantity']==0) ? __('Unlimited') : $data['quantity'];
+         $tmp['consumed']   = PluginInterventionTicket::getConsumedForInterventionEntity($data['id']);
+         $tmp['remaining']  = ($data['quantity']==0) ? __('Unlimited') : $tmp['sold'] - $tmp['consumed'];
 
          $vouchers[$tmp['id']] = $tmp;
       }
@@ -145,23 +143,28 @@ class PluginInterventionEntity extends CommonDBTM {
          echo "<form name='interventionentity_form$rand' id='interventionentity_form$rand' method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='8'>"
-                  . __('Add an intervention voucher', 'intervention')."</tr>";
-         echo "<tr class='tab_bg_1'><td class='tab_bg_2 center'>"
-                  . __('Intervention voucher type', 'intervention')."&nbsp;";
-         echo "<input type='hidden' name='entities_id' value='$ID'>";
-         PluginInterventionType::dropdown(array('name'  => 'plugin_intervention_types_id'));
-         echo "</td><td class='tab_bg_2 center'>".__('Quantity sold', 'intervention')."</td><td>";
-         Dropdown::showNumber("quantity", array('value' => '',
-                                                'min'   => 1,
-                                                'max'   => 200,
-                                                'step'  => 1,
-                                                'toadd' => array(0 => __('Unlimited'))));
-         echo "</td><td class='tab_bg_2 center'>".__('Start date')."</td><td>";
-         Html::showDateField("begin_date", array('value' => ''));
-         echo "</td><td class='tab_bg_2 center'>".__('End date')."</td><td>";
+         echo "<tr class='tab_bg_1'><th colspan='7'>"
+                     . __('Add an intervention voucher', 'intervention')."</th></tr>";
+         echo "<tr class='tab_bg_1'>";
+            echo "<input type='hidden' name='entities_id' value='$ID'>";
+            echo "<td>". __('Name')."</td>";
+            echo "<td>" . Html::input("name", array('size' => 50)) . "</td>";
+            echo "<td class='tab_bg_2 right'>". __('Type')."</td><td>";
+            PluginInterventionType::dropdown(array('name'  => 'plugin_intervention_types_id'));
+            echo "</td>";
+            echo "<td class='tab_bg_2 right'>".__('Start date')."</td><td>";
+            Html::showDateField("begin_date", array('value' => ''));
+         echo "</td></tr>";
+         echo "<tr class='tab_bg_1'><td colspan='2'></td><td class='tab_bg_2 right'>"
+                  .__('Quantity sold', 'intervention')."</td><td>";
+                  Dropdown::showNumber("quantity", array('value' => '',
+                                                         'min'   => 1,
+                                                         'max'   => 200,
+                                                         'step'  => 1,
+                                                         'toadd' => array(0 => __('Unlimited'))));
+         echo "</td><td class='tab_bg_2 right'>".__('End date')."</td><td>";
          Html::showDateField("end_date", array('value' => ''));
-         echo "</td><td class='tab_bg_2 center'>";
+         echo "</td><td class='tab_bg_2 right'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table>";
@@ -183,11 +186,9 @@ class PluginInterventionEntity extends CommonDBTM {
       if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.get_called_class().$rand);
             $massiveactionparams
-               = array('num_displayed'
-                           => $number,
-                       'specific_actions'
-                           => array('update' => _x('button', 'Update'),
-                                    'purge'  => _x('button', 'Delete permanently')));
+               = array( 'num_displayed'      => $number,
+                        'specific_actions'   => array('update' => _x('button', 'Update'),
+                                                      'purge'  => _x('button', 'Delete permanently')));
             Html::showMassiveActions($massiveactionparams);
       }
 
@@ -202,6 +203,7 @@ class PluginInterventionEntity extends CommonDBTM {
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
          $header_end    .= "</th>";
       }
+      $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Type')."</th>";
       $header_end .= "<th>".__('Start date')."</th>";
       $header_end .= "<th>".__('End date')."</th>";
@@ -222,12 +224,13 @@ class PluginInterventionEntity extends CommonDBTM {
             Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
             echo "</td>";
          }
-         echo "<td width='40%'>".$data['type']."</td>".
+         echo "<td width='40%'>".$data['name']."</td>".
+              "<td>".$data['type']."</td>".
               "<td class='tab_date'>".$data['begin_date']."</td>".
               "<td class='tab_date'>".$data['end_date']."</td>".
-              "<td>".$data['quantity_sold']."</td>".
-              "<td>".$data['quantity_consumed']."</td>";
-         echo "<td>".$data['quantity_remaining']."</td></tr>";
+              "<td class='center'>".$data['sold']."</td>".
+              "<td class='center'>".$data['consumed']."</td>";
+         echo "<td class='center'>".$data['remaining']."</td></tr>";
       }
 
       echo $header_begin.$header_bottom.$header_end;
@@ -263,7 +266,11 @@ class PluginInterventionEntity extends CommonDBTM {
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'quantity';
       $tab[4]['name']     = __('Quantity sold', 'intervention');
-      $tab[4]['datatype'] = 'decimal';
+      $tab[4]['datatype'] = 'number';
+      $tab[4]['min']      = 1;
+      $tab[4]['max']      = 200;
+      $tab[4]['step']     = 1;
+      $tab[4]['toadd']    = array(0 => __('Unlimited'));
 
       $tab[5]['table']    = getTableForItemType('PluginInterventionType');
       $tab[5]['field']    = 'name';
@@ -328,12 +335,14 @@ class PluginInterventionEntity extends CommonDBTM {
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
+                     `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                      `entities_id` int(11) NOT NULL DEFAULT '0',
                      `plugin_intervention_types_id` tinyint(1) NOT NULL DEFAULT '0',
                      `begin_date` datetime DEFAULT NULL,
                      `end_date` datetime DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
+                     KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
                      KEY `plugin_intervention_types_id` (`plugin_intervention_types_id`),
                      KEY `begin_date` (`begin_date`),
