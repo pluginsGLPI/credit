@@ -194,6 +194,100 @@ class PluginInterventionTicket extends CommonDBTM {
    }
 
    /**
+    * Display contents at the end of solution form.
+    *
+    * @param array $params Array with "item" and "options" keys
+    *
+    * @return void
+    */
+   static public function postSolutionForm($params) {
+      global $CFG_GLPI;
+
+      $item    = $params['item'];
+      $options = $params['options'];
+
+      $solutionForm  = false;
+      $callers       = debug_backtrace();
+      foreach ($callers as $call) {
+         if ($call['function']=='showFormButtons') {
+            $solutionForm = false;
+            break;
+         }
+         if ($call['function']=='showSolutionForm') {
+            $solutionForm = true;
+            break;
+         }
+      }
+
+      if ($solutionForm) {
+         echo '<tr><th colspan="2">' . self::getTypeName(2) . '</th><th colspan="2"></th></tr>';
+         echo '<tr><td>';
+         echo '<label for="plugin_intervention_consumed_voucher">' 
+                  . __('Save and consumed a voucher ?', 'intervention') . '</label>';
+         echo '</td><td>';
+         Dropdown::showYesNo('plugin_intervention_consumed_voucher');
+         echo '</td><td colspan="2"></td>';
+         echo '</tr><tr><td>';
+         echo '<label for="voucher">' 
+                     . __('Intervention vouchers', 'intervention') . '</label>';
+         echo '</td><td>';
+         PluginInterventionEntity::dropdown(array('name'   => 'plugin_intervention_entities_id',
+                                                  'entity' => $item->getEntityID()));
+         echo '</td><td colspan="2"></td>';
+         echo '</tr><tr><td>';
+         echo '<label for="plugin_intervention_quantity">' 
+                  . __('Quantity consumed', 'intervention') . '</label>';
+         echo '</td><td>';
+         Dropdown::showNumber("plugin_intervention_quantity", array('value' => '',
+                                                'min'   => 1,
+                                                'max'   => 200,
+                                                'step'  => 1));
+         echo '</td><td colspan="2"></td></tr>';
+      }
+   }
+
+   /**
+    * Test if consumed voucher is selected and add them.
+    *
+    * @param  Ticket $ticket ticket object
+    *
+    * @return boolean
+    */
+   static function beforeUpdate(Ticket $ticket) {
+
+      if (!is_array($ticket->input) || !count($ticket->input)) {
+         return false;
+      }
+
+      if (!is_numeric(Session::getLoginUserID(false))
+          || !Session::haveRightsOr('ticket', array(Ticket::STEAL, Ticket::OWN))) {
+         return false;
+      }
+
+      if ($ticket->input['plugin_intervention_consumed_voucher']) {
+
+         if ($ticket->input['plugin_intervention_entities_id']==0) {
+            unset($ticket->input['status']);
+            unset($ticket->input['solution']);
+            unset($ticket->input['solutiontypes_id']);
+            Session::addMessageAfterRedirect(__('You must provide an intervention voucher',
+                                    'intervention'), true, ERROR);
+         } else {
+            $PluginInterventionTicket = new self();
+            $input = ['tickets_id'                      => $ticket->getID(),
+                      'plugin_intervention_entities_id' => $ticket->input['plugin_intervention_entities_id'],
+                      'date_creation'                   => $_SESSION["glpi_currenttime"],
+                      'consumed'                        => $ticket->input['plugin_intervention_quantity'],
+                      'users_id'                        => Session::getLoginUserID()];
+            if ($PluginInterventionTicket->add($input)) {
+               Session::addMessageAfterRedirect(__('Intervention voucher successfully added.',
+                                       'intervention'), true, INFO);
+            }
+         }
+      }
+   }
+
+   /**
     * Install all necessary table for the plugin
     *
     * @return boolean True if success
