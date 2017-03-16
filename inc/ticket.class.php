@@ -222,20 +222,20 @@ class PluginInterventionTicket extends CommonDBTM {
       if ($solutionForm) {
          echo '<tr><th colspan="2">' . self::getTypeName(2) . '</th><th colspan="2"></th></tr>';
          echo '<tr><td>';
-         echo '<label for="plugin_intervention_consumed_voucher">' 
+         echo '<label for="plugin_intervention_consumed_voucher">'
                   . __('Save and consumed a voucher ?', 'intervention') . '</label>';
          echo '</td><td>';
          Dropdown::showYesNo('plugin_intervention_consumed_voucher');
          echo '</td><td colspan="2"></td>';
          echo '</tr><tr><td>';
-         echo '<label for="voucher">' 
+         echo '<label for="voucher">'
                      . __('Intervention vouchers', 'intervention') . '</label>';
          echo '</td><td>';
          PluginInterventionEntity::dropdown(array('name'   => 'plugin_intervention_entities_id',
                                                   'entity' => $item->getEntityID()));
          echo '</td><td colspan="2"></td>';
          echo '</tr><tr><td>';
-         echo '<label for="plugin_intervention_quantity">' 
+         echo '<label for="plugin_intervention_quantity">'
                   . __('Quantity consumed', 'intervention') . '</label>';
          echo '</td><td>';
          Dropdown::showNumber("plugin_intervention_quantity", array('value' => '',
