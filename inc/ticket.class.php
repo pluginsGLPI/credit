@@ -155,9 +155,19 @@ class PluginInterventionTicket extends CommonDBTM {
 
       echo "<div class='spaced'>";
 
-      Session::initNavigateListItems(__CLASS__, sprintf(__('%1$s'), self::getTypeName(1)));
+      Session::initNavigateListItems('PluginInterventionEntity',
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'),
+                                             Ticket::getTypeName(1), $ticket->getName()));
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>"
+            . __('Consumed interventions for this ticket', 'intervention');
+      echo "</th></tr></table></div>";
 
       if ($number) {
+         echo "<div class='spaced'>";
          Html::printAjaxPager('', $start, $number);
 
          if ($canedit) {
@@ -227,6 +237,10 @@ class PluginInterventionTicket extends CommonDBTM {
          echo "<p class='center b'>".__('No intervention was recorded', 'intervention')."</p>";
       }
       echo "</div>\n";
+
+      $Entity = new Entity();
+      $Entity->getFromDB($ticket->fields['entities_id']);
+      PluginInterventionEntity::showForTicket($Entity);
    }
 
    /**
@@ -235,8 +249,23 @@ class PluginInterventionTicket extends CommonDBTM {
     * @param $ID integer PluginInterventionEntity id
    **/
    static function getConsumedForInterventionEntity($ID) {
-      return countElementsInTable(getTableForItemType(__CLASS__),
-                                    "`plugin_intervention_entities_id` = '".$ID."'");
+      global $DB;
+
+      $tot   = 0;
+      $table = getTableForItemType(__CLASS__);
+
+      $query = "SELECT SUM(`consumed`)
+                FROM $table
+                WHERE `plugin_intervention_entities_id` = '".$ID."'";
+
+      if ($result = $DB->query($query)) {
+         $sum = $DB->result($result, 0, 0);
+         if (!is_null($sum)) {
+            $tot += $sum;
+         }
+      }
+
+      return $tot;
    }
 
    /**
@@ -265,7 +294,13 @@ class PluginInterventionTicket extends CommonDBTM {
          }
       }
 
-      if ($solutionForm) {
+      $canedit = $item->canEdit($item->getID());
+      if (in_array($item->fields['status'], Ticket::getSolvedStatusArray())
+          || in_array($item->fields['status'], Ticket::getClosedStatusArray())) {
+         $canedit = false;
+      }
+
+      if ($solutionForm && $canedit) {
          echo '<tr><th colspan="2">' . self::getTypeName(2) . '</th><th colspan="2"></th></tr>';
          echo '<tr><td>';
          echo '<label for="plugin_intervention_consumed_voucher">'

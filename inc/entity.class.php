@@ -259,6 +259,84 @@ class PluginInterventionEntity extends CommonDBTM {
    }
 
    /**
+    * Show intervention vouchers of an entity in ticket tab
+    *
+    * @param $entity Entity object
+   **/
+   static function showForTicket(Entity $entity) {
+      global $DB, $CFG_GLPI;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID, READ)) {
+         return false;
+      }
+
+      $number  = self::countForItem($entity);
+
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
+      }
+
+      echo "<div class='spaced'>";
+
+      Session::initNavigateListItems('PluginInterventionEntity',
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'),
+                                             Ticket::getTypeName(1), $entity->getName()));
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>"
+            . __('Intervention vouchers declared for ticket entity', 'intervention');
+      echo "</th></tr></table></div>";
+
+      if ($number) {
+         echo "<div class='spaced'>";
+         Html::printAjaxPager('', $start, $number);
+
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         $header_end .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Start date')."</th>";
+         $header_end .= "<th>".__('End date')."</th>";
+         $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
+         $header_end .= "</tr>\n";
+         echo $header_begin.$header_top.$header_end;
+
+         $i = 0;
+         foreach (self::getAllForEntity($ID) as $data) {
+
+            if (($i >= $start) && ($i < ($start + $_SESSION['glpilist_limit']))) {
+               echo "<tr class='tab_bg_2'>";
+               echo "<td width='40%'>".$data['name']."</td>".
+                    "<td>".$data['type']."</td>".
+                    "<td class='tab_date'>".$data['begin_date']."</td>".
+                    "<td class='tab_date'>".$data['end_date']."</td>".
+                    "<td class='center'>".$data['sold']."</td>".
+                    "<td class='center'>".$data['consumed']."</td>";
+               echo "<td class='center'>".$data['remaining']."</td></tr>";
+            }
+
+            Session::addToNavigateListItems(__CLASS__, $data["id"]);
+            $i++;
+         }
+
+         echo $header_begin.$header_bottom.$header_end;
+         echo "</table>\n";
+      } else {
+         echo "<p class='center b'>".__('No intervention voucher', 'intervention')."</p>";
+      }
+      echo "</div>\n";
+   }
+
+   /**
     * Get search function for the class
     *
     * @return array of search option
