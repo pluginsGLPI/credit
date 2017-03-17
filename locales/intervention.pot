@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-17 16:01+0100\n"
+"POT-Creation-Date: 2017-03-17 15:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,72 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: inc/type.class.php:40
+#: inc/type.class.php:40 inc/entity.class.php:369
 msgid "Intervention voucher type"
 msgid_plural "Intervention vouchers types"
 msgstr[0] ""
 msgstr[1] ""
 
-#: setup.php:100
+#: inc/entity.class.php:38 inc/ticket.class.php:38
+msgid "Intervention voucher"
+msgid_plural "Intervention vouchers"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/entity.class.php:152
+msgid "Add an intervention voucher"
+msgstr ""
+
+#: inc/entity.class.php:164 inc/entity.class.php:218 inc/entity.class.php:307
+#: inc/entity.class.php:360
+msgid "Quantity sold"
+msgstr ""
+
+#: inc/entity.class.php:219 inc/entity.class.php:308 inc/ticket.class.php:202
+#: inc/ticket.class.php:320
+msgid "Quantity consumed"
+msgstr ""
+
+#: inc/entity.class.php:220 inc/entity.class.php:309
+msgid "Quantity remaining"
+msgstr ""
+
+#: inc/entity.class.php:256 inc/entity.class.php:334
+msgid "No intervention voucher"
+msgstr ""
+
+#: inc/entity.class.php:291
+msgid "Intervention vouchers declared for ticket entity"
+msgstr ""
+
+#: inc/entity.class.php:386 inc/entity.class.php:406
+msgid "The end date has been changed automatically."
+msgstr ""
+
+#: inc/ticket.class.php:166
+msgid "Consumed interventions for this ticket"
+msgstr ""
+
+#: inc/ticket.class.php:237
+msgid "No intervention was recorded"
+msgstr ""
+
+#: inc/ticket.class.php:307
+msgid "Save and consumed a voucher ?"
+msgstr ""
+
+#: inc/ticket.class.php:313
+msgid "Intervention vouchers"
+msgstr ""
+
+#: inc/ticket.class.php:355
+msgid "You must provide an intervention voucher"
+msgstr ""
+
+#: inc/ticket.class.php:364
+msgid "Intervention voucher successfully added."
+msgstr ""
+
+#: setup.php:120
 msgid "Installed / not configured"
 msgstr ""

@@ -1,28 +1,89 @@
 # English translations for Plugin GLPI Intervention package
 # Copyright (C) 2017 TECLIB
 # This file is distributed under the same license as the Plugin GLPI Intervention package.
-#  <francois@teclib.com>, 2017.
+#  , 2017.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-10 15:06+0200\n"
-"PO-Revision-Date: 2017-02-20 15:06+0200\n"
-"Last-Translator: francois@teclib.com\n"
-"Language-Team: English\n"
-"Language: en\n"
+"POT-Creation-Date: 2017-03-17 15:16+0100\n"
+"PO-Revision-Date: 2017-03-17 15:16+0100\n"
+"Last-Translator: Legastelois François <flegastelois@teclib.com>, 2017\n"
+"Language-Team: TECLIB\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: inc/type.class.php:40
+#: inc/type.class.php:40 inc/entity.class.php:369
 msgid "Intervention voucher type"
 msgid_plural "Intervention vouchers types"
 msgstr[0] "Intervention voucher type"
 msgstr[1] "Intervention vouchers types"
 
-#: setup.php:100
+#: inc/entity.class.php:38 inc/ticket.class.php:38
+msgid "Intervention voucher"
+msgid_plural "Intervention vouchers"
+msgstr[0] "Intervention voucher"
+msgstr[1] "Intervention vouchers"
+
+#: inc/entity.class.php:152
+msgid "Add an intervention voucher"
+msgstr "Add an intervention voucher"
+
+#: inc/entity.class.php:164 inc/entity.class.php:218 inc/entity.class.php:307
+#: inc/entity.class.php:360
+msgid "Quantity sold"
+msgstr "Quantity sold"
+
+#: inc/entity.class.php:219 inc/entity.class.php:308 inc/ticket.class.php:202
+#: inc/ticket.class.php:320
+msgid "Quantity consumed"
+msgstr "Quantity consumed"
+
+#: inc/entity.class.php:220 inc/entity.class.php:309
+msgid "Quantity remaining"
+msgstr "Quantity remaining"
+
+#: inc/entity.class.php:256 inc/entity.class.php:334
+msgid "No intervention voucher"
+msgstr "No intervention voucher"
+
+#: inc/entity.class.php:291
+msgid "Intervention vouchers declared for ticket entity"
+msgstr "Intervention vouchers declared for ticket entity"
+
+#: inc/entity.class.php:386 inc/entity.class.php:406
+msgid "The end date has been changed automatically."
+msgstr "The end date has been changed automatically."
+
+#: inc/ticket.class.php:166
+msgid "Consumed interventions for this ticket"
+msgstr "Consumed interventions for this ticket"
+
+#: inc/ticket.class.php:237
+msgid "No intervention was recorded"
+msgstr "No intervention was recorded"
+
+#: inc/ticket.class.php:307
+msgid "Save and consumed a voucher ?"
+msgstr "Save and consumed a voucher ?"
+
+#: inc/ticket.class.php:313
+msgid "Intervention vouchers"
+msgstr "Intervention vouchers"
+
+#: inc/ticket.class.php:355
+msgid "You must provide an intervention voucher"
+msgstr "You must provide an intervention voucher"
+
+#: inc/ticket.class.php:364
+msgid "Intervention voucher successfully added."
+msgstr "Intervention voucher successfully added."
+
+#: setup.php:120
 msgid "Installed / not configured"
 msgstr "Installed / not configured"
