@@ -59,9 +59,6 @@ function plugin_init_intervention() {
          Plugin::registerClass('PluginInterventionTicket',
                                  array('addtabon' => 'Ticket'));
 
-         $PLUGIN_HOOKS['pre_item_form']['intervention']
-               = ['PluginInterventionTicket', 'preSolutionForm'];
-
          $PLUGIN_HOOKS['post_item_form']['intervention']
                = ['PluginInterventionTicket', 'postSolutionForm'];
 

@@ -194,46 +194,6 @@ class PluginInterventionTicket extends CommonDBTM {
    }
 
    /**
-    * Retrieve informations from session and put into form.
-    *
-    * @param array $params Array with "item" and "options" keys
-    *
-    * @return void
-    */
-   static public function preSolutionForm($params) {
-      global $CFG_GLPI;
-
-      $item    = $params['item'];
-      $options = $params['options'];
-
-      $solutionForm  = false;
-      $callers       = debug_backtrace();
-      foreach ($callers as $call) {
-         if ($call['function']=='showFormHeader') {
-            $solutionForm = false;
-            break;
-         }
-         if ($call['function']=='showSolutionForm') {
-            $solutionForm = true;
-            break;
-         }
-      }
-
-      // Retrieve values from session (if exists)
-      if (isset($_SESSION['plugins']['intervention'])) {
-
-         foreach (['solution', 'solutiontypes_id'] as $field) {
-
-            if (array_key_exists($field, $_SESSION['plugins']['intervention'])) {
-
-               $item->fields[$field] = $_SESSION['plugins']['intervention'][$field];
-               unset($_SESSION['plugins']['intervention'][$field]);
-            }
-         }
-      }
-   }
-
-   /**
     * Display contents at the end of solution form.
     *
     * @param array $params Array with "item" and "options" keys
@@ -304,15 +264,8 @@ class PluginInterventionTicket extends CommonDBTM {
          return false;
       }
 
-      // Store input solution into session array (in case of missing mandatory fields)
-      foreach (['solution', 'solutiontypes_id'] as $field) {
-
-         if (isset($ticket->input[$field]) && !empty($ticket->input[$field])) {
-            $_SESSION['plugins']['intervention'][$field] = Toolbox::cleanNewLines($ticket->input[$field]);
-         }
-      }
-
-      if ($ticket->input['plugin_intervention_consumed_voucher']) {
+      if (isset($ticket->input['plugin_intervention_consumed_voucher'])
+          && ($ticket->input['plugin_intervention_consumed_voucher'] == 1)) {
 
          if ($ticket->input['plugin_intervention_entities_id']==0) {
             unset($ticket->input['status']);
