@@ -116,7 +116,7 @@ class PluginInterventionTicket extends CommonDBTM {
          $tmp['voucher']   = $PluginInterventionEntity->getName();
          $tmp['type']      =  Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
                                  $PluginInterventionEntity->getField('plugin_intervention_types_id'));
-         $tmp['date']      = Html::convDate($data["date_create"]);
+         $tmp['date']      = Html::convDate($data["date_creation"]);
          $tmp['consumed']  = $data['consumed'];
          $tmp['users']     = getUserName($data["users_id"], $showuserlink);
 
@@ -140,47 +140,93 @@ class PluginInterventionTicket extends CommonDBTM {
       }
 
       $canedit = $ticket->canEdit($ID);
+      if (in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
+          || in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
+         $canedit = false;
+      }
       $number  = self::countForItem($ticket);
 
-      echo "<div class='spaced'>";
-
-      if ($number < 1) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('No intervention was recorded', 'intervention')."</th></tr>";
-         echo "</table>";
-         return;
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
       }
 
       $rand = mt_rand();
 
-      echo "<table class='tab_cadre_fixehov'>";
-      $header_begin  = "<tr>";
-      $header_top    = '';
-      $header_bottom = '';
-      $header_end    = '';
-      $header_end .= "<th>".__('Name')."</th>";
-      $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>".__('Date')."</th>";
-      $header_end .= "<th>".__('User')."</th>";
-      $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
-      $header_end .= "</tr>\n";
-      echo $header_begin.$header_top.$header_end;
+      echo "<div class='spaced'>";
 
       Session::initNavigateListItems(__CLASS__, sprintf(__('%1$s'), self::getTypeName(1)));
 
-      foreach (self::getAllForTicket($ID) as $data) {
-         Session::addToNavigateListItems(__CLASS__, $data["id"]);
-         echo "<tr class='tab_bg_2'>";
-         echo "<td width='40%' class='center'>".$data['voucher']."</td>".
-              "<td class='center'>".$data['type']."</td>".
-              "<td class='center'>".$data['date']."</td>".
-              "<td class='center'>".$data['users']."</td>".
-              "<td class='center'>".$data['consumed']."</td></tr>";
-      }
+      if ($number) {
+         Html::printAjaxPager('', $start, $number);
 
-      echo $header_begin.$header_bottom.$header_end;
-      echo "</table>\n";
-      echo "</div>";
+         if ($canedit) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams
+               = array('num_displayed'
+                         => $number,
+                       'container'
+                         => 'mass'.__CLASS__.$rand,
+                       'specific_actions'
+                         => array('purge' => _x('button', 'Delete permanently')));
+
+            Html::showMassiveActions($massiveactionparams);
+         }
+
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Date')."</th>";
+         $header_end .= "<th>".__('User')."</th>";
+         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
+         $header_end .= "</tr>\n";
+         echo $header_begin.$header_top.$header_end;
+
+         $i = 0;
+         foreach (self::getAllForTicket($ID) as $data) {
+
+            if (($i >= $start) && ($i < ($start + $_SESSION['glpilist_limit']))) {
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td width='10'>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+                  echo "</td>";
+               }
+               echo "<td width='40%' class='center'>".$data['voucher']."</td>".
+                    "<td class='center'>".$data['type']."</td>".
+                    "<td class='center'>".$data['date']."</td>".
+                    "<td class='center'>".$data['users']."</td>".
+                    "<td class='center'>".$data['consumed']."</td></tr>";
+            }
+
+            Session::addToNavigateListItems(__CLASS__, $data["id"]);
+            $i++;
+         }
+
+         echo $header_begin.$header_bottom.$header_end;
+         echo "</table>\n";
+
+         if ($canedit) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+
+      } else {
+         echo "<p class='center b'>".__('No intervention was recorded', 'intervention')."</p>";
+      }
+      echo "</div>\n";
    }
 
    /**
@@ -277,7 +323,6 @@ class PluginInterventionTicket extends CommonDBTM {
             $PluginInterventionTicket = new self();
             $input = ['tickets_id'                      => $ticket->getID(),
                       'plugin_intervention_entities_id' => $ticket->input['plugin_intervention_entities_id'],
-                      'date_creation'                   => $_SESSION["glpi_currenttime"],
                       'consumed'                        => $ticket->input['plugin_intervention_quantity'],
                       'users_id'                        => Session::getLoginUserID()];
             if ($PluginInterventionTicket->add($input)) {
