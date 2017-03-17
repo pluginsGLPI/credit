@@ -137,6 +137,11 @@ class PluginInterventionEntity extends CommonDBTM {
       $canedit = $entity->canEdit($ID);
       $number  = self::countForItem($entity);
 
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
+      }
+
       if ($canedit) {
          $rand = mt_rand();
          echo "<div class='firstbloc'>";
@@ -172,76 +177,85 @@ class PluginInterventionEntity extends CommonDBTM {
          echo "</div>";
       }
 
-      echo "<div class='spaced'>";
-
-      if ($number < 1) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('No intervention voucher', 'intervention')."</th></tr>";
-         echo "</table>";
-         return;
-      }
-
       $rand = mt_rand();
 
-      if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass'.get_called_class().$rand);
-            $massiveactionparams
-               = array( 'num_displayed'      => $number,
-                        'specific_actions'   => array('update' => _x('button', 'Update'),
-                                                      'purge'  => _x('button', 'Delete permanently')));
-            Html::showMassiveActions($massiveactionparams);
-      }
-
-      echo "<table class='tab_cadre_fixehov'>";
-      $header_begin  = "<tr>";
-      $header_top    = '';
-      $header_bottom = '';
-      $header_end    = '';
-      if ($canedit) {
-         $header_begin  .= "<th width='10'>";
-         $header_top    .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
-         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.get_called_class().$rand);
-         $header_end    .= "</th>";
-      }
-      $header_end .= "<th>".__('Name')."</th>";
-      $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>".__('Start date')."</th>";
-      $header_end .= "<th>".__('End date')."</th>";
-      $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
-      $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
-      $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
-      $header_end .= "</tr>\n";
-      echo $header_begin.$header_top.$header_end;
+      echo "<div class='spaced'>";
 
       Session::initNavigateListItems(__CLASS__, sprintf(__('%1$s'), self::getTypeName(1)));
 
-      foreach (self::getAllForEntity($ID) as $data) {
-         Session::addToNavigateListItems(__CLASS__, $data["id"]);
-         echo "<tr class='tab_bg_2'>";
+      if ($number) {
+         Html::printAjaxPager('', $start, $number);
 
          if ($canedit) {
-            echo "<td width='10'>";
-            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-            echo "</td>";
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams
+               = array('num_displayed'
+                         => $number,
+                       'container'
+                         => 'mass'.__CLASS__.$rand,
+                       'specific_actions'
+                         => array('purge' => _x('button', 'Delete permanently')));
+
+            Html::showMassiveActions($massiveactionparams);
          }
-         echo "<td width='40%'>".$data['name']."</td>".
-              "<td>".$data['type']."</td>".
-              "<td class='tab_date'>".$data['begin_date']."</td>".
-              "<td class='tab_date'>".$data['end_date']."</td>".
-              "<td class='center'>".$data['sold']."</td>".
-              "<td class='center'>".$data['consumed']."</td>";
-         echo "<td class='center'>".$data['remaining']."</td></tr>";
-      }
 
-      echo $header_begin.$header_bottom.$header_end;
-      echo "</table>\n";
+         echo "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Name')."</th>";
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Start date')."</th>";
+         $header_end .= "<th>".__('End date')."</th>";
+         $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
+         $header_end .= "</tr>\n";
+         echo $header_begin.$header_top.$header_end;
 
-      if ($canedit) {
-         $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions($massiveactionparams);
-         Html::closeForm();
+         $i = 0;
+         foreach (self::getAllForEntity($ID) as $data) {
+
+            if (($i >= $start) && ($i < ($start + $_SESSION['glpilist_limit']))) {
+               echo "<tr class='tab_bg_2'>";
+               if ($canedit) {
+                  echo "<td width='10'>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+                  echo "</td>";
+               }
+               echo "<td width='40%'>".$data['name']."</td>".
+                    "<td>".$data['type']."</td>".
+                    "<td class='tab_date'>".$data['begin_date']."</td>".
+                    "<td class='tab_date'>".$data['end_date']."</td>".
+                    "<td class='center'>".$data['sold']."</td>".
+                    "<td class='center'>".$data['consumed']."</td>";
+               echo "<td class='center'>".$data['remaining']."</td></tr>";
+            }
+
+            Session::addToNavigateListItems(__CLASS__, $data["id"]);
+            $i++;
+         }
+
+         echo $header_begin.$header_bottom.$header_end;
+         echo "</table>\n";
+
+         if ($canedit) {
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+      } else {
+         echo "<p class='center b'>".__('No intervention voucher', 'intervention')."</p>";
       }
-      echo "</div>";
+      echo "</div>\n";
    }
 
    /**
