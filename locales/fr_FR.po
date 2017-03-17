@@ -21,18 +21,18 @@ msgstr ""
 #: inc/type.class.php:40 inc/entity.class.php:369
 msgid "Intervention voucher type"
 msgid_plural "Intervention vouchers types"
-msgstr[0] "Type de bon d'interventions"
-msgstr[1] "Types de bons d'interventions"
+msgstr[0] "Type de carnet d'interventions"
+msgstr[1] "Types de carnets d'interventions"
 
 #: inc/entity.class.php:38 inc/ticket.class.php:38
 msgid "Intervention voucher"
 msgid_plural "Intervention vouchers"
-msgstr[0] "Bon d'interventions"
-msgstr[1] "Bons d'interventions"
+msgstr[0] "Carnet d'interventions"
+msgstr[1] "Carnets d'interventions"
 
 #: inc/entity.class.php:152
 msgid "Add an intervention voucher"
-msgstr "Ajouter un bon d'interventions"
+msgstr "Ajouter un carnet d'interventions"
 
 #: inc/entity.class.php:164 inc/entity.class.php:218 inc/entity.class.php:307
 #: inc/entity.class.php:360
@@ -50,11 +50,11 @@ msgstr "Quantité restante"
 
 #: inc/entity.class.php:256 inc/entity.class.php:334
 msgid "No intervention voucher"
-msgstr "Aucun bon d'interventions déclaré"
+msgstr "Aucun carnet d'interventions déclaré"
 
 #: inc/entity.class.php:291
 msgid "Intervention vouchers declared for ticket entity"
-msgstr "Bons d'interventions déclarés pour l'entité du ticket"
+msgstr "Carnets d'interventions déclarés pour l'entité du ticket"
 
 #: inc/entity.class.php:386 inc/entity.class.php:406
 msgid "The end date has been changed automatically."
@@ -62,7 +62,7 @@ msgstr "La date de fin a été mise à jour automatiquement."
 
 #: inc/ticket.class.php:166
 msgid "Consumed interventions for this ticket"
-msgstr "Bons d'interventions déjà consommés pour ce ticket"
+msgstr "Interventions déjà consommées pour ce ticket"
 
 #: inc/ticket.class.php:237
 msgid "No intervention was recorded"
@@ -70,21 +70,21 @@ msgstr "Aucun intervention déclarée"
 
 #: inc/ticket.class.php:307
 msgid "Save and consumed a voucher ?"
-msgstr "Déclarer une consommation sur un bon d'interventions ?"
+msgstr "Déclarer une consommation sur un carnet d'interventions ?"
 
 #: inc/ticket.class.php:313
 msgid "Intervention vouchers"
-msgstr "Bon d'interventions"
+msgstr "Carnet d'interventions"
 
 #: inc/ticket.class.php:355
 msgid "You must provide an intervention voucher"
 msgstr ""
-"Vous devez préciser un bon d'interventions sur lequel consommer la quantité "
+"Vous devez préciser un carnet d'interventions sur lequel consommer la quantité "
 "souhaitée."
 
 #: inc/ticket.class.php:364
 msgid "Intervention voucher successfully added."
-msgstr "Bon d'interventions sauvegardé avec succès."
+msgstr "Carnet d'interventions sauvegardé avec succès."
 
 #: setup.php:120
 msgid "Installed / not configured"

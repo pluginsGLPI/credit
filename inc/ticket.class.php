@@ -46,11 +46,13 @@ class PluginInterventionTicket extends CommonDBTM {
       switch ($item->getType()) {
          case 'Ticket' :
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(self::getTypeName(), self::countForItem($item));
+               return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+            } else {
+               return self::getTypeName(2);
             }
             break;
          default :
-            return self::getTypeName();
+            return self::getTypeName(2);
             break;
       }
       return '';
