@@ -363,8 +363,9 @@ class PluginInterventionTicket extends CommonDBTM {
          $out .= "</label>";
          $out .= "</td><td>";
          echo $out; $out = "";
-         PluginInterventionEntity::dropdown(['name'   => 'plugin_intervention_entities_id',
-                                             'entity' => $ticket->getEntityID()]);
+         PluginInterventionEntity::dropdown(['name'      => 'plugin_intervention_entities_id',
+                                             'entity'    => $ticket->getEntityID(),
+                                             'condition' => "`is_active`='1'"]);
          $out .= "</td><td colspan='2'></td>";
          $out .= "</tr><tr><td>";
          $out .= "<label for='plugin_intervention_quantity'>";

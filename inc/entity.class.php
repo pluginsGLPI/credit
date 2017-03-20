@@ -159,7 +159,13 @@ class PluginInterventionEntity extends CommonDBTM {
          echo $out; $out = "";
          Html::showDateField("begin_date", array('value' => ''));
          $out .= "</td></tr>";
-         $out .= "<tr class='tab_bg_1'><td colspan='2'></td><td class='tab_bg_2 right'>";
+         $out .= "<tr class='tab_bg_1'>";
+         $out .= "<td>".__('Active')."</td>";
+         $out .= "<td>";
+         echo $out; $out = "";
+         Dropdown::showYesNo("is_active", '');
+         $out .= "</td>";
+         $out .= "<td class='tab_bg_2 right'>";
          $out .= __('Quantity sold', 'intervention')."</td><td>";
          echo $out; $out = "";
          Dropdown::showNumber("quantity", ['value' => '',
@@ -211,6 +217,7 @@ class PluginInterventionEntity extends CommonDBTM {
          }
          $header_end .= "<th>".__('Name')."</th>";
          $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Active')."</th>";
          $header_end .= "<th>".__('Start date')."</th>";
          $header_end .= "<th>".__('End date')."</th>";
          $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
@@ -229,12 +236,15 @@ class PluginInterventionEntity extends CommonDBTM {
                $out .= "</td>";
             }
 
-            $out .= "<td width='40%'>";
+            $out .= "<td width='30%'>";
             $out .= $data['name'];
             $out .= "</td>";
-            $out .= "<td>";
+            $out .= "<td width='15%'>";
             $out .= Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
                                                 $data['plugin_intervention_types_id']);
+            $out .= "</td>";
+            $out .= "<td>";
+            $out .= ($data["is_active"]) ? __('Yes') : __('No');
             $out .= "</td>";
             $out .= "<td class='tab_date'>";
             $out .= Html::convDate($data["begin_date"]);
@@ -375,6 +385,7 @@ class PluginInterventionEntity extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                      `entities_id` int(11) NOT NULL DEFAULT '0',
+                     `is_active` tinyint(1) NOT NULL DEFAULT '0',
                      `plugin_intervention_types_id` tinyint(1) NOT NULL DEFAULT '0',
                      `begin_date` datetime DEFAULT NULL,
                      `end_date` datetime DEFAULT NULL,
@@ -382,6 +393,7 @@ class PluginInterventionEntity extends CommonDBTM {
                      PRIMARY KEY (`id`),
                      KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
+                     KEY `is_active` (`is_active`),
                      KEY `plugin_intervention_types_id` (`plugin_intervention_types_id`),
                      KEY `begin_date` (`begin_date`),
                      KEY `end_date` (`end_date`)
