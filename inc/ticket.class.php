@@ -91,11 +91,6 @@ class PluginInterventionTicket extends CommonDBTM {
    static function getAllForTicket($ID, $start=0, $limit=0, $sqlfilter='') {
       global $DB;
 
-      $showuserlink = 0;
-      if (Session::haveRight('user', READ)) {
-         $showuserlink = 1;
-      }
-
       $query = "SELECT *
                 FROM `" . getTableForItemType(__CLASS__) . "`
                 WHERE `tickets_id` = '$ID'";
@@ -110,139 +105,43 @@ class PluginInterventionTicket extends CommonDBTM {
 
       $vouchers = array();
       foreach ($DB->request($query) as $data) {
-         $PluginInterventionEntity = new PluginInterventionEntity();
-         $PluginInterventionEntity->getFromDB($data['plugin_intervention_entities_id']);
-
-         $tmp = array();
-         $tmp['id']        = $data['id'];
-         $tmp['voucher']   = $PluginInterventionEntity->getName();
-         $tmp['type']      =  Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
-                                 $PluginInterventionEntity->getField('plugin_intervention_types_id'));
-         $tmp['date']      = Html::convDate($data["date_creation"]);
-         $tmp['consumed']  = $data['consumed'];
-         $tmp['users']     = getUserName($data["users_id"], $showuserlink);
-
-         $vouchers[$tmp['id']] = $tmp;
+         $vouchers[$data['id']] = $data;
       }
 
       return $vouchers;
    }
 
+
    /**
-    * Show intervention vouchers consumed for a ticket
+    * Get all tickets for an intervention vouchers.
     *
-    * @param $ticket Ticket object
+    * @param $ID           integer     plugin_intervention_entities_id ID
+    * @param $start        integer     first line to retrieve (default 0)
+    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
+    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @return array of vouchers
    **/
-   static function showForTicket(Ticket $ticket) {
-      global $DB, $CFG_GLPI;
+   static function getAllForInterventionEntity($ID, $start=0, $limit=0, $sqlfilter='') {
+      global $DB;
 
-      $ID = $ticket->getField('id');
-      if (!$ticket->can($ID, READ)) {
-         return false;
+      $query = "SELECT *
+                FROM `" . getTableForItemType(__CLASS__) . "`
+                WHERE `plugin_intervention_entities_id` = '$ID'";
+      if ($sqlfilter) {
+         $query .= "AND ($sqlfilter) ";
+      }
+      $query .= " ORDER BY `id` DESC";
+
+      if ($limit) {
+         $query .= " LIMIT ".intval($start)."," . intval($limit);
       }
 
-      $canedit = $ticket->canEdit($ID);
-      if (in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
-          || in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
-         $canedit = false;
-      }
-      $number  = self::countForItem($ticket);
-
-      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
-      if ($start >= $number) {
-         $start = 0;
+      $tickets = array();
+      foreach ($DB->request($query) as $data) {
+         $tickets[$data['id']] = $data;
       }
 
-      $rand = mt_rand();
-
-      echo "<div class='spaced'>";
-
-      Session::initNavigateListItems('PluginInterventionEntity',
-                           //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'),
-                                             Ticket::getTypeName(1), $ticket->getName()));
-
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>"
-            . __('Consumed interventions for this ticket', 'intervention');
-      echo "</th></tr></table></div>";
-
-      if ($number) {
-         echo "<div class='spaced'>";
-         Html::printAjaxPager('', $start, $number);
-
-         if ($canedit) {
-            $rand = mt_rand();
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams
-               = array('num_displayed'
-                         => $number,
-                       'container'
-                         => 'mass'.__CLASS__.$rand,
-                       'specific_actions'
-                         => array('purge' => _x('button', 'Delete permanently')));
-
-            Html::showMassiveActions($massiveactionparams);
-         }
-
-         echo "<table class='tab_cadre_fixehov'>";
-         $header_begin  = "<tr>";
-         $header_top    = '';
-         $header_bottom = '';
-         $header_end    = '';
-         if ($canedit) {
-            $header_begin  .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-            $header_end    .= "</th>";
-         }
-         $header_end .= "<th>".__('Name')."</th>";
-         $header_end .= "<th>".__('Type')."</th>";
-         $header_end .= "<th>".__('Date')."</th>";
-         $header_end .= "<th>".__('User')."</th>";
-         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
-         $header_end .= "</tr>\n";
-         echo $header_begin.$header_top.$header_end;
-
-         $i = 0;
-         foreach (self::getAllForTicket($ID) as $data) {
-
-            if (($i >= $start) && ($i < ($start + $_SESSION['glpilist_limit']))) {
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                  echo "</td>";
-               }
-               echo "<td width='40%' class='center'>".$data['voucher']."</td>".
-                    "<td class='center'>".$data['type']."</td>".
-                    "<td class='center'>".$data['date']."</td>".
-                    "<td class='center'>".$data['users']."</td>".
-                    "<td class='center'>".$data['consumed']."</td></tr>";
-            }
-
-            Session::addToNavigateListItems(__CLASS__, $data["id"]);
-            $i++;
-         }
-
-         echo $header_begin.$header_bottom.$header_end;
-         echo "</table>\n";
-
-         if ($canedit) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-         }
-
-      } else {
-         echo "<p class='center b'>".__('No intervention was recorded', 'intervention')."</p>";
-      }
-      echo "</div>\n";
-
-      $Entity = new Entity();
-      $Entity->getFromDB($ticket->fields['entities_id']);
-      PluginInterventionEntity::showForTicket($Entity);
+      return $tickets;
    }
 
    /**
@@ -271,6 +170,136 @@ class PluginInterventionTicket extends CommonDBTM {
    }
 
    /**
+    * Show intervention vouchers consumed for a ticket
+    *
+    * @param $ticket Ticket object
+   **/
+   static function showForTicket(Ticket $ticket) {
+      global $DB, $CFG_GLPI;
+
+      $ID = $ticket->getField('id');
+      if (!$ticket->can($ID, READ)) {
+         return false;
+      }
+
+      $canedit = $ticket->canEdit($ID);
+      if (in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
+          || in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
+         $canedit = false;
+      }
+
+      $out = "";
+      $out .= "<div class='spaced'>";
+      $out .= "<table class='tab_cadre_fixe'>";
+      $out .= "<tr class='tab_bg_1'><th colspan='2'>";
+      $out .= __('Consumed interventions for this ticket', 'intervention');
+      $out .= "</th></tr></table></div>";
+
+      $number = self::countForItem($ticket);
+      $rand   = mt_rand();
+
+      if ($number) {
+         $out .= "<div class='spaced'>";
+
+         if ($canedit) {
+            echo $out; $out = "";
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams
+               = array('num_displayed'
+                         => $number,
+                       'container'
+                         => 'mass'.__CLASS__.$rand,
+                       'rand' => $rand,
+                       'specific_actions'
+                         => array('purge' => _x('button', 'Delete permanently')));
+            Html::showMassiveActions($massiveactionparams);
+         }
+
+         $out .= "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         if ($canedit) {
+            $header_begin  .= "<th width='10'>";
+            $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+            $header_end    .= "</th>";
+         }
+         $header_end .= "<th>".__('Voucher name', 'intervention')."</th>";
+         $header_end .= "<th>".__('Voucher type', 'intervention')."</th>";
+         $header_end .= "<th>".__('Date consumed', 'intervention')."</th>";
+         $header_end .= "<th>".__('User consumed', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
+         $header_end .= "</tr>\n";
+         $out.= $header_begin.$header_top.$header_end;
+
+         foreach (self::getAllForTicket($ID) as $data) {
+
+            $out .= "<tr class='tab_bg_2'>";
+            if ($canedit) {
+               $out .= "<td width='10'>";
+               echo $out; $out = "";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               $out .= "</td>";
+            }
+
+            $PluginInterventionEntity = new PluginInterventionEntity();
+            $PluginInterventionEntity->getFromDB($data['plugin_intervention_entities_id']);
+
+            $out .= "<td width='40%' class='center'>";
+            $out .= $PluginInterventionEntity->getName();
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
+                                 $PluginInterventionEntity->getField('plugin_intervention_types_id'));
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= Html::convDate($data["date_creation"]);
+            $out .= "</td>";
+
+            $showuserlink = 0;
+            if (Session::haveRight('user', READ)) {
+               $showuserlink = 1;
+            }
+
+            $out .= "<td class='center'>";
+            $out .= getUserName($data["users_id"], $showuserlink);
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= $data['consumed'];
+            $out .= "</td></tr>";
+         }
+
+         $out .= $header_begin.$header_bottom.$header_end;
+         $out .= "</table>\n";
+
+         if ($canedit) {
+            $massiveactionparams['ontop'] = false;
+            echo $out; $out = "";
+            Html::showMassiveActions($massiveactionparams);
+            Html::closeForm();
+         }
+
+      } else {
+         $out .= "<p class='center b'>".__('No intervention was recorded', 'intervention')."</p>";
+      }
+      $out .= "</div>\n";
+
+      $out .= "<div class='spaced'>";
+      $out .= "<table class='tab_cadre_fixe'>";
+      $out .= "<tr class='tab_bg_1'><th colspan='2'>";
+      $out .= __('Intervention vouchers declared for ticket entity', 'intervention');
+      $out .= "</th></tr></table>";
+      $out .= "</div>";
+      echo $out;
+
+      $Entity = new Entity();
+      $Entity->getFromDB($ticket->fields['entities_id']);
+      PluginInterventionEntity::showForItemtype($Entity, 'Ticket');
+   }
+
+   /**
     * Display contents at the end of solution form.
     *
     * @param array $params Array with "item" and "options" keys
@@ -283,50 +312,160 @@ class PluginInterventionTicket extends CommonDBTM {
       $item    = $params['item'];
       $options = $params['options'];
 
-      $solutionForm  = false;
-      $callers       = debug_backtrace();
+      $showForm  = false;
+      $callers   = debug_backtrace();
       foreach ($callers as $call) {
          if ($call['function']=='showFormButtons') {
-            $solutionForm = false;
+            $showForm = false;
             break;
          }
          if ($call['function']=='showSolutionForm') {
-            $solutionForm = true;
+            $showForm = true;
             break;
          }
       }
 
-      $canedit = $item->canEdit($item->getID());
-      if (in_array($item->fields['status'], Ticket::getSolvedStatusArray())
-          || in_array($item->fields['status'], Ticket::getClosedStatusArray())) {
+      if ($showForm) {
+         self::showMinimalForm($item);
+      }
+   }
+
+   /**
+    * Show the minimal form for declare intervention.
+    *
+    * @param $ticket Ticket
+   **/
+   static function showMinimalForm(Ticket $ticket) {
+
+      $out = "";
+
+      $canedit = $ticket->canEdit($ticket->getID());
+      if (in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
+          || in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
          $canedit = false;
       }
 
-      if ($solutionForm && $canedit) {
-         echo '<tr><th colspan="2">' . self::getTypeName(2) . '</th><th colspan="2"></th></tr>';
-         echo '<tr><td>';
-         echo '<label for="plugin_intervention_consumed_voucher">'
-                  . __('Save and consumed a voucher ?', 'intervention') . '</label>';
-         echo '</td><td>';
+      if ($canedit) {
+         $out .= "<tr><th colspan='2'>";
+         $out .= self::getTypeName(2);
+         $out .= "</th><th colspan='2'></th></tr>";
+         $out .= "<tr><td>";
+         $out .= "<label for='plugin_intervention_consumed_voucher'>";
+         $out .= __('Save and consumed a voucher ?', 'intervention');
+         $out .= "</label>";
+         $out .= "</td><td>";
+         echo $out; $out = "";
          Dropdown::showYesNo('plugin_intervention_consumed_voucher');
-         echo '</td><td colspan="2"></td>';
-         echo '</tr><tr><td>';
-         echo '<label for="voucher">'
-                     . __('Intervention vouchers', 'intervention') . '</label>';
-         echo '</td><td>';
-         PluginInterventionEntity::dropdown(array('name'   => 'plugin_intervention_entities_id',
-                                                  'entity' => $item->getEntityID()));
-         echo '</td><td colspan="2"></td>';
-         echo '</tr><tr><td>';
-         echo '<label for="plugin_intervention_quantity">'
-                  . __('Quantity consumed', 'intervention') . '</label>';
-         echo '</td><td>';
-         Dropdown::showNumber("plugin_intervention_quantity", array('value' => '',
-                                                'min'   => 1,
-                                                'max'   => 200,
-                                                'step'  => 1));
-         echo '</td><td colspan="2"></td></tr>';
+         $out .= "</td><td colspan='2'></td>";
+         $out .= "</tr><tr><td>";
+         $out .= "<label for='voucher'>";
+         $out .= __('Intervention vouchers', 'intervention');
+         $out .= "</label>";
+         $out .= "</td><td>";
+         echo $out; $out = "";
+         PluginInterventionEntity::dropdown(['name'   => 'plugin_intervention_entities_id',
+                                             'entity' => $ticket->getEntityID()]);
+         $out .= "</td><td colspan='2'></td>";
+         $out .= "</tr><tr><td>";
+         $out .= "<label for='plugin_intervention_quantity'>";
+         $out .= __('Quantity consumed', 'intervention');
+         $out .= "</label>";
+         $out .= "</td><td>";
+         echo $out; $out = "";
+         Dropdown::showNumber("plugin_intervention_quantity", ['value' => '',
+                                                               'min'   => 1,
+                                                               'max'   => 200,
+                                                               'step'  => 1]);
+         $out .= "</td><td colspan='2'></td></tr>";
       }
+
+      echo $out;
+   }
+
+   /**
+    * Display the detailled list of tickets on which consumption is declared.
+    *
+    * @param $ID plugin_intervention_entities_id
+   **/
+   static function displayConsumed($ID) {
+
+      $out = "";
+      $out .= "<div class='spaced'>";
+      $out .= "<table class='tab_cadre_fixe'>";
+      $out .= "<tr class='tab_bg_1'><th colspan='2'>";
+      $out .= __('Detail of tickets on which consumption is declared', 'intervention');
+      $out .= "</th></tr></table>";
+      $out .= "</div>";
+
+      if (self::getConsumedForInterventionEntity($ID) == 0) {
+         $out .= "<p class='center b'>";
+         $out .= __('No intervention was recorded', 'intervention');
+         $out .= "</p>";
+      } else {
+         $out .= "<table class='tab_cadre_fixehov'>";
+         $header_begin  = "<tr>";
+         $header_top    = '';
+         $header_bottom = '';
+         $header_end    = '';
+         $header_end .= "<th>".__('Title')."</th>";
+         $header_end .= "<th>".__('Status')."</th>";
+         $header_end .= "<th>".__('Type')."</th>";
+         $header_end .= "<th>".__('Ticket category')."</th>";
+         $header_end .= "<th>".__('Date consumed', 'intervention')."</th>";
+         $header_end .= "<th>".__('User consumed', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
+         $header_end .= "</tr>\n";
+         $out .= $header_begin.$header_top.$header_end;
+
+         foreach (self::getAllForInterventionEntity($ID) as $data) {
+
+            $Ticket = new Ticket();
+            $Ticket->getFromDB($data['tickets_id']);
+
+            $out .= "<tr class='tab_bg_2'>";
+            $out .= "<td class='center'>";
+            $out .= $Ticket->getLink(['linkoption' => 'target="_blank"']);
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= Ticket::getStatus($Ticket->fields['status']);
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= Ticket::getTicketTypeName($Ticket->fields['type']);
+            $out .= "</td>";
+
+            $itilcat = new ITILCategory();
+            if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
+               $out .= "<td class='center'>";
+               $out .= $itilcat->getName(['comments' => true]);
+               $out .= "</td>";
+            } else {
+               $out .= "<td class='center'>";
+               $out .= __('None');
+               $out .= "</td>";
+            }
+
+            $out .= "<td class='center'>";
+            $out .= Html::convDate($data["date_creation"]);
+            $out .= "</td>";
+
+            $showuserlink = 0;
+            if (Session::haveRight('user', READ)) {
+               $showuserlink = 1;
+            }
+
+            $out .= "<td class='center'>";
+            $out .= getUserName($data["users_id"], $showuserlink);
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= $data['consumed'];
+            $out .= "</td></tr>";
+         }
+
+         $out .= $header_begin.$header_bottom.$header_end;
+         $out .= "</table>\n";
+      }
+
+      echo $out;
    }
 
    /**

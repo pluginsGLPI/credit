@@ -63,7 +63,7 @@ class PluginInterventionEntity extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Entity' :
-            self::showForEntity($item);
+            self::showForItemtype($item);
             break;
       }
       return true;
@@ -103,19 +103,7 @@ class PluginInterventionEntity extends CommonDBTM {
 
       $vouchers = array();
       foreach ($DB->request($query) as $data) {
-         $tmp = array();
-         $tmp['id']         = $data['id'];
-         $tmp['name']       = $data['name'];
-         $tmp['type']       = Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
-                                                         $data['plugin_intervention_types_id']);
-         $tmp['begin_date']         = Html::convDate($data["begin_date"]);
-         $tmp['end_date']           = Html::convDate($data["end_date"]);
-
-         $tmp['sold']       = ($data['quantity']==0) ? __('Unlimited') : $data['quantity'];
-         $tmp['consumed']   = PluginInterventionTicket::getConsumedForInterventionEntity($data['id']);
-         $tmp['remaining']  = ($data['quantity']==0) ? __('Unlimited') : $tmp['sold'] - $tmp['consumed'];
-
-         $vouchers[$tmp['id']] = $tmp;
+         $vouchers[$data['id']] = $data;
       }
 
       return $vouchers;
@@ -124,9 +112,10 @@ class PluginInterventionEntity extends CommonDBTM {
    /**
     * Show intervention vouchers of an entity
     *
-    * @param $entity Entity object
+    * @param $entity object Entity
+    * @param $itemtype string Entity or Ticket
    **/
-   static function showForEntity(Entity $entity) {
+   static function showForItemtype(Entity $entity, $itemtype='Entity') {
       global $DB, $CFG_GLPI;
 
       $ID = $entity->getField('id');
@@ -134,73 +123,69 @@ class PluginInterventionEntity extends CommonDBTM {
          return false;
       }
 
-      $canedit = $entity->canEdit($ID);
-      $number  = self::countForItem($entity);
-
-      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
-      if ($start >= $number) {
-         $start = 0;
-      }
+      $out     = "";
+      $canedit = ($itemtype=='Ticket') ? false : $entity->canEdit($ID);
 
       if ($canedit) {
          $rand = mt_rand();
-         echo "<div class='firstbloc'>";
-         echo "<form name='interventionentity_form$rand' id='interventionentity_form$rand' method='post' action='";
-         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='7'>"
-                     . __('Add an intervention voucher', 'intervention')."</th></tr>";
-         echo "<tr class='tab_bg_1'>";
-            echo "<input type='hidden' name='entities_id' value='$ID'>";
-            echo "<td>". __('Name')."</td>";
-            echo "<td>" . Html::input("name", array('size' => 50)) . "</td>";
-            echo "<td class='tab_bg_2 right'>". __('Type')."</td><td>";
-            PluginInterventionType::dropdown(array('name'  => 'plugin_intervention_types_id'));
-            echo "</td>";
-            echo "<td class='tab_bg_2 right'>".__('Start date')."</td><td>";
-            Html::showDateField("begin_date", array('value' => ''));
-         echo "</td></tr>";
-         echo "<tr class='tab_bg_1'><td colspan='2'></td><td class='tab_bg_2 right'>"
-                  .__('Quantity sold', 'intervention')."</td><td>";
-                  Dropdown::showNumber("quantity", array('value' => '',
-                                                         'min'   => 1,
-                                                         'max'   => 200,
-                                                         'step'  => 1,
-                                                         'toadd' => array(0 => __('Unlimited'))));
-         echo "</td><td class='tab_bg_2 right'>".__('End date')."</td><td>";
+         $out .= "<div class='firstbloc'>";
+         $out .= "<form name='interventionentity_form$rand' id='interventionentity_form$rand' method='post' action='";
+         $out .= Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         $out .= "<table class='tab_cadre_fixe'>";
+         $out .= "<tr class='tab_bg_1'><th colspan='7'>";
+         $out .= __('Add an intervention voucher', 'intervention')."</th></tr>";
+         $out .= "<tr class='tab_bg_1'>";
+         $out .= "<input type='hidden' name='entities_id' value='$ID'>";
+         $out .= "<td>". __('Name')."</td>";
+         $out .= "<td>" . Html::input("name", array('size' => 50)) . "</td>";
+         $out .= "<td class='tab_bg_2 right'>". __('Type')."</td><td>";
+         echo $out; $out = "";
+         PluginInterventionType::dropdown(array('name'  => 'plugin_intervention_types_id'));
+         $out .= "</td>";
+         $out .= "<td class='tab_bg_2 right'>".__('Start date')."</td><td>";
+         echo $out; $out = "";
+         Html::showDateField("begin_date", array('value' => ''));
+         $out .= "</td></tr>";
+         $out .= "<tr class='tab_bg_1'><td colspan='2'></td><td class='tab_bg_2 right'>";
+         $out .= __('Quantity sold', 'intervention')."</td><td>";
+         echo $out; $out = "";
+         Dropdown::showNumber("quantity", ['value' => '',
+                                           'min'   => 1,
+                                           'max'   => 200,
+                                           'step'  => 1,
+                                           'toadd' => [0 => __('Unlimited')]]);
+         $out .= "</td><td class='tab_bg_2 right'>".__('End date')."</td><td>";
+         echo $out; $out = "";
          Html::showDateField("end_date", array('value' => ''));
-         echo "</td><td class='tab_bg_2 right'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</td></tr>";
-         echo "</table>";
+         $out .= "</td><td class='tab_bg_2 right'>";
+         $out .= "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         $out .= "</td></tr>";
+         $out .= "</table>";
+         echo $out; $out = "";
          Html::closeForm();
-         echo "</div>";
+         $out .= "</div>";
       }
 
-      $rand = mt_rand();
-
-      echo "<div class='spaced'>";
-
-      Session::initNavigateListItems(__CLASS__, sprintf(__('%1$s'), self::getTypeName(1)));
-
+      $out    .= "<div class='spaced'>";
+      $number  = self::countForItem($entity);
       if ($number) {
-         Html::printAjaxPager('', $start, $number);
 
          if ($canedit) {
             $rand = mt_rand();
+            echo $out; $out = "";
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams
                = array('num_displayed'
                          => $number,
                        'container'
                          => 'mass'.__CLASS__.$rand,
+                       'rand' => $rand,
                        'specific_actions'
                          => array('purge' => _x('button', 'Delete permanently')));
-
             Html::showMassiveActions($massiveactionparams);
          }
 
-         echo "<table class='tab_cadre_fixehov'>";
+         $out .= "<table class='tab_cadre_fixehov'>";
          $header_begin  = "<tr>";
          $header_top    = '';
          $header_bottom = '';
@@ -219,121 +204,69 @@ class PluginInterventionEntity extends CommonDBTM {
          $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
          $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
          $header_end .= "</tr>\n";
-         echo $header_begin.$header_top.$header_end;
+         $out .= $header_begin.$header_top.$header_end;
 
-         $i = 0;
          foreach (self::getAllForEntity($ID) as $data) {
 
-            if (($i >= $start) && ($i < ($start + $_SESSION['glpilist_limit']))) {
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                  echo "</td>";
-               }
-               echo "<td width='40%'>".$data['name']."</td>".
-                    "<td>".$data['type']."</td>".
-                    "<td class='tab_date'>".$data['begin_date']."</td>".
-                    "<td class='tab_date'>".$data['end_date']."</td>".
-                    "<td class='center'>".$data['sold']."</td>".
-                    "<td class='center'>".$data['consumed']."</td>";
-               echo "<td class='center'>".$data['remaining']."</td></tr>";
+            $out .= "<tr class='tab_bg_2'>";
+            if ($canedit) {
+               $out .= "<td width='10'>";
+               echo $out; $out = "";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               $out .= "</td>";
             }
 
-            Session::addToNavigateListItems(__CLASS__, $data["id"]);
-            $i++;
+            $out .= "<td width='40%'>";
+            $out .= $data['name'];
+            $out .= "</td>";
+            $out .= "<td>";
+            $out .= Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
+                                                $data['plugin_intervention_types_id']);
+            $out .= "</td>";
+            $out .= "<td class='tab_date'>";
+            $out .= Html::convDate($data["begin_date"]);
+            $out .= "</td>";
+            $out .= "<td class='tab_date'>";
+            $out .= Html::convDate($data["end_date"]);
+            $out .= "</td>";
+            $out .= "<td class='center'>";
+            $out .= ($data['quantity']==0) ? __('Unlimited') : $data['quantity'];;
+            $out .= "</td>";
+
+            Ajax::createIframeModalWindow('displayinterventionconsumed_' . $data["id"],
+                                          $CFG_GLPI["root_doc"]
+                                             . "/plugins/intervention/front/ticket.php?pluginterventionentity="
+                                             . $data["id"],
+                                          ['title'         => __('Consumed details', 'intervention'),
+                                           'reloadonclose' => false]);
+
+            $quantity_consumed = PluginInterventionTicket::getConsumedForInterventionEntity($data['id']);
+            $out .= "<td class='center'>";
+            $out .= "<a href='#' onClick=\"" . Html::jsGetElementbyID('displayinterventionconsumed_'
+                                                                      . $data["id"])
+                                             . ".dialog('open');\">";
+            $out .= $quantity_consumed;
+            $out .= "</a></td>";
+
+            $out .= "<td class='center'>";
+            $out .= ($data['quantity']==0) ? __('Unlimited') : $data['quantity'] - $quantity_consumed;
+            $out .= "</td></tr>";
          }
 
-         echo $header_begin.$header_bottom.$header_end;
-         echo "</table>\n";
+         $out .= $header_begin.$header_bottom.$header_end;
+         $out .= "</table>\n";
 
          if ($canedit) {
             $massiveactionparams['ontop'] = false;
+            echo $out; $out = "";
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
       } else {
-         echo "<p class='center b'>".__('No intervention voucher', 'intervention')."</p>";
+         $out .= "<p class='center b'>".__('No intervention voucher', 'intervention')."</p>";
       }
-      echo "</div>\n";
-   }
-
-   /**
-    * Show intervention vouchers of an entity in ticket tab
-    *
-    * @param $entity Entity object
-   **/
-   static function showForTicket(Entity $entity) {
-      global $DB, $CFG_GLPI;
-
-      $ID = $entity->getField('id');
-      if (!$entity->can($ID, READ)) {
-         return false;
-      }
-
-      $number  = self::countForItem($entity);
-
-      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
-      if ($start >= $number) {
-         $start = 0;
-      }
-
-      echo "<div class='spaced'>";
-
-      Session::initNavigateListItems('PluginInterventionEntity',
-                           //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                     sprintf(__('%1$s = %2$s'),
-                                             Ticket::getTypeName(1), $entity->getName()));
-
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>"
-            . __('Intervention vouchers declared for ticket entity', 'intervention');
-      echo "</th></tr></table></div>";
-
-      if ($number) {
-         echo "<div class='spaced'>";
-         Html::printAjaxPager('', $start, $number);
-
-         echo "<table class='tab_cadre_fixehov'>";
-         $header_begin  = "<tr>";
-         $header_top    = '';
-         $header_bottom = '';
-         $header_end    = '';
-         $header_end .= "<th>".__('Name')."</th>";
-         $header_end .= "<th>".__('Type')."</th>";
-         $header_end .= "<th>".__('Start date')."</th>";
-         $header_end .= "<th>".__('End date')."</th>";
-         $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
-         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
-         $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
-         $header_end .= "</tr>\n";
-         echo $header_begin.$header_top.$header_end;
-
-         $i = 0;
-         foreach (self::getAllForEntity($ID) as $data) {
-
-            if (($i >= $start) && ($i < ($start + $_SESSION['glpilist_limit']))) {
-               echo "<tr class='tab_bg_2'>";
-               echo "<td width='40%'>".$data['name']."</td>".
-                    "<td>".$data['type']."</td>".
-                    "<td class='tab_date'>".$data['begin_date']."</td>".
-                    "<td class='tab_date'>".$data['end_date']."</td>".
-                    "<td class='center'>".$data['sold']."</td>".
-                    "<td class='center'>".$data['consumed']."</td>";
-               echo "<td class='center'>".$data['remaining']."</td></tr>";
-            }
-
-            Session::addToNavigateListItems(__CLASS__, $data["id"]);
-            $i++;
-         }
-
-         echo $header_begin.$header_bottom.$header_end;
-         echo "</table>\n";
-      } else {
-         echo "<p class='center b'>".__('No intervention voucher', 'intervention')."</p>";
-      }
-      echo "</div>\n";
+      $out .= "</div>\n";
+      echo $out;
    }
 
    /**
