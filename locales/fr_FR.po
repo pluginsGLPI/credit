@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-17 15:16+0100\n"
-"PO-Revision-Date: 2017-03-17 15:16+0100\n"
+"PO-Revision-Date: 2017-03-20 15:27+0100\n"
 "Last-Translator: Legastelois François <flegastelois@teclib.com>, 2017\n"
 "Language-Team: TECLIB\n"
 "MIME-Version: 1.0\n"
@@ -48,6 +48,10 @@ msgstr "Quantité consommée"
 msgid "Quantity remaining"
 msgstr "Quantité restante"
 
+#: inc/entity.class.php:264
+msgid "Consumed details"
+msgstr "Détail des interventions consommées"
+
 #: inc/entity.class.php:256 inc/entity.class.php:334
 msgid "No intervention voucher"
 msgstr "Aucun carnet d'interventions déclaré"
@@ -64,6 +68,22 @@ msgstr "La date de fin a été mise à jour automatiquement."
 msgid "Consumed interventions for this ticket"
 msgstr "Interventions déjà consommées pour ce ticket"
 
+#: inc/ticket.class.php:229
+msgid "Voucher name"
+msgstr "Nom du carnet"
+
+#: inc/ticket.class.php:230
+msgid "Voucher type"
+msgstr "Type de carnet"
+
+#: inc/ticket.class.php:231 inc/ticket.class.php:415
+msgid "Date consumed"
+msgstr "Date de consommation"
+
+#: inc/ticket.class.php:232 inc/ticket.class.php:416
+msgid "User consumed"
+msgstr "Utilisateur déclarant"
+
 #: inc/ticket.class.php:237
 msgid "No intervention was recorded"
 msgstr "Aucun intervention déclarée"
@@ -74,7 +94,7 @@ msgstr "Déclarer une consommation sur un carnet d'interventions ?"
 
 #: inc/ticket.class.php:313
 msgid "Intervention vouchers"
-msgstr "Carnet d'interventions"
+msgstr "Carnets d'interventions"
 
 #: inc/ticket.class.php:355
 msgid "You must provide an intervention voucher"
@@ -85,6 +105,10 @@ msgstr ""
 #: inc/ticket.class.php:364
 msgid "Intervention voucher successfully added."
 msgstr "Carnet d'interventions sauvegardé avec succès."
+
+#: inc/ticket.class.php:397
+msgid "Detail of tickets on which consumption is declared"
+msgstr "Détail des tickets pour lesquels une consommation de carnet est déclarée"
 
 #: setup.php:120
 msgid "Installed / not configured"

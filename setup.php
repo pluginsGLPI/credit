@@ -76,7 +76,7 @@ function plugin_init_intervention() {
  */
 function plugin_version_intervention() {
    return [
-      'name'           => 'intervention',
+      'name'           => __('Intervention vouchers', 'intervention'),
       'version'        => PLUGIN_INTERVENTION_VERSION,
       'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
       'license'        => 'GPLv3',

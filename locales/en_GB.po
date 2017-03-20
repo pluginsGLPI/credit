@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-17 15:16+0100\n"
-"PO-Revision-Date: 2017-03-17 15:16+0100\n"
+"PO-Revision-Date: 2017-03-20 15:27+0100\n"
 "Last-Translator: Legastelois François <flegastelois@teclib.com>, 2017\n"
 "Language-Team: TECLIB\n"
 "MIME-Version: 1.0\n"
@@ -48,6 +48,10 @@ msgstr "Quantity consumed"
 msgid "Quantity remaining"
 msgstr "Quantity remaining"
 
+#: inc/entity.class.php:264
+msgid "Consumed details"
+msgstr "Consumed details"
+
 #: inc/entity.class.php:256 inc/entity.class.php:334
 msgid "No intervention voucher"
 msgstr "No intervention voucher"
@@ -63,6 +67,22 @@ msgstr "The end date has been changed automatically."
 #: inc/ticket.class.php:166
 msgid "Consumed interventions for this ticket"
 msgstr "Consumed interventions for this ticket"
+
+#: inc/ticket.class.php:229
+msgid "Voucher name"
+msgstr "Voucher name"
+
+#: inc/ticket.class.php:230
+msgid "Voucher type"
+msgstr "Voucher type"
+
+#: inc/ticket.class.php:231 inc/ticket.class.php:415
+msgid "Date consumed"
+msgstr "Date consumed"
+
+#: inc/ticket.class.php:232 inc/ticket.class.php:416
+msgid "User consumed"
+msgstr "User consumed"
 
 #: inc/ticket.class.php:237
 msgid "No intervention was recorded"
@@ -83,6 +103,10 @@ msgstr "You must provide an intervention voucher"
 #: inc/ticket.class.php:364
 msgid "Intervention voucher successfully added."
 msgstr "Intervention voucher successfully added."
+
+#: inc/ticket.class.php:397
+msgid "Detail of tickets on which consumption is declared"
+msgstr "Detail of tickets on which consumption is declared"
 
 #: setup.php:120
 msgid "Installed / not configured"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-17 15:16+0100\n"
+"POT-Creation-Date: 2017-03-20 15:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: inc/type.class.php:40 inc/entity.class.php:369
+#: inc/type.class.php:40 inc/entity.class.php:331
 msgid "Intervention voucher type"
 msgid_plural "Intervention vouchers types"
 msgstr[0] ""
@@ -30,57 +30,76 @@ msgid_plural "Intervention vouchers"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/entity.class.php:152
+#: inc/entity.class.php:149
 msgid "Add an intervention voucher"
 msgstr ""
 
-#: inc/entity.class.php:164 inc/entity.class.php:218 inc/entity.class.php:307
-#: inc/entity.class.php:360
+#: inc/entity.class.php:169 inc/entity.class.php:224 inc/entity.class.php:322
 msgid "Quantity sold"
 msgstr ""
 
-#: inc/entity.class.php:219 inc/entity.class.php:308 inc/ticket.class.php:202
-#: inc/ticket.class.php:320
+#: inc/entity.class.php:225 inc/ticket.class.php:233 inc/ticket.class.php:372
+#: inc/ticket.class.php:417
 msgid "Quantity consumed"
 msgstr ""
 
-#: inc/entity.class.php:220 inc/entity.class.php:309
+#: inc/entity.class.php:226
 msgid "Quantity remaining"
 msgstr ""
 
-#: inc/entity.class.php:256 inc/entity.class.php:334
+#: inc/entity.class.php:264
+msgid "Consumed details"
+msgstr ""
+
+#: inc/entity.class.php:290
 msgid "No intervention voucher"
 msgstr ""
 
-#: inc/entity.class.php:291
-msgid "Intervention vouchers declared for ticket entity"
-msgstr ""
-
-#: inc/entity.class.php:386 inc/entity.class.php:406
-msgid "The end date has been changed automatically."
-msgstr ""
-
-#: inc/ticket.class.php:166
+#: inc/ticket.class.php:195
 msgid "Consumed interventions for this ticket"
 msgstr ""
 
-#: inc/ticket.class.php:237
+#: inc/ticket.class.php:229
+msgid "Voucher name"
+msgstr ""
+
+#: inc/ticket.class.php:230
+msgid "Voucher type"
+msgstr ""
+
+#: inc/ticket.class.php:231 inc/ticket.class.php:415
+msgid "Date consumed"
+msgstr ""
+
+#: inc/ticket.class.php:232 inc/ticket.class.php:416
+msgid "User consumed"
+msgstr ""
+
+#: inc/ticket.class.php:285 inc/ticket.class.php:403
 msgid "No intervention was recorded"
 msgstr ""
 
-#: inc/ticket.class.php:307
+#: inc/ticket.class.php:292
+msgid "Intervention vouchers declared for ticket entity"
+msgstr ""
+
+#: inc/ticket.class.php:354
 msgid "Save and consumed a voucher ?"
 msgstr ""
 
-#: inc/ticket.class.php:313
+#: inc/ticket.class.php:362 setup.php:79
 msgid "Intervention vouchers"
 msgstr ""
 
-#: inc/ticket.class.php:355
+#: inc/ticket.class.php:397
+msgid "Detail of tickets on which consumption is declared"
+msgstr ""
+
+#: inc/ticket.class.php:497
 msgid "You must provide an intervention voucher"
 msgstr ""
 
-#: inc/ticket.class.php:364
+#: inc/ticket.class.php:506
 msgid "Intervention voucher successfully added."
 msgstr ""
 
