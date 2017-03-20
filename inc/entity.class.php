@@ -200,7 +200,8 @@ class PluginInterventionEntity extends CommonDBTM {
                          => 'mass'.__CLASS__.$rand,
                        'rand' => $rand,
                        'specific_actions'
-                         => array('purge' => _x('button', 'Delete permanently')));
+                         => array('update' => _x('button', 'Update'),
+                                  'purge'  => _x('button', 'Delete permanently')));
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -301,71 +302,36 @@ class PluginInterventionEntity extends CommonDBTM {
 
       $tab                = parent::getSearchOptions();
 
-      $tab[2]['table']    = $this->getTable();
-      $tab[2]['field']    = 'begin_date';
-      $tab[2]['name']     = __('Start date');
-      $tab[2]['datatype'] = 'date';
+      $tab[991]['table']    = $this->getTable();
+      $tab[991]['field']    = 'is_active';
+      $tab[991]['name']     = __('Active');
+      $tab[991]['datatype'] = 'bool';
 
-      $tab[3]['table']    = $this->getTable();
-      $tab[3]['field']    = 'end_date';
-      $tab[3]['name']     = __('End date');
-      $tab[3]['datatype'] = 'date';
+      $tab[992]['table']    = $this->getTable();
+      $tab[992]['field']    = 'begin_date';
+      $tab[992]['name']     = __('Start date');
+      $tab[992]['datatype'] = 'date';
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'quantity';
-      $tab[4]['name']     = __('Quantity sold', 'intervention');
-      $tab[4]['datatype'] = 'number';
-      $tab[4]['min']      = 1;
-      $tab[4]['max']      = 200;
-      $tab[4]['step']     = 1;
-      $tab[4]['toadd']    = array(0 => __('Unlimited'));
+      $tab[993]['table']    = $this->getTable();
+      $tab[993]['field']    = 'end_date';
+      $tab[993]['name']     = __('End date');
+      $tab[993]['datatype'] = 'date';
 
-      $tab[5]['table']    = getTableForItemType('PluginInterventionType');
-      $tab[5]['field']    = 'name';
-      $tab[5]['name']     = __('Intervention voucher type', 'intervention');
-      $tab[5]['datatype'] = 'dropdown';
+      $tab[994]['table']    = $this->getTable();
+      $tab[994]['field']    = 'quantity';
+      $tab[994]['name']     = __('Quantity sold', 'intervention');
+      $tab[994]['datatype'] = 'number';
+      $tab[994]['min']      = 1;
+      $tab[994]['max']      = 200;
+      $tab[994]['step']     = 1;
+      $tab[994]['toadd']    = array(0 => __('Unlimited'));
+
+      $tab[995]['table']    = getTableForItemType('PluginInterventionType');
+      $tab[995]['field']    = 'name';
+      $tab[995]['name']     = __('Intervention voucher type', 'intervention');
+      $tab[995]['datatype'] = 'dropdown';
 
       return $tab;
-   }
-
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
-   function prepareInputForAdd($input) {
-
-      $input = parent::prepareInputForAdd($input);
-
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
-
-         $msg = __('The end date has been changed automatically.', 'intervention');
-         Session::addMessageAfterRedirect($msg, false, WARNING);
-
-         $input['end_date'] = $input['begin_date'];
-      }
-      return $input;
-   }
-
-
-   /**
-    * @see CommonDBTM::prepareInputForUpdate()
-   **/
-   function prepareInputForUpdate($input) {
-
-      $input = parent::prepareInputForUpdate($input);
-
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
-
-         $msg = __('The end date has been changed automatically.', 'intervention');
-         Session::addMessageAfterRedirect($msg, false, WARNING);
-
-         $input['end_date'] = $input['begin_date'];
-      }
-
-      return $input;
    }
 
    /**
