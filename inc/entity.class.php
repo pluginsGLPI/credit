@@ -78,6 +78,19 @@ class PluginInterventionEntity extends CommonDBTM {
    }
 
    /**
+    * Actions done after the PURGE of the item in the database
+    *
+    * @return nothing
+   **/
+   public function post_purgeItem() {
+      global $DB;
+
+      $table = getTableForItemType('PluginInterventionTicket');
+      $query = "DELETE FROM `$table` WHERE `plugin_intervention_entities_id` = {$this->getID()};";
+      $DB->query($query);
+   }
+
+   /**
     * Get all intervention vouchers for entity.
     *
     * @param $ID           integer     entities ID
