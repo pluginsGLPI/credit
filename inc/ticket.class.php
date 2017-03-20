@@ -211,7 +211,8 @@ class PluginInterventionTicket extends CommonDBTM {
                          => 'mass'.__CLASS__.$rand,
                        'rand' => $rand,
                        'specific_actions'
-                         => array('purge' => _x('button', 'Delete permanently')));
+                         => array('update' => _x('button', 'Update'),
+                                  'purge'  => _x('button', 'Delete permanently')));
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -508,6 +509,38 @@ class PluginInterventionTicket extends CommonDBTM {
             }
          }
       }
+   }
+
+
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+   **/
+   function getSearchOptions() {
+
+      $tab                = parent::getSearchOptions();
+
+      $tab[881]['table']    = $this->getTable();
+      $tab[881]['field']    = 'date_creation';
+      $tab[881]['name']     = __('Date consumed', 'intervention');
+      $tab[881]['datatype'] = 'date';
+
+      $tab[882]['table']    = $this->getTable();
+      $tab[882]['field']    = 'consumed';
+      $tab[882]['name']     = __('Quantity consumed', 'intervention');
+      $tab[882]['datatype'] = 'number';
+      $tab[882]['min']      = 1;
+      $tab[882]['max']      = 200;
+      $tab[882]['step']     = 1;
+      $tab[882]['toadd']    = array(0 => __('Unlimited'));
+
+      $tab[883]['table']    = getTableForItemType('PluginInterventionEntity');
+      $tab[883]['field']    = 'name';
+      $tab[883]['name']     = __('Intervention vouchers', 'intervention');
+      $tab[883]['datatype'] = 'dropdown';
+
+      return $tab;
    }
 
    /**
