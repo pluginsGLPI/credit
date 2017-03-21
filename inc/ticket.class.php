@@ -290,7 +290,7 @@ class PluginInterventionTicket extends CommonDBTM {
       $out .= "<div class='spaced'>";
       $out .= "<table class='tab_cadre_fixe'>";
       $out .= "<tr class='tab_bg_1'><th colspan='2'>";
-      $out .= __('Intervention vouchers declared for ticket entity', 'intervention');
+      $out .= __('Active intervention vouchers for ticket entity', 'intervention');
       $out .= "</th></tr></table>";
       $out .= "</div>";
       echo $out;

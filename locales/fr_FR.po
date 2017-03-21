@@ -18,7 +18,7 @@ msgstr ""
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: inc/type.class.php:40 inc/entity.class.php:369
+#: inc/type.class.php:40 inc/entity.class.php:336 hook.php:82
 msgid "Intervention voucher type"
 msgid_plural "Intervention vouchers types"
 msgstr[0] "Type de carnet d'interventions"
@@ -34,13 +34,12 @@ msgstr[1] "Carnets d'interventions"
 msgid "Add an intervention voucher"
 msgstr "Ajouter un carnet d'interventions"
 
-#: inc/entity.class.php:164 inc/entity.class.php:218 inc/entity.class.php:307
-#: inc/entity.class.php:360
+#: inc/entity.class.php:169 inc/entity.class.php:224 inc/entity.class.php:327
 msgid "Quantity sold"
 msgstr "Quantité vendue"
 
-#: inc/entity.class.php:219 inc/entity.class.php:308 inc/ticket.class.php:202
-#: inc/ticket.class.php:320
+#: inc/entity.class.php:225 inc/ticket.class.php:234 inc/ticket.class.php:369
+#: inc/ticket.class.php:414 inc/ticket.class.php:527
 msgid "Quantity consumed"
 msgstr "Quantité consommée"
 
@@ -48,67 +47,63 @@ msgstr "Quantité consommée"
 msgid "Quantity remaining"
 msgstr "Quantité restante"
 
-#: inc/entity.class.php:264
+#: inc/entity.class.php:269
 msgid "Consumed details"
 msgstr "Détail des interventions consommées"
 
-#: inc/entity.class.php:256 inc/entity.class.php:334
+#: inc/entity.class.php:295
 msgid "No intervention voucher"
 msgstr "Aucun carnet d'interventions déclaré"
-
-#: inc/entity.class.php:291
-msgid "Intervention vouchers declared for ticket entity"
-msgstr "Carnets d'interventions déclarés pour l'entité du ticket"
-
-#: inc/entity.class.php:386 inc/entity.class.php:406
-msgid "The end date has been changed automatically."
-msgstr "La date de fin a été mise à jour automatiquement."
 
 #: inc/ticket.class.php:166
 msgid "Consumed interventions for this ticket"
 msgstr "Interventions déjà consommées pour ce ticket"
 
-#: inc/ticket.class.php:229
+#: inc/ticket.class.php:230
 msgid "Voucher name"
 msgstr "Nom du carnet"
 
-#: inc/ticket.class.php:230
+#: inc/ticket.class.php:231
 msgid "Voucher type"
 msgstr "Type de carnet"
 
-#: inc/ticket.class.php:231 inc/ticket.class.php:415
+#: inc/ticket.class.php:232 inc/ticket.class.php:412 inc/ticket.class.php:522
 msgid "Date consumed"
 msgstr "Date de consommation"
 
-#: inc/ticket.class.php:232 inc/ticket.class.php:416
+#: inc/ticket.class.php:233 inc/ticket.class.php:413
 msgid "User consumed"
 msgstr "Utilisateur déclarant"
 
-#: inc/ticket.class.php:237
+#: inc/ticket.class.php:286 inc/ticket.class.php:400
 msgid "No intervention was recorded"
 msgstr "Aucun intervention déclarée"
 
-#: inc/ticket.class.php:307
+#: inc/ticket.class.php:293
+msgid "Active intervention vouchers for ticket entity"
+msgstr "Carnets d'interventions actifs pour l'entité du ticket"
+
+#: inc/ticket.class.php:351
 msgid "Save and consumed a voucher ?"
 msgstr "Déclarer une consommation sur un carnet d'interventions ?"
 
-#: inc/ticket.class.php:313
+#: inc/ticket.class.php:359 inc/ticket.class.php:536 setup.php:79
 msgid "Intervention vouchers"
 msgstr "Carnets d'interventions"
 
-#: inc/ticket.class.php:355
+#: inc/ticket.class.php:394
+msgid "Detail of tickets on which consumption is declared"
+msgstr "Détail des tickets pour lesquels une consommation de carnet est déclarée"
+
+#: inc/ticket.class.php:494
 msgid "You must provide an intervention voucher"
 msgstr ""
 "Vous devez préciser un carnet d'interventions sur lequel consommer la quantité "
 "souhaitée."
 
-#: inc/ticket.class.php:364
+#: inc/ticket.class.php:503
 msgid "Intervention voucher successfully added."
 msgstr "Carnet d'interventions sauvegardé avec succès."
-
-#: inc/ticket.class.php:397
-msgid "Detail of tickets on which consumption is declared"
-msgstr "Détail des tickets pour lesquels une consommation de carnet est déclarée"
 
 #: setup.php:120
 msgid "Installed / not configured"
