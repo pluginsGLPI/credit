@@ -81,6 +81,7 @@ function plugin_intervention_getDropdown() {
 
    $pluginDropdowns = array('PluginInterventionType' => _n('Intervention voucher type',
                                                            'Intervention vouchers types',
-                                                           Session::getPluralNumber()));
+                                                           Session::getPluralNumber(),
+                                                           'intervention'));
    return $pluginDropdowns;
 }
