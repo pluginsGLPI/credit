@@ -1,6 +1,6 @@
-# English translations for Plugin GLPI Intervention package
+# English translations for Plugin GLPI Credit package
 # Copyright (C) 2017 TECLIB
-# This file is distributed under the same license as the Plugin GLPI Intervention package.
+# This file is distributed under the same license as the Plugin GLPI Credit package.
 #  , 2017.
 #
 #, fuzzy
@@ -19,20 +19,20 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: inc/type.class.php:40 inc/entity.class.php:336 hook.php:82
-msgid "Intervention voucher type"
-msgid_plural "Intervention vouchers types"
-msgstr[0] "Intervention voucher type"
-msgstr[1] "Intervention vouchers types"
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "Credit voucher type"
+msgstr[1] "Credit vouchers types"
 
 #: inc/entity.class.php:38 inc/ticket.class.php:38
-msgid "Intervention voucher"
-msgid_plural "Intervention vouchers"
-msgstr[0] "Intervention voucher"
-msgstr[1] "Intervention vouchers"
+msgid "Credit voucher"
+msgid_plural "Credit vouchers"
+msgstr[0] "Credit voucher"
+msgstr[1] "Credit vouchers"
 
 #: inc/entity.class.php:149
-msgid "Add an intervention voucher"
-msgstr "Add an intervention voucher"
+msgid "Add an credit voucher"
+msgstr "Add an credit voucher"
 
 #: inc/entity.class.php:169 inc/entity.class.php:224 inc/entity.class.php:327
 msgid "Quantity sold"
@@ -52,12 +52,12 @@ msgid "Consumed details"
 msgstr "Consumed details"
 
 #: inc/entity.class.php:295
-msgid "No intervention voucher"
-msgstr "No intervention vouche"
+msgid "No credit voucher"
+msgstr "No credit vouche"
 
 #: inc/ticket.class.php:195
-msgid "Consumed interventions for this ticket"
-msgstr "Consumed interventions for this ticket"
+msgid "Consumed credits for this ticket"
+msgstr "Consumed credits for this ticket"
 
 #: inc/ticket.class.php:230
 msgid "Voucher name"
@@ -76,32 +76,32 @@ msgid "User consumed"
 msgstr "User consumed"
 
 #: inc/ticket.class.php:286 inc/ticket.class.php:400
-msgid "No intervention was recorded"
-msgstr "No intervention was recorded"
+msgid "No credit was recorded"
+msgstr "No credit was recorded"
 
 #: inc/ticket.class.php:293
-msgid "Active intervention vouchers for ticket entity"
-msgstr "Active intervention vouchers for ticket entity"
+msgid "Active credit vouchers for ticket entity"
+msgstr "Active credit vouchers for ticket entity"
 
 #: inc/ticket.class.php:351
 msgid "Save and consumed a voucher ?"
 msgstr "Save and consumed a voucher ?"
 
 #: inc/ticket.class.php:359 inc/ticket.class.php:536 setup.php:79
-msgid "Intervention vouchers"
-msgstr "Intervention vouchers"
+msgid "Credit vouchers"
+msgstr "Credit vouchers"
 
 #: inc/ticket.class.php:394
 msgid "Detail of tickets on which consumption is declared"
 msgstr "Detail of tickets on which consumption is declared"
 
 #: inc/ticket.class.php:494
-msgid "You must provide an intervention voucher"
-msgstr "You must provide an intervention voucher"
+msgid "You must provide an credit voucher"
+msgstr "You must provide an credit voucher"
 
 #: inc/ticket.class.php:503
-msgid "Intervention voucher successfully added."
-msgstr "Intervention voucher successfully added."
+msgid "Credit voucher successfully added."
+msgstr "Credit voucher successfully added."
 
 #: setup.php:120
 msgid "Installed / not configured"
