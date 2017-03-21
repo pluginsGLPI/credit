@@ -243,7 +243,10 @@ class PluginInterventionEntity extends CommonDBTM {
             }
 
             $out .= "<td width='30%'>";
+            $out .= "<a href=\"".$CFG_GLPI['root_doc']."/front/entity.form.php?id=".$ID;
+            $out .= "&forcetab=PluginInterventionEntity$1\">";
             $out .= $data['name'];
+            $out .= "</a>";
             $out .= "</td>";
             $out .= "<td width='15%'>";
             $out .= Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
