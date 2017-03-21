@@ -53,5 +53,7 @@
    </tags>
    <screenshots>
       <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_ticket-tab.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_entity-tab.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_detail-consumed.png</screenshot>
    </screenshots>
 </root>

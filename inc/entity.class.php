@@ -276,7 +276,9 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "<td class='center'>";
             $out .= "<a href='#' onClick=\"" . Html::jsGetElementbyID('displaycreditconsumed_'
                                                                       . $data["id"])
-                                             . ".dialog('open');\">";
+                                             . ".dialog('open');\" ";
+            $out .= "title=\"".__('Consumed details', 'credit')."\" ";
+            $out .= "alt=\"".__('Consumed details', 'credit')."\">";
             $out .= $quantity_consumed;
             $out .= "</a></td>";
 
