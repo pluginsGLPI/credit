@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <name>Credit</name>
+   <key>credit</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/pluginsGLPI/credit/master/plugin.png</logo>
+   <description>
+      <short>
+         <fr><![CDATA[Ce plugin vous permet de déclarer et suivre (par entité) les consommations de différents coupons de crédits directement à partir du formulaire Ticket.]]></fr>
+         <en><![CDATA[This plugin allows you to declare and follow (by entity) the consumptions of different credit vouchers directly from the Ticket form.]]></en>
+      </short>
+      <long>
+         <fr><![CDATA[Ce plugin vous permet de déclarer et suivre (par entité) les consommations de différents coupons de crédits directement à partir du formulaire Ticket.]]></fr>
+         <en><![CDATA[This plugin allows you to declare and follow (by entity) the consumptions of different credit vouchers directly from the Ticket form.]]></en>
+      </long>
+   </description>
+   <homepage>https://github.com/pluginsGLPI/credit</homepage>
+   <download>https://github.com/pluginsGLPI/credit/releases</download>
+   <issues>https://github.com/pluginsGLPI/credit/issues</issues>
+   <readme>https://raw.githubusercontent.com/pluginsGLPI/credit/master/README.md</readme>
+   <authors>
+      <author>TECLIB'</author>
+   </authors>
+   <versions>
+      <version>
+         <num>1.0.0</num>
+          <compatibility>9.1.2</compatibility>
+      </version>
+   </versions>
+   <langs>
+      <lang>fr_FR</lang>
+      <lang>en_GB</lang>
+   </langs>
+   <license>GPLv3</license>
+   <category></category>
+   <tags>
+         <fr>
+            <tag>assistance</tag>
+            <tag>service</tag>
+            <tag>carnets</tag>
+            <tag>crédits</tag>
+            <tag>gestion</tag>
+            <tag>ticket</tag>
+         </fr>
+         <en>
+            <tag>helpdesk</tag>
+            <tag>services</tag>
+            <tag>vouchers</tag>
+            <tag>credits</tag>
+            <tag>management</tag>
+            <tag>ticket</tag>
+         </en>
+   </tags>
+   <screenshots>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_ticket-tab.png</screenshot>
+   </screenshots>
+</root>
