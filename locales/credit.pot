@@ -19,19 +19,19 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: inc/type.class.php:40 inc/entity.class.php:336 hook.php:82
-msgid "Intervention voucher type"
-msgid_plural "Intervention vouchers types"
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/entity.class.php:38 inc/ticket.class.php:38
-msgid "Intervention voucher"
-msgid_plural "Intervention vouchers"
+msgid "Credit voucher"
+msgid_plural "Credit vouchers"
 msgstr[0] ""
 msgstr[1] ""
 
 #: inc/entity.class.php:149
-msgid "Add an intervention voucher"
+msgid "Add an credit voucher"
 msgstr ""
 
 #: inc/entity.class.php:169 inc/entity.class.php:224 inc/entity.class.php:327
@@ -52,11 +52,11 @@ msgid "Consumed details"
 msgstr ""
 
 #: inc/entity.class.php:295
-msgid "No intervention voucher"
+msgid "No credit voucher"
 msgstr ""
 
 #: inc/ticket.class.php:195
-msgid "Consumed interventions for this ticket"
+msgid "Consumed credits for this ticket"
 msgstr ""
 
 #: inc/ticket.class.php:230
@@ -76,11 +76,11 @@ msgid "User consumed"
 msgstr ""
 
 #: inc/ticket.class.php:286 inc/ticket.class.php:400
-msgid "No intervention was recorded"
+msgid "No credit was recorded"
 msgstr ""
 
 #: inc/ticket.class.php:293
-msgid "Active intervention vouchers for ticket entity"
+msgid "Active credit vouchers for ticket entity"
 msgstr ""
 
 #: inc/ticket.class.php:351
@@ -88,7 +88,7 @@ msgid "Save and consumed a voucher ?"
 msgstr ""
 
 #: inc/ticket.class.php:359 inc/ticket.class.php:536 setup.php:79
-msgid "Intervention vouchers"
+msgid "Credit vouchers"
 msgstr ""
 
 #: inc/ticket.class.php:394
@@ -96,11 +96,11 @@ msgid "Detail of tickets on which consumption is declared"
 msgstr ""
 
 #: inc/ticket.class.php:494
-msgid "You must provide an intervention voucher"
+msgid "You must provide an credit voucher"
 msgstr ""
 
 #: inc/ticket.class.php:503
-msgid "Intervention voucher successfully added."
+msgid "Credit voucher successfully added."
 msgstr ""
 
 #: setup.php:120

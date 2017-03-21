@@ -1,28 +1,28 @@
 <?php
 /*
  -------------------------------------------------------------------------
- intervention plugin for GLPI
- Copyright (C) 2017 by the intervention Development Team.
+ credit plugin for GLPI
+ Copyright (C) 2017 by the credit Development Team.
 
- https://github.com/pluginsGLPI/intervention
+ https://github.com/pluginsGLPI/credit
  -------------------------------------------------------------------------
 
  LICENSE
 
- This file is part of intervention.
+ This file is part of credit.
 
- intervention is free software; you can redistribute it and/or modify
+ credit is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- intervention is distributed in the hope that it will be useful,
+ credit is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with intervention. If not, see <http://www.gnu.org/licenses/>.
+ along with credit. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  */
 
@@ -30,12 +30,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginInterventionEntity extends CommonDBTM {
+class PluginCreditEntity extends CommonDBTM {
 
    public static $rightname = 'entity';
 
    static function getTypeName($nb=0) {
-      return _n('Intervention voucher', 'Intervention vouchers', $nb, 'intervention');
+      return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
    }
 
    /**
@@ -85,13 +85,13 @@ class PluginInterventionEntity extends CommonDBTM {
    public function post_purgeItem() {
       global $DB;
 
-      $table = getTableForItemType('PluginInterventionTicket');
-      $query = "DELETE FROM `$table` WHERE `plugin_intervention_entities_id` = {$this->getID()};";
+      $table = getTableForItemType('PluginCreditTicket');
+      $query = "DELETE FROM `$table` WHERE `plugin_credit_entities_id` = {$this->getID()};";
       $DB->query($query);
    }
 
    /**
-    * Get all intervention vouchers for entity.
+    * Get all credit vouchers for entity.
     *
     * @param $ID           integer     entities ID
     * @param $start        integer     first line to retrieve (default 0)
@@ -123,7 +123,7 @@ class PluginInterventionEntity extends CommonDBTM {
    }
 
    /**
-    * Show intervention vouchers of an entity
+    * Show credit vouchers of an entity
     *
     * @param $entity object Entity
     * @param $itemtype string Entity or Ticket
@@ -142,18 +142,18 @@ class PluginInterventionEntity extends CommonDBTM {
       if ($canedit) {
          $rand = mt_rand();
          $out .= "<div class='firstbloc'>";
-         $out .= "<form name='interventionentity_form$rand' id='interventionentity_form$rand' method='post' action='";
+         $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
          $out .= Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          $out .= "<table class='tab_cadre_fixe'>";
          $out .= "<tr class='tab_bg_1'><th colspan='7'>";
-         $out .= __('Add an intervention voucher', 'intervention')."</th></tr>";
+         $out .= __('Add an credit voucher', 'credit')."</th></tr>";
          $out .= "<tr class='tab_bg_1'>";
          $out .= "<input type='hidden' name='entities_id' value='$ID'>";
          $out .= "<td>". __('Name')."</td>";
          $out .= "<td>" . Html::input("name", array('size' => 50)) . "</td>";
          $out .= "<td class='tab_bg_2 right'>". __('Type')."</td><td>";
          echo $out; $out = "";
-         PluginInterventionType::dropdown(array('name'  => 'plugin_intervention_types_id'));
+         PluginCreditType::dropdown(array('name'  => 'plugin_credit_types_id'));
          $out .= "</td>";
          $out .= "<td class='tab_bg_2 right'>".__('Start date')."</td><td>";
          echo $out; $out = "";
@@ -166,7 +166,7 @@ class PluginInterventionEntity extends CommonDBTM {
          Dropdown::showYesNo("is_active", '');
          $out .= "</td>";
          $out .= "<td class='tab_bg_2 right'>";
-         $out .= __('Quantity sold', 'intervention')."</td><td>";
+         $out .= __('Quantity sold', 'credit')."</td><td>";
          echo $out; $out = "";
          Dropdown::showNumber("quantity", ['value' => '',
                                            'min'   => 1,
@@ -221,9 +221,9 @@ class PluginInterventionEntity extends CommonDBTM {
          $header_end .= "<th>".__('Active')."</th>";
          $header_end .= "<th>".__('Start date')."</th>";
          $header_end .= "<th>".__('End date')."</th>";
-         $header_end .= "<th>".__('Quantity sold', 'intervention')."</th>";
-         $header_end .= "<th>".__('Quantity consumed', 'intervention')."</th>";
-         $header_end .= "<th>".__('Quantity remaining', 'intervention')."</th>";
+         $header_end .= "<th>".__('Quantity sold', 'credit')."</th>";
+         $header_end .= "<th>".__('Quantity consumed', 'credit')."</th>";
+         $header_end .= "<th>".__('Quantity remaining', 'credit')."</th>";
          $header_end .= "</tr>\n";
          $out .= $header_begin.$header_top.$header_end;
 
@@ -243,11 +243,14 @@ class PluginInterventionEntity extends CommonDBTM {
             }
 
             $out .= "<td width='30%'>";
+            $out .= "<a href=\"".$CFG_GLPI['root_doc']."/front/entity.form.php?id=".$ID;
+            $out .= "&forcetab=PluginCreditEntity$1\">";
             $out .= $data['name'];
+            $out .= "</a>";
             $out .= "</td>";
             $out .= "<td width='15%'>";
-            $out .= Dropdown::getDropdownName(getTableForItemType('PluginInterventionType'),
-                                                $data['plugin_intervention_types_id']);
+            $out .= Dropdown::getDropdownName(getTableForItemType('PluginCreditType'),
+                                                $data['plugin_credit_types_id']);
             $out .= "</td>";
             $out .= "<td>";
             $out .= ($data["is_active"]) ? __('Yes') : __('No');
@@ -262,18 +265,20 @@ class PluginInterventionEntity extends CommonDBTM {
             $out .= ($data['quantity']==0) ? __('Unlimited') : $data['quantity'];;
             $out .= "</td>";
 
-            Ajax::createIframeModalWindow('displayinterventionconsumed_' . $data["id"],
+            Ajax::createIframeModalWindow('displaycreditconsumed_' . $data["id"],
                                           $CFG_GLPI["root_doc"]
-                                             . "/plugins/intervention/front/ticket.php?pluginterventionentity="
+                                             . "/plugins/credit/front/ticket.php?plugcreditentity="
                                              . $data["id"],
-                                          ['title'         => __('Consumed details', 'intervention'),
+                                          ['title'         => __('Consumed details', 'credit'),
                                            'reloadonclose' => false]);
 
-            $quantity_consumed = PluginInterventionTicket::getConsumedForInterventionEntity($data['id']);
+            $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
             $out .= "<td class='center'>";
-            $out .= "<a href='#' onClick=\"" . Html::jsGetElementbyID('displayinterventionconsumed_'
+            $out .= "<a href='#' onClick=\"" . Html::jsGetElementbyID('displaycreditconsumed_'
                                                                       . $data["id"])
-                                             . ".dialog('open');\">";
+                                             . ".dialog('open');\" ";
+            $out .= "title=\"".__('Consumed details', 'credit')."\" ";
+            $out .= "alt=\"".__('Consumed details', 'credit')."\">";
             $out .= $quantity_consumed;
             $out .= "</a></td>";
 
@@ -292,7 +297,7 @@ class PluginInterventionEntity extends CommonDBTM {
             Html::closeForm();
          }
       } else {
-         $out .= "<p class='center b'>".__('No intervention voucher', 'intervention')."</p>";
+         $out .= "<p class='center b'>".__('No credit voucher', 'credit')."</p>";
       }
       $out .= "</div>\n";
       echo $out;
@@ -324,16 +329,16 @@ class PluginInterventionEntity extends CommonDBTM {
 
       $tab[994]['table']    = $this->getTable();
       $tab[994]['field']    = 'quantity';
-      $tab[994]['name']     = __('Quantity sold', 'intervention');
+      $tab[994]['name']     = __('Quantity sold', 'credit');
       $tab[994]['datatype'] = 'number';
       $tab[994]['min']      = 1;
       $tab[994]['max']      = 200;
       $tab[994]['step']     = 1;
       $tab[994]['toadd']    = array(0 => __('Unlimited'));
 
-      $tab[995]['table']    = getTableForItemType('PluginInterventionType');
+      $tab[995]['table']    = getTableForItemType('PluginCreditType');
       $tab[995]['field']    = 'name';
-      $tab[995]['name']     = __('Intervention voucher type', 'intervention');
+      $tab[995]['name']     = __('Credit voucher type', 'credit');
       $tab[995]['datatype'] = 'dropdown';
 
       return $tab;
@@ -357,7 +362,7 @@ class PluginInterventionEntity extends CommonDBTM {
                      `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                      `entities_id` int(11) NOT NULL DEFAULT '0',
                      `is_active` tinyint(1) NOT NULL DEFAULT '0',
-                     `plugin_intervention_types_id` tinyint(1) NOT NULL DEFAULT '0',
+                     `plugin_credit_types_id` tinyint(1) NOT NULL DEFAULT '0',
                      `begin_date` datetime DEFAULT NULL,
                      `end_date` datetime DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
@@ -365,7 +370,7 @@ class PluginInterventionEntity extends CommonDBTM {
                      KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
                      KEY `is_active` (`is_active`),
-                     KEY `plugin_intervention_types_id` (`plugin_intervention_types_id`),
+                     KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
                      KEY `begin_date` (`begin_date`),
                      KEY `end_date` (`end_date`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
