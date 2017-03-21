@@ -316,10 +316,6 @@ class PluginInterventionTicket extends CommonDBTM {
       $showForm  = false;
       $callers   = debug_backtrace();
       foreach ($callers as $call) {
-         if ($call['function']=='showFormButtons') {
-            $showForm = false;
-            break;
-         }
          if ($call['function']=='showSolutionForm') {
             $showForm = true;
             break;
