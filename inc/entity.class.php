@@ -227,7 +227,12 @@ class PluginInterventionEntity extends CommonDBTM {
          $header_end .= "</tr>\n";
          $out .= $header_begin.$header_top.$header_end;
 
-         foreach (self::getAllForEntity($ID) as $data) {
+         $sqlfilter = "";
+         if ($itemtype == 'Ticket') {
+            $sqlfilter = "`is_active`='1'";
+         }
+
+         foreach (self::getAllForEntity($ID, 0, 0, $sqlfilter) as $data) {
 
             $out .= "<tr class='tab_bg_2'>";
             if ($canedit) {
