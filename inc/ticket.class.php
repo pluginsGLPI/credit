@@ -554,7 +554,7 @@ class PluginCreditTicket extends CommonDBTM {
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
-                     `tickets_id` tinyint(1) NOT NULL DEFAULT '0',
+                     `tickets_id` int(11) NOT NULL DEFAULT '0',
                      `plugin_credit_entities_id` tinyint(1) NOT NULL DEFAULT '0',
                      `date_creation` datetime DEFAULT NULL,
                      `consumed` int(11) NOT NULL DEFAULT '0',
@@ -567,6 +567,13 @@ class PluginCreditTicket extends CommonDBTM {
                      KEY `users_id` (`users_id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
+      } else {
+
+         // Fix #1 in 1.0.1 : change tinyint(1) to int(11) for tickets_id
+         $migration->changeField($table, 'tickets_id', 'tickets_id', 'integer');
+
+         //execute the whole migration
+         $migration->executeMigration();
       }
    }
 
