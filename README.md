@@ -1,4 +1,6 @@
 # Credit vouchers GLPI plugin
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2FpluginsGLPI%2Fcredit.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2FpluginsGLPI%2Fcredit?ref=badge_shield)
+
 
 This plugin allows you to declare and follow (by entity) the consumptions of different credit vouchers
 directly from the Ticket form. To do it, you must follow these steps:
@@ -15,3 +17,7 @@ directly from the Ticket form. To do it, you must follow these steps:
 * Refer to [GitFlow](http://git-flow.readthedocs.io/) process for branching
 * Work on a new branch on your own fork
 * Open a PR that will be reviewed by a developer
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2FpluginsGLPI%2Fcredit.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2FpluginsGLPI%2Fcredit?ref=badge_large)
