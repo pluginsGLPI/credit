@@ -68,7 +68,8 @@ class PluginCreditEntity extends CommonDBTM {
    }
 
    public function post_purgeItem() {
-      PluginCreditTicket::deleteByCriteria([
+      $pc_ticket = new PluginCreditTicket;
+      $pc_ticket->deleteByCriteria([
          'plugin_credit_entities_id' => $this->getID()
       ]);
    }
