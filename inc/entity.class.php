@@ -34,33 +34,24 @@ class PluginCreditEntity extends CommonDBTM {
 
    public static $rightname = 'entity';
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
    }
 
-   /**
-    * @see CommonGLPI::getTabNameForItem()
-   **/
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+      $nb = self::countForItem($item);
       switch ($item->getType()) {
          case 'Entity' :
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(self::getTypeName(), self::countForItem($item));
+               return self::createTabEntry(self::getTypeName($nb), $nb);
             }
-            break;
          default :
-            return self::getTypeName();
-            break;
+            return self::getTypeName($nb);
       }
       return '';
    }
 
-   /**
-    * @see CommonGLPI::displayTabContentForItem()
-   **/
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       switch ($item->getType()) {
          case 'Entity' :
             self::showForItemtype($item);
@@ -73,21 +64,14 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $item    CommonDBTM object
    **/
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable(getTableForItemType(__CLASS__),
-                                    "`entities_id` = '".$item->getID()."'");
+      return countElementsInTable(self::getTable(), "`entities_id` = '".$item->getID()."'");
    }
 
-   /**
-    * Actions done after the PURGE of the item in the database
-    *
-    * @return nothing
-   **/
    public function post_purgeItem() {
-      global $DB;
-
-      $table = getTableForItemType('PluginCreditTicket');
-      $query = "DELETE FROM `$table` WHERE `plugin_credit_entities_id` = {$this->getID()};";
-      $DB->query($query);
+      $pc_ticket = new PluginCreditTicket;
+      $pc_ticket->deleteByCriteria([
+         'plugin_credit_entities_id' => $this->getID()
+      ]);
    }
 
    /**
@@ -99,11 +83,11 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $sqlfilter    string      to add an SQL filter (default '')
     * @return array of vouchers
    **/
-   static function getAllForEntity($ID, $start=0, $limit=0, $sqlfilter='') {
+   static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = '') {
       global $DB;
 
       $query = "SELECT *
-                FROM `" . getTableForItemType(__CLASS__) . "`
+                FROM `".self::getTable()."`
                 WHERE `entities_id` = '$ID'";
       if ($sqlfilter) {
          $query .= "AND ($sqlfilter) ";
@@ -111,10 +95,10 @@ class PluginCreditEntity extends CommonDBTM {
       $query .= "ORDER BY `id` DESC";
 
       if ($limit) {
-         $query .= " LIMIT ".intval($start)."," . intval($limit);
+         $query .= " LIMIT ".(int) $start.",".(int) $limit;
       }
 
-      $vouchers = array();
+      $vouchers = [];
       foreach ($DB->request($query) as $data) {
          $vouchers[$data['id']] = $data;
       }
@@ -128,7 +112,7 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $entity object Entity
     * @param $itemtype string Entity or Ticket
    **/
-   static function showForItemtype(Entity $entity, $itemtype='Entity') {
+   static function showForItemtype(Entity $entity, $itemtype = 'Entity') {
       global $DB, $CFG_GLPI;
 
       $ID = $entity->getField('id');
@@ -137,51 +121,49 @@ class PluginCreditEntity extends CommonDBTM {
       }
 
       $out     = "";
-      $canedit = ($itemtype=='Ticket') ? false : $entity->canEdit($ID);
+      $canedit = $itemtype == 'Ticket'
+                  ? false
+                  : $entity->canEdit($ID);
 
       if ($canedit) {
          $rand = mt_rand();
          $out .= "<div class='firstbloc'>";
          $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
-         $out .= Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         $out .= self::getFormUrl()."'>";
          $out .= "<table class='tab_cadre_fixe'>";
          $out .= "<tr class='tab_bg_1'><th colspan='7'>";
          $out .= __('Add an credit voucher', 'credit')."</th></tr>";
          $out .= "<tr class='tab_bg_1'>";
          $out .= "<input type='hidden' name='entities_id' value='$ID'>";
          $out .= "<td>". __('Name')."</td>";
-         $out .= "<td>" . Html::input("name", array('size' => 50)) . "</td>";
-         $out .= "<td class='tab_bg_2 right'>". __('Type')."</td><td>";
-         echo $out; $out = "";
-         PluginCreditType::dropdown(array('name'  => 'plugin_credit_types_id'));
+         $out .= "<td>".Html::input("name", ['size' => 50])."</td>";
+         $out .= "<td class='tab_bg_2 right'>".__('Type')."</td><td>";
+         $out .= PluginCreditType::dropdown(['name'    => 'plugin_credit_types_id',
+                                             'display' => false]);
          $out .= "</td>";
          $out .= "<td class='tab_bg_2 right'>".__('Start date')."</td><td>";
-         echo $out; $out = "";
-         Html::showDateField("begin_date", array('value' => ''));
+         $out .= Html::showDateField("begin_date", ['value'   => '', 'display' => false]);
          $out .= "</td></tr>";
          $out .= "<tr class='tab_bg_1'>";
          $out .= "<td>".__('Active')."</td>";
          $out .= "<td>";
-         echo $out; $out = "";
-         Dropdown::showYesNo("is_active", '');
+         $out .= Dropdown::showYesNo("is_active", 0, -1, ['display' => false]);
          $out .= "</td>";
          $out .= "<td class='tab_bg_2 right'>";
          $out .= __('Quantity sold', 'credit')."</td><td>";
-         echo $out; $out = "";
-         Dropdown::showNumber("quantity", ['value' => '',
-                                           'min'   => 1,
-                                           'max'   => 200,
-                                           'step'  => 1,
-                                           'toadd' => [0 => __('Unlimited')]]);
+         $out .= Dropdown::showNumber("quantity", ['value'   => '',
+                                                   'min'     => 1,
+                                                   'max'     => 200,
+                                                   'step'    => 1,
+                                                   'toadd'   => [0 => __('Unlimited')],
+                                                   'display' => false]);
          $out .= "</td><td class='tab_bg_2 right'>".__('End date')."</td><td>";
-         echo $out; $out = "";
-         Html::showDateField("end_date", array('value' => ''));
+         $out .= Html::showDateField("end_date", ['value' => '', 'display' => false]);
          $out .= "</td><td class='tab_bg_2 right'>";
-         $out .= "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         $out .= "<input type='submit' name='add' value='"._sx('button', 'Add')."' class='submit'>";
          $out .= "</td></tr>";
          $out .= "</table>";
-         echo $out; $out = "";
-         Html::closeForm();
+         $out .= Html::closeForm(false);
          $out .= "</div>";
       }
 
@@ -191,18 +173,18 @@ class PluginCreditEntity extends CommonDBTM {
 
          if ($canedit) {
             $rand = mt_rand();
-            echo $out; $out = "";
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams
-               = array('num_displayed'
-                         => $number,
-                       'container'
-                         => 'mass'.__CLASS__.$rand,
-                       'rand' => $rand,
-                       'specific_actions'
-                         => array('update' => _x('button', 'Update'),
-                                  'purge'  => _x('button', 'Delete permanently')));
-            Html::showMassiveActions($massiveactionparams);
+            $out .= Html::getOpenMassiveActionsForm('mass'.__CLASS__.$rand);
+            $massiveactionparams = [
+               'num_displayed'    => $number,
+               'container'        => 'mass'.__CLASS__.$rand,
+               'rand'             => $rand,
+               'display'          => false,
+               'specific_actions' => [
+                  'update' => _x('button', 'Update'),
+                  'purge'  => _x('button', 'Delete permanently')
+               ]
+            ];
+            $out .= Html::showMassiveActions($massiveactionparams);
          }
 
          $out .= "<table class='tab_cadre_fixehov'>";
@@ -224,7 +206,7 @@ class PluginCreditEntity extends CommonDBTM {
          $header_end .= "<th>".__('Quantity sold', 'credit')."</th>";
          $header_end .= "<th>".__('Quantity consumed', 'credit')."</th>";
          $header_end .= "<th>".__('Quantity remaining', 'credit')."</th>";
-         $header_end .= "</tr>\n";
+         $header_end .= "</tr>";
          $out .= $header_begin.$header_top.$header_end;
 
          $sqlfilter = "";
@@ -237,20 +219,19 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "<tr class='tab_bg_2'>";
             if ($canedit) {
                $out .= "<td width='10'>";
-               echo $out; $out = "";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               $out .= Html::getMassiveActionCheckBox(__CLASS__, $data["id"]);
                $out .= "</td>";
             }
 
             $out .= "<td width='30%'>";
-            $out .= "<a href=\"".$CFG_GLPI['root_doc']."/front/entity.form.php?id=".$ID;
-            $out .= "&forcetab=PluginCreditEntity$1\">";
+            $out .= "<a href='".Entity::getFormURLWithID($ID, true);
+            $out .= "&forcetab=PluginCreditEntity$1'>";
             $out .= $data['name'];
             $out .= "</a>";
             $out .= "</td>";
             $out .= "<td width='15%'>";
-            $out .= Dropdown::getDropdownName(getTableForItemType('PluginCreditType'),
-                                                $data['plugin_credit_types_id']);
+            $out .= Dropdown::getDropdownName(PluginCreditType::getTable(),
+                                              $data['plugin_credit_types_id']);
             $out .= "</td>";
             $out .= "<td>";
             $out .= ($data["is_active"]) ? __('Yes') : __('No');
@@ -265,81 +246,93 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= ($data['quantity']==0) ? __('Unlimited') : $data['quantity'];;
             $out .= "</td>";
 
-            Ajax::createIframeModalWindow('displaycreditconsumed_' . $data["id"],
-                                          $CFG_GLPI["root_doc"]
-                                             . "/plugins/credit/front/ticket.php?plugcreditentity="
-                                             . $data["id"],
-                                          ['title'         => __('Consumed details', 'credit'),
-                                           'reloadonclose' => false]);
-
             $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
             $out .= "<td class='center'>";
-            $out .= "<a href='#' onClick=\"" . Html::jsGetElementbyID('displaycreditconsumed_'
-                                                                      . $data["id"])
-                                             . ".dialog('open');\" ";
-            $out .= "title=\"".__('Consumed details', 'credit')."\" ";
-            $out .= "alt=\"".__('Consumed details', 'credit')."\">";
+            $out .= Ajax::createIframeModalWindow('displaycreditconsumed_'.$data["id"],
+                                                  $CFG_GLPI["root_doc"].
+                                                  "/plugins/credit/front/ticket.php?plugcreditentity=".
+                                                  $data["id"],
+                                          ['title'         => __('Consumed details', 'credit'),
+                                           'reloadonclose' => false,
+                                           'display'       => false]);
+
+            $out .= "<a href='#' onClick=\"".Html::jsGetElementbyID('displaycreditconsumed_'.
+                                                                   $data["id"]).
+                                          ".dialog('open');\" ";
+            $out .= "title='".__('Consumed details', 'credit')."' ";
+            $out .= "alt='".__('Consumed details', 'credit')."'>";
             $out .= $quantity_consumed;
             $out .= "</a></td>";
 
             $out .= "<td class='center'>";
-            $out .= ($data['quantity']==0) ? __('Unlimited') : $data['quantity'] - $quantity_consumed;
+            $out .= ($data['quantity']==0)
+                        ? __('Unlimited')
+                        : $data['quantity'] - $quantity_consumed;
             $out .= "</td></tr>";
          }
 
          $out .= $header_begin.$header_bottom.$header_end;
-         $out .= "</table>\n";
+         $out .= "</table>";
 
          if ($canedit) {
             $massiveactionparams['ontop'] = false;
-            echo $out; $out = "";
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
+            $out .= Html::showMassiveActions($massiveactionparams);
+            $out .= Html::closeForm(false);
          }
       } else {
          $out .= "<p class='center b'>".__('No credit voucher', 'credit')."</p>";
       }
-      $out .= "</div>\n";
+      $out .= "</div>";
       echo $out;
    }
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
 
-      $tab                = parent::getSearchOptions();
+      $tab = parent::getSearchOptionsNew();
 
-      $tab[991]['table']    = $this->getTable();
-      $tab[991]['field']    = 'is_active';
-      $tab[991]['name']     = __('Active');
-      $tab[991]['datatype'] = 'bool';
+      $tab[] = [
+         'id'       => 991,
+         'table'    => self::getTable(),
+         'field'    => 'is_active',
+         'name'     => __('Active'),
+         'datatype' => 'bool',
+      ];
 
-      $tab[992]['table']    = $this->getTable();
-      $tab[992]['field']    = 'begin_date';
-      $tab[992]['name']     = __('Start date');
-      $tab[992]['datatype'] = 'date';
+      $tab[] = [
+         'id'       => 992,
+         'table'    => self::getTable(),
+         'field'    => 'begin_date',
+         'name'     => __('Start date'),
+         'datatype' => 'date',
+      ];
 
-      $tab[993]['table']    = $this->getTable();
-      $tab[993]['field']    = 'end_date';
-      $tab[993]['name']     = __('End date');
-      $tab[993]['datatype'] = 'date';
+      $tab[] = [
+         'id'       => 993,
+         'table'    => self::getTable(),
+         'field'    => 'end_date',
+         'name'     => __('End date'),
+         'datatype' => 'date',
+      ];
 
-      $tab[994]['table']    = $this->getTable();
-      $tab[994]['field']    = 'quantity';
-      $tab[994]['name']     = __('Quantity sold', 'credit');
-      $tab[994]['datatype'] = 'number';
-      $tab[994]['min']      = 1;
-      $tab[994]['max']      = 200;
-      $tab[994]['step']     = 1;
-      $tab[994]['toadd']    = array(0 => __('Unlimited'));
+      $tab[] = [
+         'id'       => 994,
+         'table'    => self::getTable(),
+         'field'    => 'quantity',
+         'name'     => __('Quantity sold', 'credit'),
+         'datatype' => 'number',
+         'min'      => 1,
+         'max'      => 200,
+         'step'     => 1,
+         'toadd'    => [0 => __('Unlimited')],
+      ];
 
-      $tab[995]['table']    = getTableForItemType('PluginCreditType');
-      $tab[995]['field']    = 'name';
-      $tab[995]['name']     = __('Credit voucher type', 'credit');
-      $tab[995]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'       => 995,
+         'table'    => PluginCreditType::getTable(),
+         'field'    => 'name',
+         'name'     => __('Credit voucher type', 'credit'),
+         'datatype' => 'dropdown',
+      ];
 
       return $tab;
    }
@@ -352,9 +345,9 @@ class PluginCreditEntity extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
-      if (!TableExists($table)) {
+      if (!$DB::tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -384,11 +377,8 @@ class PluginCreditEntity extends CommonDBTM {
     * @return boolean True if success
     */
    static function uninstall(Migration $migration) {
-
-      $table = getTableForItemType(__CLASS__);
-
+      $table = self::getTable();
       $migration->displayMessage("Uninstalling $table");
-
       $migration->dropTable($table);
    }
 

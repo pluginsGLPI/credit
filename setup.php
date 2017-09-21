@@ -26,7 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.0.1');
+define('PLUGIN_CREDIT_VERSION', '1.1.0');
 
 /**
  * Init hooks of the plugin.
@@ -46,16 +46,13 @@ function plugin_init_credit() {
 
    $PLUGIN_HOOKS['csrf_compliant']['credit'] = true;
 
-   Plugin::registerClass('PluginCreditType');
-
    if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
 
       if (Session::haveRight('entity', UPDATE)) {
          Plugin::registerClass('PluginCreditEntity', ['addtabon' => 'Entity']);
       }
 
-      if (Session::haveRightsOr('ticket', array(Ticket::STEAL, Ticket::OWN))) {
-
+      if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
          Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
          $PLUGIN_HOOKS['post_item_form']['credit'] =
@@ -81,26 +78,22 @@ function plugin_version_credit() {
       'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
       'license'        => 'GPLv3',
       'homepage'       => 'https://github.com/pluginsGLPI/credit',
-      'minGlpiVersion' => '9.1.2'
+      'requirements'   => [
+         'glpi' => [
+            'min' => '9.2',
+            'max' => '9.3',
+            'dev' => true
+         ]
+      ]
    ];
 }
 
 /**
  * Check pre-requisites before install
- * OPTIONNAL, but recommanded
  *
  * @return boolean
  */
 function plugin_credit_check_prerequisites() {
-   // Strict version check (could be less strict, or could allow various version)
-   if (version_compare(GLPI_VERSION, '9.1.2', 'lt')) {
-      if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '9.1.2');
-      } else {
-         echo "This plugin requires GLPI >= 9.1.2";
-      }
-      return false;
-   }
    return true;
 }
 
@@ -112,12 +105,5 @@ function plugin_credit_check_prerequisites() {
  * @return boolean
  */
 function plugin_credit_check_config($verbose = false) {
-   if (true) { // Your configuration check
-      return true;
-   }
-
-   if ($verbose) {
-      _e('Installed / not configured', 'credit');
-   }
-   return false;
+   return true;
 }

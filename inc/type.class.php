@@ -36,7 +36,7 @@ class PluginCreditType extends CommonTreeDropdown {
    public $dohistory          = true;
    public $can_be_translated  = true;
 
-   static function getTypeName($nb=0) {
+   static function getTypeName($nb = 0) {
       return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
    }
 
@@ -48,9 +48,9 @@ class PluginCreditType extends CommonTreeDropdown {
    static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
-      if (!TableExists($table)) {
+      if (!$DB::tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
@@ -85,10 +85,8 @@ class PluginCreditType extends CommonTreeDropdown {
     */
    static function uninstall(Migration $migration) {
 
-      $table = getTableForItemType(__CLASS__);
-
+      $table = self::getTable();
       $migration->displayMessage("Uninstalling $table");
-
       $migration->dropTable($table);
    }
 

@@ -78,10 +78,7 @@ function plugin_credit_uninstall() {
  * Define Dropdown tables to be manage in GLPI :
  */
 function plugin_credit_getDropdown() {
-
-   $pluginDropdowns = array('PluginCreditType' => _n('Credit voucher type',
-                                                     'Credit vouchers types',
-                                                     Session::getPluralNumber(),
-                                                     'credit'));
-   return $pluginDropdowns;
+   return ['PluginCreditType' => _n('Credit voucher type', 'Credit vouchers types',
+                                    Session::getPluralNumber(),
+                                    'credit')];
 }
