@@ -347,7 +347,7 @@ class PluginCreditEntity extends CommonDBTM {
 
       $table = self::getTable();
 
-      if (!$DB::tableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
