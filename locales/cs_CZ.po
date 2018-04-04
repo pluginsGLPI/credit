@@ -1,0 +1,110 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-21 09:07+0100\n"
+"PO-Revision-Date: 2018-04-04 14:10+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 2.0.4\n"
+"Last-Translator: \n"
+"Language: cs_CZ\n"
+
+#: inc/type.class.php:40 inc/entity.class.php:336 hook.php:82
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "Typ kuponu s kreditem"
+msgstr[1] "Typy kuponů s kreditem"
+msgstr[2] "Typů kuponů s kreditem"
+
+#: inc/entity.class.php:38 inc/ticket.class.php:38
+msgid "Credit voucher"
+msgid_plural "Credit vouchers"
+msgstr[0] "Kupon s kreditem"
+msgstr[1] "Kupony s kreditem"
+msgstr[2] "Kuponů s kreditem"
+
+#: inc/entity.class.php:149
+msgid "Add an credit voucher"
+msgstr "Přidat kupon s kreditem"
+
+#: inc/entity.class.php:169 inc/entity.class.php:224 inc/entity.class.php:327
+msgid "Quantity sold"
+msgstr "Prodané množství"
+
+#: inc/entity.class.php:225 inc/ticket.class.php:234 inc/ticket.class.php:369
+#: inc/ticket.class.php:414 inc/ticket.class.php:527
+msgid "Quantity consumed"
+msgstr "Spotřebované množství"
+
+#: inc/entity.class.php:226
+msgid "Quantity remaining"
+msgstr "Zbývající množství"
+
+#: inc/entity.class.php:269
+msgid "Consumed details"
+msgstr "Podrobnosti o spotřebovaných"
+
+#: inc/entity.class.php:295
+msgid "No credit voucher"
+msgstr "Žádný kupon s kreditem"
+
+#: inc/ticket.class.php:195
+msgid "Consumed credits for this ticket"
+msgstr "Kredity spotřebované na tento požadavek"
+
+#: inc/ticket.class.php:230
+msgid "Voucher name"
+msgstr "Název kuponu"
+
+#: inc/ticket.class.php:231
+msgid "Voucher type"
+msgstr "Typ kuponu"
+
+#: inc/ticket.class.php:232 inc/ticket.class.php:412 inc/ticket.class.php:522
+msgid "Date consumed"
+msgstr "Datum spotřebování"
+
+#: inc/ticket.class.php:233 inc/ticket.class.php:413
+msgid "User consumed"
+msgstr "Uživatel který spotřeboval"
+
+#: inc/ticket.class.php:286 inc/ticket.class.php:400
+msgid "No credit was recorded"
+msgstr "Nebyl nahrán žádný kredit"
+
+#: inc/ticket.class.php:293
+msgid "Active credit vouchers for ticket entity"
+msgstr "Aktivní kupony s kreditem pro entitu požadavku"
+
+#: inc/ticket.class.php:351
+msgid "Save and consumed a voucher ?"
+msgstr "Uložit spotřebovat kupon?"
+
+#: inc/ticket.class.php:359 inc/ticket.class.php:536 setup.php:79
+msgid "Credit vouchers"
+msgstr "Kupony s kreditem"
+
+#: inc/ticket.class.php:394
+msgid "Detail of tickets on which consumption is declared"
+msgstr "Podrobnosti požadavků pro které je spotřeba deklarována"
+
+#: inc/ticket.class.php:494
+msgid "You must provide an credit voucher"
+msgstr "Je třeba zadat kupon s kreditem"
+
+#: inc/ticket.class.php:503
+msgid "Credit voucher successfully added."
+msgstr "Kupon s kreditem úspěšně přidán."
+
+#: setup.php:120
+msgid "Installed / not configured"
+msgstr "Nainstalováno/nenastaveno"
