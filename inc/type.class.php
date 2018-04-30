@@ -38,7 +38,7 @@ class PluginCreditType extends CommonTreeDropdown {
    }
 
    /**
-    * Install all necessary table for the plugin
+    * Install all necessary tables for the plugin
     *
     * @return boolean True if success
     */

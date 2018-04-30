@@ -71,8 +71,8 @@ class PluginCreditTicket extends CommonDBTM {
     *
     * @param $ID           integer     tickets ID
     * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
+    * @param $sqlfilter    string      to add a SQL filter (default '')
     * @return array of vouchers
    **/
    static function getAllForTicket($ID, $start = 0, $limit = 0, $sqlfilter = '') {
@@ -105,7 +105,7 @@ class PluginCreditTicket extends CommonDBTM {
     * @param $ID           integer     plugin_credit_entities_id ID
     * @param $start        integer     first line to retrieve (default 0)
     * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param $sqlfilter    string      to add a SQL filter (default '')
     * @return array of vouchers
    **/
    static function getAllForCreditEntity($ID, $start = 0, $limit = 0, $sqlfilter = '') {
