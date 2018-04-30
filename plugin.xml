@@ -14,7 +14,7 @@
          <en><![CDATA[This plugin allows you to declare and follow (by entity) the consumptions of different credit vouchers directly from the Ticket form.]]></en>
       </long>
    </description>
-   <homepage>https://github.com/pluginsGLPI/credit</homepage>
+   <homepage>https://pluginsglpi.github.io/credit/</homepage>
    <download>https://github.com/pluginsGLPI/credit/releases</download>
    <issues>https://github.com/pluginsGLPI/credit/issues</issues>
    <readme>https://raw.githubusercontent.com/pluginsGLPI/credit/master/README.md</readme>
