@@ -76,8 +76,8 @@ class PluginCreditEntity extends CommonDBTM {
     *
     * @param $ID           integer     entities ID
     * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
+    * @param $sqlfilter    string      to add a SQL filter (default '')
     * @return array of vouchers
    **/
    static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = '') {
@@ -335,7 +335,7 @@ class PluginCreditEntity extends CommonDBTM {
    }
 
    /**
-    * Install all necessary table for the plugin
+    * Install all necessary tables for the plugin
     *
     * @return boolean True if success
     */
