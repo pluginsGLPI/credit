@@ -25,6 +25,11 @@
 
 define('PLUGIN_CREDIT_VERSION', '1.1.1');
 
+// Minimal GLPI version, inclusive
+define("PLUGIN_CREDIT_MIN_GLPI", "9.2");
+// Maximum GLPI version, exclusive
+define("PLUGIN_CREDIT_MAX_GLPI", "9.3");
+
 /**
  * Init hooks of the plugin.
  * REQUIRED
@@ -77,9 +82,9 @@ function plugin_version_credit() {
       'homepage'       => 'https://github.com/pluginsGLPI/credit',
       'requirements'   => [
          'glpi' => [
-            'min' => '9.2',
-            'max' => '9.3',
-            'dev' => true
+            'min' => PLUGIN_CREDIT_MIN_GLPI,
+            'max' => PLUGIN_CREDIT_MAX_GLPI,
+            'dev' => true, //Required to allow 9.2-dev
          ]
       ]
    ];
@@ -91,6 +96,21 @@ function plugin_version_credit() {
  * @return boolean
  */
 function plugin_credit_check_prerequisites() {
+
+   // Version check not automatically done by GLPI < 9.2.
+   $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+   if (!version_compare($version, PLUGIN_CREDIT_MIN_GLPI, '>=')
+       || !version_compare($version, PLUGIN_CREDIT_MAX_GLPI, '<')) {
+      echo vsprintf(
+         'This plugin requires GLPI >= %1$s and < %2$s',
+         [
+            PLUGIN_CREDIT_MIN_GLPI,
+            PLUGIN_CREDIT_MAX_GLPI,
+         ]
+      );
+      return false;
+   }
+
    return true;
 }
 
