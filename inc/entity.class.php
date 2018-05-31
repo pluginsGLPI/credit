@@ -283,9 +283,9 @@ class PluginCreditEntity extends CommonDBTM {
       echo $out;
    }
 
-   function getSearchOptionsNew() {
+   function rawSearchOptions() {
 
-      $tab = parent::getSearchOptionsNew();
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id'       => 991,
