@@ -284,37 +284,40 @@ class PluginCreditTicket extends CommonDBTM {
    }
 
    /**
-    * Display contents at the end of solution form.
+    * Display voucher consumption fields at the end of a ticket processing form.
     *
     * @param array $params Array with "item" and "options" keys
     *
     * @return void
     */
-   static public function postSolutionForm($params) {
-      global $CFG_GLPI;
+   static public function displayVoucherInTicketProcessingForm($params) {
+      $item = $params['item'];
 
-      $item      = $params['item'];
-      $options   = $params['options'];
-      $showForm  = false;
-      $callers   = debug_backtrace();
-      foreach ($callers as $call) {
-         if ($call['function'] == 'showSolutionForm') {
-            $showForm = true;
-            break;
-         }
+      if (!($item instanceof ITILSolution)
+          && !($item instanceof TicketFollowup)
+          && !($item instanceof TicketTask)) {
+         return;
       }
 
-      if ($showForm) {
-         self::showMinimalForm($item);
+      if (!$item->isNewItem()) {
+         // Do not display fields in item update form.
+         return;
       }
-   }
 
-   /**
-    * Show the minimal form for declare credit.
-    *
-    * @param $ticket Ticket
-   **/
-   static function showMinimalForm(Ticket $ticket) {
+      $ticket = null;
+      if (array_key_exists('parent', $params['options'])
+          && $params['options']['parent'] instanceof Ticket) {
+         // Ticket can be found in `parent` option for TicketFollowup and TicketTask.
+         $ticket = $params['options']['parent'];
+      } else if (array_key_exists('item', $params['options'])
+                 && $params['options']['item'] instanceof Ticket) {
+         // Ticket can be found in `'item'` option for ITILSolution.
+         $ticket = $params['options']['item'];
+      }
+
+      if (!($ticket instanceof Ticket)) {
+         throw new LogicException('Ticket instance not found.');
+      }
 
       $out = "";
 
@@ -450,41 +453,65 @@ class PluginCreditTicket extends CommonDBTM {
    /**
     * Test if consumed voucher is selected and add them.
     *
-    * @param  Ticket $ticket ticket object
+    * @param CommonDBTM $item Created item
     *
     * @return boolean
     */
-   static function beforeUpdate(Ticket $ticket) {
+   static function consumeVoucher(CommonDBTM $item) {
 
-      if (!is_array($ticket->input) || !count($ticket->input)) {
-         return false;
+      if (!is_array($item->input) || !count($item->input)) {
+         return;
+      }
+
+      $ticketId = null;
+      if (array_key_exists('tickets_id', $item->fields)) {
+         // Ticket ID can be found in `tickets_id` field for TicketFollowup and TicketTask.
+         $ticketId = $item->fields['tickets_id'];
+      } else if (array_key_exists('itemtype', $item->fields)
+                 && array_key_exists('items_id', $item->fields)
+                 && 'Ticket' == $item->fields['itemtype']) {
+         // Ticket ID can be found in `items_id` field for ITILSolution.
+         $ticketId = $item->fields['items_id'];
+      }
+
+      $ticket = new Ticket();
+      if (null === $ticketId || !$ticket->getFromDB($ticketId)) {
+         return;
       }
 
       if (!is_numeric(Session::getLoginUserID(false))
           || !Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
-         return false;
+         return;
       }
 
-      if (isset($ticket->input['plugin_credit_consumed_voucher'])
-          && ($ticket->input['plugin_credit_consumed_voucher'] == 1)) {
+      if (!isset($item->input['plugin_credit_consumed_voucher'])
+          || $item->input['plugin_credit_consumed_voucher'] != 1) {
+         return;
+      }
 
-         if ($ticket->input['plugin_credit_entities_id']==0) {
-            unset($ticket->input['status']);
-            unset($ticket->input['solution']);
-            unset($ticket->input['solutiontypes_id']);
-            Session::addMessageAfterRedirect(__('You must provide a credit voucher',
-                                    'credit'), true, ERROR);
-         } else {
-            $PluginCreditTicket = new self();
-            $input = ['tickets_id'                => $ticket->getID(),
-                      'plugin_credit_entities_id' => $ticket->input['plugin_credit_entities_id'],
-                      'consumed'                  => $ticket->input['plugin_credit_quantity'],
-                      'users_id'                  => Session::getLoginUserID()];
-            if ($PluginCreditTicket->add($input)) {
-               Session::addMessageAfterRedirect(__('Credit voucher successfully added.',
-                                       'credit'), true, INFO);
-            }
-         }
+      if (!isset($item->input['plugin_credit_entities_id'])
+          || $item->input['plugin_credit_entities_id'] == 0) {
+         Session::addMessageAfterRedirect(
+            __('You must provide a credit voucher', 'credit'),
+            true,
+            ERROR
+         );
+         return;
+      }
+
+      $PluginCreditTicket = new self();
+      $input = [
+         'tickets_id'                => $ticket->getID(),
+         'plugin_credit_entities_id' => $item->input['plugin_credit_entities_id'],
+         'consumed'                  => $item->input['plugin_credit_quantity'],
+         'users_id'                  => Session::getLoginUserID(),
+      ];
+      if ($PluginCreditTicket->add($input)) {
+         Session::addMessageAfterRedirect(
+            __('Credit voucher successfully added.', 'credit'),
+            true,
+            INFO
+         );
       }
    }
 
@@ -572,5 +599,4 @@ class PluginCreditTicket extends CommonDBTM {
       $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
-
 }

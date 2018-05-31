@@ -57,11 +57,16 @@ function plugin_init_credit() {
       if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
          Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
-         $PLUGIN_HOOKS['post_item_form']['credit'] =
-            ['PluginCreditTicket', 'postSolutionForm'];
+         $PLUGIN_HOOKS['post_item_form']['credit'] = [
+            'PluginCreditTicket',
+            'displayVoucherInTicketProcessingForm'
+         ];
 
-         $PLUGIN_HOOKS['pre_item_update']['credit'] =
-            ['Ticket' => ['PluginCreditTicket', 'beforeUpdate']];
+         $PLUGIN_HOOKS['pre_item_add']['credit'] = [
+            'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
+            'TicketFollowup' => ['PluginCreditTicket', 'consumeVoucher'],
+            'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
+         ];
       }
    }
 }
