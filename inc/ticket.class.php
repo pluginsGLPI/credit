@@ -100,7 +100,7 @@ class PluginCreditTicket extends CommonDBTM {
 
 
    /**
-    * Get all tickets for an credit vouchers.
+    * Get all tickets for a credit vouchers.
     *
     * @param $ID           integer     plugin_credit_entities_id ID
     * @param $start        integer     first line to retrieve (default 0)
@@ -472,7 +472,7 @@ class PluginCreditTicket extends CommonDBTM {
             unset($ticket->input['status']);
             unset($ticket->input['solution']);
             unset($ticket->input['solutiontypes_id']);
-            Session::addMessageAfterRedirect(__('You must provide an credit voucher',
+            Session::addMessageAfterRedirect(__('You must provide a credit voucher',
                                     'credit'), true, ERROR);
          } else {
             $PluginCreditTicket = new self();

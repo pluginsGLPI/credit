@@ -129,7 +129,7 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= self::getFormUrl()."'>";
          $out .= "<table class='tab_cadre_fixe'>";
          $out .= "<tr class='tab_bg_1'><th colspan='7'>";
-         $out .= __('Add an credit voucher', 'credit')."</th></tr>";
+         $out .= __('Add a credit voucher', 'credit')."</th></tr>";
          $out .= "<tr class='tab_bg_1'>";
          $out .= "<input type='hidden' name='entities_id' value='$ID'>";
          $out .= "<td>". __('Name')."</td>";
