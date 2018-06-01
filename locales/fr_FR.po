@@ -1,109 +1,106 @@
-# French translations for Plugin GLPI Credit package
-# Copyright (C) 2017 TECLIB
-# This file is distributed under the same license as the Plugin GLPI Credit package.
-#  , 2017.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-17 15:16+0100\n"
-"PO-Revision-Date: 2017-03-20 15:27+0100\n"
-"Last-Translator: Legastelois François <flegastelois@teclib.com>, 2017\n"
-"Language-Team: TECLIB\n"
+"POT-Creation-Date: 2018-06-01 14:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Cédric Anne <cedric.anne@gmail.com>, 2018\n"
+"Language-Team: French (France) (https://www.transifex.com/pluginsGLPI/teams/73419/fr_FR/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: inc/type.class.php:40 inc/entity.class.php:336 hook.php:82
+#: hook.php:78 inc/entity.class.php:330 inc/type.class.php:37
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Type de crédit"
 msgstr[1] "Types de crédits"
 
-#: inc/entity.class.php:38 inc/ticket.class.php:38
+#: inc/entity.class.php:35 inc/ticket.class.php:35
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Crédit"
 msgstr[1] "Crédits"
 
-#: inc/entity.class.php:152
-msgid "Add an credit voucher"
+#: inc/entity.class.php:132
+msgid "Add a credit voucher"
 msgstr "Ajouter un crédit"
 
-#: inc/entity.class.php:169 inc/entity.class.php:224 inc/entity.class.php:327
+#: inc/entity.class.php:150 inc/entity.class.php:203 inc/entity.class.php:318
 msgid "Quantity sold"
 msgstr "Quantité vendue"
 
-#: inc/entity.class.php:225 inc/ticket.class.php:234 inc/ticket.class.php:369
-#: inc/ticket.class.php:414 inc/ticket.class.php:527
+#: inc/entity.class.php:204 inc/ticket.class.php:219 inc/ticket.class.php:350
+#: inc/ticket.class.php:395 inc/ticket.class.php:507
 msgid "Quantity consumed"
 msgstr "Quantité consommée"
 
-#: inc/entity.class.php:220 inc/entity.class.php:309
+#: inc/entity.class.php:205
 msgid "Quantity remaining"
 msgstr "Quantité restante"
 
-#: inc/entity.class.php:269
+#: inc/entity.class.php:252 inc/entity.class.php:259 inc/entity.class.php:260
 msgid "Consumed details"
 msgstr "Détail des crédits consommés"
 
-#: inc/entity.class.php:295
+#: inc/entity.class.php:280
 msgid "No credit voucher"
 msgstr "Aucun crédit déclaré"
 
-#: inc/ticket.class.php:166
+#: inc/ticket.class.php:180
 msgid "Consumed credits for this ticket"
 msgstr "Crédits déjà consommés pour ce ticket"
 
-#: inc/ticket.class.php:230
+#: inc/ticket.class.php:215 inc/ticket.class.php:340
 msgid "Voucher name"
 msgstr "Nom du crédit"
 
-#: inc/ticket.class.php:231
+#: inc/ticket.class.php:216
 msgid "Voucher type"
 msgstr "Type de crédit"
 
-#: inc/ticket.class.php:232 inc/ticket.class.php:412 inc/ticket.class.php:522
+#: inc/ticket.class.php:217 inc/ticket.class.php:393 inc/ticket.class.php:499
 msgid "Date consumed"
 msgstr "Date de consommation"
 
-#: inc/ticket.class.php:233 inc/ticket.class.php:413
+#: inc/ticket.class.php:218 inc/ticket.class.php:394
 msgid "User consumed"
 msgstr "Utilisateur déclarant"
 
-#: inc/ticket.class.php:286 inc/ticket.class.php:400
+#: inc/ticket.class.php:269 inc/ticket.class.php:381
 msgid "No credit was recorded"
 msgstr "Aucun crédit déclaré"
 
-#: inc/ticket.class.php:293
+#: inc/ticket.class.php:276
 msgid "Active credit vouchers for ticket entity"
 msgstr "Crédits actifs pour l'entité du ticket"
 
-#: inc/ticket.class.php:351
+#: inc/ticket.class.php:333
 msgid "Save and consumed a voucher ?"
 msgstr "Consommation de crédit"
 
-#: inc/ticket.class.php:359 inc/ticket.class.php:536 setup.php:79
-msgid "Credit vouchers"
-msgstr "Crédits"
-
-#: inc/ticket.class.php:394
+#: inc/ticket.class.php:375
 msgid "Detail of tickets on which consumption is declared"
-msgstr "Détail des tickets pour lesquels une consommation de crédit est déclarée"
+msgstr ""
+"Détail des tickets pour lesquels une consommation de crédit est déclarée"
 
-#: inc/ticket.class.php:494
-msgid "You must provide an credit voucher"
-msgstr "Vous devez préciser un crédit sur lequel consommer la quantité "
-"souhaitée."
+#: inc/ticket.class.php:475
+msgid "You must provide a credit voucher"
+msgstr ""
+"Vous devez préciser un crédit sur lequel consommer la quantité souhaitée."
 
-#: inc/ticket.class.php:503
+#: inc/ticket.class.php:484
 msgid "Credit voucher successfully added."
 msgstr "Crédit sauvegardé avec succès."
 
-#: setup.php:120
-msgid "Installed / not configured"
-msgstr "Installé / non configuré"
+#: inc/ticket.class.php:519 setup.php:78
+msgid "Credit vouchers"
+msgstr "Crédits"
