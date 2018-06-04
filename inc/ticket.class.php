@@ -330,7 +330,7 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= "</th><th colspan='2'></th></tr>";
          $out .= "<tr><td>";
          $out .= "<label for='plugin_credit_consumed_voucher'>";
-         $out .= __('Save and consumed a voucher ?', 'credit');
+         $out .= __('Consume a voucher ?', 'credit');
          $out .= "</label>";
          $out .= "</td><td>";
          $out .= Dropdown::showYesNo('plugin_credit_consumed_voucher', 0, -1, ['display' => false]);
