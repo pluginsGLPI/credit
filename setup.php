@@ -97,18 +97,22 @@ function plugin_version_credit() {
  */
 function plugin_credit_check_prerequisites() {
 
-   // Version check not automatically done by GLPI < 9.2.
+   //Version check is not done by core in GLPI < 9.2 but has to be delegated to core in GLPI >= 9.2.
    $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-   if (!version_compare($version, PLUGIN_CREDIT_MIN_GLPI, '>=')
-       || !version_compare($version, PLUGIN_CREDIT_MAX_GLPI, '<')) {
-      echo vsprintf(
-         'This plugin requires GLPI >= %1$s and < %2$s',
-         [
-            PLUGIN_CREDIT_MIN_GLPI,
-            PLUGIN_CREDIT_MAX_GLPI,
-         ]
-      );
-      return false;
+   if (version_compare($version, '9.2', '<')) {
+      $matchMinGlpiReq = version_compare($version, PLUGIN_CREDIT_MIN_GLPI, '>=');
+      $matchMaxGlpiReq = version_compare($version, PLUGIN_CREDIT_MAX_GLPI, '<');
+
+      if (!$matchMinGlpiReq || !$matchMaxGlpiReq) {
+         echo vsprintf(
+            'This plugin requires GLPI >= %1$s and < %2$s.',
+            [
+               PLUGIN_CREDIT_MIN_GLPI,
+               PLUGIN_CREDIT_MAX_GLPI,
+            ]
+         );
+         return false;
+      }
    }
 
    return true;
