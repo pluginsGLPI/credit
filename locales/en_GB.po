@@ -1,22 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# English translations for PACKAGE package.
+# Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-#, fuzzy
+# Automatically generated, 2018.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-11 13:59+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2018-06-01 14:03+0000\n"
+"PO-Revision-Date: 2018-06-01 14:03+0000\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_GB\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: hook.php:78 inc/entity.class.php:330 inc/type.class.php:37
 msgid "Credit voucher type"
@@ -84,8 +83,8 @@ msgid "Active credit vouchers for ticket entity"
 msgstr "Active credit vouchers for ticket entity"
 
 #: inc/ticket.class.php:333
-msgid "Consume a voucher ?"
-msgstr "Consume a voucher ?"
+msgid "Save and consumed a voucher ?"
+msgstr "Save and consumed a voucher ?"
 
 #: inc/ticket.class.php:375
 msgid "Detail of tickets on which consumption is declared"
