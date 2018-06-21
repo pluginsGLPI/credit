@@ -23,7 +23,7 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.2.0');
+define('PLUGIN_CREDIT_VERSION', '1.3.0');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_CREDIT_MIN_GLPI", "9.3");
@@ -89,7 +89,6 @@ function plugin_version_credit() {
          'glpi' => [
             'min' => PLUGIN_CREDIT_MIN_GLPI,
             'max' => PLUGIN_CREDIT_MAX_GLPI,
-            'dev' => true, //Required to allow 9.2-dev
          ]
       ]
    ];
