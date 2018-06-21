@@ -10,99 +10,95 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-22 12:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Cédric Anne, 2018\n"
-"Language-Team: Czech (Czech Republic) (https://www.transifex.com/pluginsGLPI/teams/73419/cs_CZ/)\n"
+"Last-Translator: Markku Vepsä, 2018\n"
+"Language-Team: Finnish (Finland) (https://www.transifex.com/pluginsGLPI/teams/73419/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs_CZ\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+"Language: fi_FI\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: hook.php:78 inc/entity.class.php:330 inc/type.class.php:37
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
-msgstr[0] "Typ kuponu s kreditem"
-msgstr[1] "Typy kuponů s kreditem"
-msgstr[2] "Typů kuponů s kreditem"
-msgstr[3] "Typy kuponů s kreditem"
+msgstr[0] "Arvosetelin tyyppi"
+msgstr[1] "Arvosetelien tyypit"
 
 #: inc/entity.class.php:35 inc/ticket.class.php:35
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
-msgstr[0] "Kupon s kreditem"
-msgstr[1] "Kupony s kreditem"
-msgstr[2] "Kuponů s kreditem"
-msgstr[3] "Kupony s kreditem"
+msgstr[0] "Arvoseteli"
+msgstr[1] "Arvosetelit"
 
 #: inc/entity.class.php:132
 msgid "Add a credit voucher"
-msgstr "Přidat kupon s kreditem"
+msgstr "Lisää arvoseteli"
 
 #: inc/entity.class.php:150 inc/entity.class.php:203 inc/entity.class.php:318
 msgid "Quantity sold"
-msgstr "Prodané množství"
+msgstr "Myyty määrä"
 
 #: inc/entity.class.php:204 inc/ticket.class.php:219 inc/ticket.class.php:353
 #: inc/ticket.class.php:398 inc/ticket.class.php:534
 msgid "Quantity consumed"
-msgstr "Spotřebované množství"
+msgstr "Kulutettu määrä"
 
 #: inc/entity.class.php:205
 msgid "Quantity remaining"
-msgstr "Zbývající množství"
+msgstr "Jäljellä oleva määrä"
 
 #: inc/entity.class.php:252 inc/entity.class.php:259 inc/entity.class.php:260
 msgid "Consumed details"
-msgstr "Podrobnosti o spotřebovaných"
+msgstr "Kulutuksen tiedot"
 
 #: inc/entity.class.php:280
 msgid "No credit voucher"
-msgstr "Žádný kupon s kreditem"
+msgstr "Ei arvoseteli"
 
 #: inc/ticket.class.php:180
 msgid "Consumed credits for this ticket"
-msgstr "Kredit spotřebovaný na tento požadavek"
+msgstr "Kulutettu arvo tälle tiketille"
 
 #: inc/ticket.class.php:215 inc/ticket.class.php:343
 msgid "Voucher name"
-msgstr "Název kuponu"
+msgstr "Arvosetelin nimi"
 
 #: inc/ticket.class.php:216
 msgid "Voucher type"
-msgstr "Typ kuponu"
+msgstr "Arvosetelin tyyppi"
 
 #: inc/ticket.class.php:217 inc/ticket.class.php:396 inc/ticket.class.php:526
 msgid "Date consumed"
-msgstr "Datum spotřebování"
+msgstr "Käyttöpäivä"
 
 #: inc/ticket.class.php:218 inc/ticket.class.php:397
 msgid "User consumed"
-msgstr "Uživatel který spotřeboval"
+msgstr "Kuluttanut käyttäjä"
 
 #: inc/ticket.class.php:269 inc/ticket.class.php:384
 msgid "No credit was recorded"
-msgstr "Nebyl nahrán žádný kredit"
+msgstr "Arvoa ei kirjattu"
 
 #: inc/ticket.class.php:276
 msgid "Active credit vouchers for ticket entity"
-msgstr "Aktivní kupony s kreditem pro entitu požadavku"
+msgstr "Yksikön tikettien aktiiviset arvosetelit"
 
 #: inc/ticket.class.php:336
 msgid "Consume a voucher ?"
-msgstr "Využít kupon?"
+msgstr "Käytä arvoseteli ?"
 
 #: inc/ticket.class.php:378
 msgid "Detail of tickets on which consumption is declared"
-msgstr "Podrobnosti požadavků pro které je spotřeba deklarována"
+msgstr "Kulutukseen liitettyjen tikettien tiedot"
 
 #: inc/ticket.class.php:495
 msgid "You must provide a credit voucher"
-msgstr "Je třeba zadat kupon s kreditem"
+msgstr "Sinun täytyy antaa arvoseteli"
 
 #: inc/ticket.class.php:511
 msgid "Credit voucher successfully added."
-msgstr "Kupon s kreditem úspěšně přidán."
+msgstr "Arvoseteli lisätty onnistuneesti"
 
 #: inc/ticket.class.php:546 setup.php:83
 msgid "Credit vouchers"
-msgstr "Kupony s kreditem"
+msgstr "Arvosetelit"

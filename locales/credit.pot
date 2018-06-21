@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-01 14:03+0000\n"
+"POT-Creation-Date: 2018-06-22 12:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,8 +38,8 @@ msgstr ""
 msgid "Quantity sold"
 msgstr ""
 
-#: inc/entity.class.php:204 inc/ticket.class.php:219 inc/ticket.class.php:350
-#: inc/ticket.class.php:395 inc/ticket.class.php:507
+#: inc/entity.class.php:204 inc/ticket.class.php:219 inc/ticket.class.php:353
+#: inc/ticket.class.php:398 inc/ticket.class.php:534
 msgid "Quantity consumed"
 msgstr ""
 
@@ -59,7 +59,7 @@ msgstr ""
 msgid "Consumed credits for this ticket"
 msgstr ""
 
-#: inc/ticket.class.php:215 inc/ticket.class.php:340
+#: inc/ticket.class.php:215 inc/ticket.class.php:343
 msgid "Voucher name"
 msgstr ""
 
@@ -67,15 +67,15 @@ msgstr ""
 msgid "Voucher type"
 msgstr ""
 
-#: inc/ticket.class.php:217 inc/ticket.class.php:393 inc/ticket.class.php:499
+#: inc/ticket.class.php:217 inc/ticket.class.php:396 inc/ticket.class.php:526
 msgid "Date consumed"
 msgstr ""
 
-#: inc/ticket.class.php:218 inc/ticket.class.php:394
+#: inc/ticket.class.php:218 inc/ticket.class.php:397
 msgid "User consumed"
 msgstr ""
 
-#: inc/ticket.class.php:269 inc/ticket.class.php:381
+#: inc/ticket.class.php:269 inc/ticket.class.php:384
 msgid "No credit was recorded"
 msgstr ""
 
@@ -83,22 +83,22 @@ msgstr ""
 msgid "Active credit vouchers for ticket entity"
 msgstr ""
 
-#: inc/ticket.class.php:333
-msgid "Save and consumed a voucher ?"
+#: inc/ticket.class.php:336
+msgid "Consume a voucher ?"
 msgstr ""
 
-#: inc/ticket.class.php:375
+#: inc/ticket.class.php:378
 msgid "Detail of tickets on which consumption is declared"
 msgstr ""
 
-#: inc/ticket.class.php:475
+#: inc/ticket.class.php:495
 msgid "You must provide a credit voucher"
 msgstr ""
 
-#: inc/ticket.class.php:484
+#: inc/ticket.class.php:511
 msgid "Credit voucher successfully added."
 msgstr ""
 
-#: inc/ticket.class.php:519 setup.php:78
+#: inc/ticket.class.php:546 setup.php:83
 msgid "Credit vouchers"
 msgstr ""
