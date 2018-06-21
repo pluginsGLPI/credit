@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-01 14:03+0000\n"
+"POT-Creation-Date: 2018-06-11 13:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Cédric Anne <cedric.anne@gmail.com>, 2018\n"
+"Last-Translator: Cédric Anne, 2018\n"
 "Language-Team: Czech (Czech Republic) (https://www.transifex.com/pluginsGLPI/teams/73419/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
@@ -61,7 +61,7 @@ msgstr "Žádný kupon s kreditem"
 
 #: inc/ticket.class.php:180
 msgid "Consumed credits for this ticket"
-msgstr "Kredity spotřebované na tento požadavek"
+msgstr "Kredit spotřebovaný na tento požadavek"
 
 #: inc/ticket.class.php:215 inc/ticket.class.php:340
 msgid "Voucher name"
@@ -88,8 +88,8 @@ msgid "Active credit vouchers for ticket entity"
 msgstr "Aktivní kupony s kreditem pro entitu požadavku"
 
 #: inc/ticket.class.php:333
-msgid "Save and consumed a voucher ?"
-msgstr "Uložit spotřebovat kupon?"
+msgid "Consume a voucher ?"
+msgstr "Využít kupon?"
 
 #: inc/ticket.class.php:375
 msgid "Detail of tickets on which consumption is declared"
