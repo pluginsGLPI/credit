@@ -1,29 +1,26 @@
 <?php
-/*
- -------------------------------------------------------------------------
- credit plugin for GLPI
- Copyright (C) 2017 by the credit Development Team.
-
- https://github.com/pluginsGLPI/credit
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of credit.
-
- credit is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- credit is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with credit. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------
+ * LICENSE
+ *
+ * This file is part of credit.
+ *
+ * credit is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * credit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * --------------------------------------------------------------------------
+ * @author    François Legastelois
+ * @copyright Copyright (C) 2017-2018 by Teclib'.
+ * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @link      https://github.com/pluginsGLPI/credit
+ * @link      https://pluginsglpi.github.io/credit/
+ * -------------------------------------------------------------------------
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -74,8 +71,8 @@ class PluginCreditTicket extends CommonDBTM {
     *
     * @param $ID           integer     tickets ID
     * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
+    * @param $sqlfilter    string      to add a SQL filter (default '')
     * @return array of vouchers
    **/
    static function getAllForTicket($ID, $start = 0, $limit = 0, $sqlfilter = '') {
@@ -103,12 +100,12 @@ class PluginCreditTicket extends CommonDBTM {
 
 
    /**
-    * Get all tickets for an credit vouchers.
+    * Get all tickets for a credit vouchers.
     *
     * @param $ID           integer     plugin_credit_entities_id ID
     * @param $start        integer     first line to retrieve (default 0)
     * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param $sqlfilter    string      to add a SQL filter (default '')
     * @return array of vouchers
    **/
    static function getAllForCreditEntity($ID, $start = 0, $limit = 0, $sqlfilter = '') {
@@ -333,7 +330,7 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= "</th><th colspan='2'></th></tr>";
          $out .= "<tr><td>";
          $out .= "<label for='plugin_credit_consumed_voucher'>";
-         $out .= __('Save and consumed a voucher ?', 'credit');
+         $out .= __('Consume a voucher ?', 'credit');
          $out .= "</label>";
          $out .= "</td><td>";
          $out .= Dropdown::showYesNo('plugin_credit_consumed_voucher', 0, -1, ['display' => false]);
@@ -475,7 +472,7 @@ class PluginCreditTicket extends CommonDBTM {
             unset($ticket->input['status']);
             unset($ticket->input['solution']);
             unset($ticket->input['solutiontypes_id']);
-            Session::addMessageAfterRedirect(__('You must provide an credit voucher',
+            Session::addMessageAfterRedirect(__('You must provide a credit voucher',
                                     'credit'), true, ERROR);
          } else {
             $PluginCreditTicket = new self();

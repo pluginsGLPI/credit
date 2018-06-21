@@ -1,32 +1,34 @@
 <?php
-/*
- -------------------------------------------------------------------------
- credit plugin for GLPI
- Copyright (C) 2017 by the credit Development Team.
-
- https://github.com/pluginsGLPI/credit
- -------------------------------------------------------------------------
-
- LICENSE
-
- This file is part of credit.
-
- credit is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- credit is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with credit. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+/**
+ * --------------------------------------------------------------------------
+ * LICENSE
+ *
+ * This file is part of credit.
+ *
+ * credit is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * credit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * --------------------------------------------------------------------------
+ * @author    François Legastelois
+ * @copyright Copyright (C) 2017-2018 by Teclib'.
+ * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @link      https://github.com/pluginsGLPI/credit
+ * @link      https://pluginsglpi.github.io/credit/
+ * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.1.1');
+define('PLUGIN_CREDIT_VERSION', '1.2.0');
+
+// Minimal GLPI version, inclusive
+define("PLUGIN_CREDIT_MIN_GLPI", "9.2");
+// Maximum GLPI version, exclusive
+define("PLUGIN_CREDIT_MAX_GLPI", "9.3");
 
 /**
  * Init hooks of the plugin.
@@ -80,9 +82,9 @@ function plugin_version_credit() {
       'homepage'       => 'https://github.com/pluginsGLPI/credit',
       'requirements'   => [
          'glpi' => [
-            'min' => '9.2',
-            'max' => '9.3',
-            'dev' => true
+            'min' => PLUGIN_CREDIT_MIN_GLPI,
+            'max' => PLUGIN_CREDIT_MAX_GLPI,
+            'dev' => true, //Required to allow 9.2-dev
          ]
       ]
    ];
@@ -94,6 +96,25 @@ function plugin_version_credit() {
  * @return boolean
  */
 function plugin_credit_check_prerequisites() {
+
+   //Version check is not done by core in GLPI < 9.2 but has to be delegated to core in GLPI >= 9.2.
+   $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+   if (version_compare($version, '9.2', '<')) {
+      $matchMinGlpiReq = version_compare($version, PLUGIN_CREDIT_MIN_GLPI, '>=');
+      $matchMaxGlpiReq = version_compare($version, PLUGIN_CREDIT_MAX_GLPI, '<');
+
+      if (!$matchMinGlpiReq || !$matchMaxGlpiReq) {
+         echo vsprintf(
+            'This plugin requires GLPI >= %1$s and < %2$s.',
+            [
+               PLUGIN_CREDIT_MIN_GLPI,
+               PLUGIN_CREDIT_MAX_GLPI,
+            ]
+         );
+         return false;
+      }
+   }
+
    return true;
 }
 
