@@ -23,12 +23,12 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.2.0');
+define('PLUGIN_CREDIT_VERSION', '1.3.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "9.2");
+define("PLUGIN_CREDIT_MIN_GLPI", "9.3");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "9.3");
+define("PLUGIN_CREDIT_MAX_GLPI", "9.4");
 
 /**
  * Init hooks of the plugin.
@@ -57,11 +57,16 @@ function plugin_init_credit() {
       if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
          Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
-         $PLUGIN_HOOKS['post_item_form']['credit'] =
-            ['PluginCreditTicket', 'postSolutionForm'];
+         $PLUGIN_HOOKS['post_item_form']['credit'] = [
+            'PluginCreditTicket',
+            'displayVoucherInTicketProcessingForm'
+         ];
 
-         $PLUGIN_HOOKS['pre_item_update']['credit'] =
-            ['Ticket' => ['PluginCreditTicket', 'beforeUpdate']];
+         $PLUGIN_HOOKS['pre_item_add']['credit'] = [
+            'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
+            'TicketFollowup' => ['PluginCreditTicket', 'consumeVoucher'],
+            'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
+         ];
       }
    }
 }
@@ -84,7 +89,6 @@ function plugin_version_credit() {
          'glpi' => [
             'min' => PLUGIN_CREDIT_MIN_GLPI,
             'max' => PLUGIN_CREDIT_MAX_GLPI,
-            'dev' => true, //Required to allow 9.2-dev
          ]
       ]
    ];
