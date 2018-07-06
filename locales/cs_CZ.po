@@ -93,7 +93,7 @@ msgstr "Využít kupon?"
 
 #: inc/ticket.class.php:378
 msgid "Detail of tickets on which consumption is declared"
-msgstr "Podrobnosti požadavků pro které je spotřeba deklarována"
+msgstr "Podrobnosti požadavků na které je spotřebováváno"
 
 #: inc/ticket.class.php:495
 msgid "You must provide a credit voucher"
