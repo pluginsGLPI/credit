@@ -63,7 +63,7 @@ class PluginCreditTicket extends CommonDBTM {
     * @param $item    CommonDBTM object
    **/
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable(self::getTable(), ['tickets_id' = $item->getID()]);
+      return countElementsInTable(self::getTable(), ['tickets_id' => $item->getID()]);
    }
 
    /**
