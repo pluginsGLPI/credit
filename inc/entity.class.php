@@ -61,7 +61,7 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $item    CommonDBTM object
    **/
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable(self::getTable(), "`entities_id` = '".$item->getID()."'");
+      return countElementsInTable(self::getTable(), ['entities_id' => $item->getID()]);
    }
 
    public function post_purgeItem() {
