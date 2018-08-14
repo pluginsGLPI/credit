@@ -27,6 +27,8 @@
 * @brief
 */
 
+use Glpi\Event;
+
 include ('../../../inc/includes.php');
 
 Session::haveRight("entity", UPDATE);
