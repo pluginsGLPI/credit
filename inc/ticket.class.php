@@ -576,7 +576,7 @@ class PluginCreditTicket extends CommonDBTM {
                      KEY `date_creation` (`date_creation`),
                      KEY `consumed` (`consumed`),
                      KEY `users_id` (`users_id`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       } else {
 
