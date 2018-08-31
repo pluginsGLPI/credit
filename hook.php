@@ -79,3 +79,31 @@ function plugin_credit_getDropdown() {
                                     Session::getPluralNumber(),
                                     'credit')];
 }
+
+function plugin_credit_get_datas(NotificationTargetTicket $target) {
+   global $DB;
+   $target->data['##lang.credit.voucher##']=__('Credit voucher', 'credit');
+   $target->data['##lang.credit.used##']=__('Quantity consumed', 'credit');
+   $target->data['##lang.credit.left##']=__('Quantity remaining', 'credit');
+   $id=$target->data['##ticket.id##'];
+   $query = "SELECT gpce.id as id,
+            count(gpct.consumed) as quantity,
+            gpce.name as credit,
+            rest
+         FROM glpi_plugin_credit_tickets as gpct
+         inner join glpi_tickets as gt on gt.id=gpct.tickets_id
+         inner join glpi_plugin_credit_entities as gpce on gpce.id=gpct.plugin_credit_entities_id
+         inner join (SELECT gpce.id,`gpce`.`quantity`-SUM(consumed) as rest
+            FROM `glpi_plugin_credit_entities` as gpce
+            left join glpi_plugin_credit_tickets as gpct on (`gpct`.`plugin_credit_entities_id` = `gpce`.`id`)
+            group by gpce.id) as gpcr on gpcr.id=gpce.id
+         where gt.id=".$id."
+         group by id,gpce.name";
+   foreach ($DB->request($query) as $id=>$credit) {
+      $target->data["credit.ticket"][] =[
+         '##credit.voucher##' => $credit['credit'],
+         '##credit.used##' => $credit['quantity'],
+         '##credit.left##' => $credit['rest'],
+      ];
+   }
+}
