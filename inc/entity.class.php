@@ -61,7 +61,7 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $item    CommonDBTM object
    **/
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable(self::getTable(), "`entities_id` = '".$item->getID()."'");
+      return countElementsInTable(self::getTable(), ['entities_id' => $item->getID()]);
    }
 
    public function post_purgeItem() {
@@ -363,7 +363,7 @@ class PluginCreditEntity extends CommonDBTM {
                      KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
                      KEY `begin_date` (`begin_date`),
                      KEY `end_date` (`end_date`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
    }
