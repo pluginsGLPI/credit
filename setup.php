@@ -23,7 +23,7 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.3.2');
+define('PLUGIN_CREDIT_VERSION', '1.4.0');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_CREDIT_MIN_GLPI", "9.3");
@@ -68,6 +68,7 @@ function plugin_init_credit() {
             'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
          ];
       }
+      $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
    }
 }
 
