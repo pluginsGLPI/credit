@@ -51,7 +51,7 @@ function plugin_init_credit() {
    if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
 
       if (Session::haveRight('entity', UPDATE)) {
-         Plugin::registerClass('PluginCreditEntity', ['addtabon' => 'Entity']);
+         Plugin::registerClass('PluginCreditEntity', ['notificationtemplates_types' => true,'addtabon' => 'Entity']);
       }
 
       if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
