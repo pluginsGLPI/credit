@@ -44,6 +44,17 @@ function plugin_credit_install() {
          }
       }
    }
+
+   CronTask::register(
+      'PluginCreditEntity',
+      'creditexpired',
+      DAY_TIMESTAMP,
+      [
+         'comment' => '',
+         'mode' => CronTask::MODE_EXTERNAL,
+      ]
+   );
+
    return true;
 }
 
