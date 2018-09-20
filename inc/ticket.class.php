@@ -500,6 +500,23 @@ class PluginCreditTicket extends CommonDBTM {
       }
 
       $PluginCreditTicket = new self();
+
+      $PluginCreditEntity = new PluginCreditEntity();
+      $PluginCreditEntity->getFromDB($item->input['plugin_credit_entities_id']);
+
+      $quantity=$PluginCreditEntity->getField('quantity');
+      $quantity_consumed=$PluginCreditTicket->getConsumedForCreditEntity($item->input['plugin_credit_entities_id']);
+      $quantity_remain=$quantity-$quantity_consumed;
+
+      if ($quantity_remain<$item->input['plugin_credit_quantity']) {
+         Session::addMessageAfterRedirect(
+            __('Quantity consumed exceeds remaining credits: ', 'credit').$quantity_remain,
+            true,
+            ERROR
+         );
+         return false;
+      }
+
       $input = [
          'tickets_id'                => $ticket->getID(),
          'plugin_credit_entities_id' => $item->input['plugin_credit_entities_id'],
