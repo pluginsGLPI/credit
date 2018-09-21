@@ -291,6 +291,9 @@ class PluginCreditTicket extends CommonDBTM {
     * @return void
     */
    static public function displayVoucherInTicketProcessingForm($params) {
+
+      global $CFG_GLPI;
+
       $item = $params['item'];
 
       if (!($item instanceof ITILSolution)
@@ -327,6 +330,7 @@ class PluginCreditTicket extends CommonDBTM {
          $canedit = false;
       }
 
+      $rand=mt_rand();
       if ($canedit) {
          $out .= "<tr><th colspan='2'>";
          $out .= self::getTypeName(2);
@@ -346,18 +350,22 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= PluginCreditEntity::dropdown(['name'      => 'plugin_credit_entities_id',
                                                'entity'    => $ticket->getEntityID(),
                                                'display'   => false,
-                                               'condition' => "`is_active`='1'"]);
+                                               'condition' => "`is_active`='1'",
+                                               'rand'      => $rand]);
          $out .= "</td><td colspan='2'></td>";
          $out .= "</tr><tr><td>";
          $out .= "<label for='plugin_credit_quantity'>";
          $out .= __('Quantity consumed', 'credit');
          $out .= "</label>";
          $out .= "</td><td>";
-         $out .= Dropdown::showNumber("plugin_credit_quantity", ['value'   => '',
-                                                                 'min'     => 1,
-                                                                 'max'     => 200,
-                                                                 'step'    => 1,
-                                                                 'display' => false]);
+         $out .= "<div id='plugin_credit_quantity_container$rand'></div>";
+         $out .= Ajax::updateItemOnSelectEvent(
+            "dropdown_plugin_credit_entities_id$rand",
+            "plugin_credit_quantity_container$rand",
+            $CFG_GLPI["root_doc"] . "/plugins/credit/ajax/dropdownQuantity.php",
+            ['entity' => '__VALUE__'],
+            false
+         );
          $out .= "</td><td colspan='2'></td></tr>";
       }
 
