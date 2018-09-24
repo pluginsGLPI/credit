@@ -346,36 +346,59 @@ class PluginCreditEntity extends CommonDBTM {
    static function cronCreditExpired($task) {
       global $CFG_GLPI,$DB;
 
-      $cron_status=0;
-      $message="";
+      $cron_status=1;
 
-      if ($task->fields['param']>0) {
-         $days="+ ".$task->fields['param']." days";
-      } else {
-         $days="";
-      }
+      $days="+ ".(int)$task->fields['param']." days";
 
-      $nb = 0;
-      foreach ($DB->request(['FROM' => 'glpi_plugin_credit_entities','WHERE' => ['is_active' => 1]]) as $id => $row) {
+      $alert   = new Alert();
+      $query=[
+         'SELECT' =>[
+            'glpi_plugin_credit_entities.*',
+         ],
+         'FROM' => 'glpi_plugin_credit_entities',
+         'LEFT JOIN'=>[
+            'glpi_alerts'=>[
+               'FKEY'=>[
+                  'glpi_alerts'=>'items_id',
+                  'glpi_plugin_credit_entities'=>'id',
+                  [
+                     'AND'=>[
+                        'glpi_alerts.itemtype'=>__CLASS__,
+                        'glpi_alerts.type'=>Alert::END,
+                     ],
+                  ],
+               ]
+            ]
+         ],
+         'WHERE' => [
+            'glpi_alerts.date'              => null,
+            'glpi_plugin_credit_entities.is_active' => 1,
+         ],
+      ];
+      foreach ($DB->request($query) as $id => $row) {
 
          if (date("Y-m-d", strtotime('now '.$days))==date("Y-m-d", strtotime($row['end_date']))) {
-            $message.=date("Y-m-d H:i")." Credit ".$row['name']." expires on ".date("Y-m-d", strtotime($row['end_date']))."\xA";
+
+            $task->addVolume(1);
+            $task->log("Credit ".$row['name']." expires on ".date("Y-m-d", strtotime($row['end_date'])));
+
             $credit= new PluginCreditEntity();
             $credit->getFromDB($row['id']);
             if ($CFG_GLPI["use_notifications"]) {
                NotificationEvent::raiseEvent('expired', $credit);
+
+               $input=[
+                  'type'     => Alert::END,
+                  'itemtype' => __CLASS__,
+                  'items_id' =>$row['id'],
+               ];
+               $alert->add($input);
+               unset($alert->fields['id']);
             }
-            $nb++;
          }
       }
 
-      if ($nb) {
-         $task->addVolume($nb);
-         $task->log($message);
-         file_put_contents("../files/_log/creditexpired.log", $message, FILE_APPEND);
-      }
-
-      return $cron_status;
+      return true;
    }
 
    /**

@@ -9,31 +9,35 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
    }
 
    public function addDataForTemplate($event, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
-      $this->data['##credit.voucher##'] = $this->obj->getField('name');
-      $this->data['##credit.quantity##'] = $this->obj->getField('quantity');
+      $this->data['##credit.name##'] = $this->obj->getField('name');
+      $this->data['##credit.quantity_sold##'] = $this->obj->getField('quantity');
       $this->data['##credit.enddate##'] = $this->obj->getField('end_date');
 
-      $query='SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) AS `consumed_total`
-              FROM `glpi_plugin_credit_tickets` 
-              WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = '.$this->obj->getField('id');
-      $result = $DB->query($query);
-      $data = $DB->fetch_assoc($result);
-      $this->data['##credit.left##']=(int)$this->obj->getField('quantity')-(int)$data['consumed_total'];
+      $req=$DB->request(['SELECT'=>['SUM'=>'consumed AS consumed_total'], 'FROM'=>'glpi_plugin_credit_tickets','WHERE'=>['plugin_credit_entities_id'=>$this->obj->getField('id')]]);
+      $data=$req->next();
+      $this->data['##credit.quantity_remaining##']=(int)$this->obj->getField('quantity')-(int)$data['consumed_total'];
 
       $this->data['##lang.credit.enddate##']=__('End date');
-      $this->data['##lang.credit.left##']=__('Quantity remaining', 'credit');
-      $this->data['##lang.credit.quantity##']=__('Quantity sold', 'credit');
-      $this->data['##lang.credit.voucher##']=__('Credit voucher', 'credit');
+      $this->data['##lang.credit.quantity_remaining##']=__('Quantity remaining', 'credit');
+      $this->data['##lang.credit.quantity_sold##']=__('Quantity sold', 'credit');
+      $this->data['##lang.credit.name##']=__('Credit voucher', 'credit');
+
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
+         }
+      }
    }
 
    public function getTags() {
       $tags=[
-         'credit.voucher' => __('Credit voucher', 'credit'),
-         'credit.quantity' => __('Quantity sold', 'credit'),
-         'credit.enddate' => __('End date'),
-         'credit.left'    => __('Quantity remaining', 'credit'),
+         'credit.name'                 => __('Credit voucher', 'credit'),
+         'credit.quantity_sold'        => __('Quantity sold', 'credit'),
+         'credit.enddate'              => __('End date'),
+         'credit.quantity_remaining'   => __('Quantity remaining', 'credit'),
       ];
 
       foreach ($tags as $tag => $label) {
@@ -44,7 +48,19 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
          ]);
       }
 
+      $lang=['credit.expired'=>__("will expire soon"),
+            'credit.expired.information'=>__("This will expire soon.\nPlease, consider buying a new one")
+      ];
+
+      foreach ($lang as $tag => $label) {
+         $this->addTagToList(['tag'   => $tag,
+                              'label' => $label,
+                              'value' => false,
+                              'lang'  => true]);
+      }
+
       asort($this->tag_descriptions);
+      return $this->tag_descriptions;
    }
 
 
@@ -59,14 +75,11 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       $n_n_template = new Notification_NotificationTemplate();
 
       $templates_id = false;
-      $query_id     = "SELECT `id`
-                       FROM `glpi_notificationtemplates`
-                       WHERE `itemtype`='PluginCreditEntity'
-                       AND `name` = 'Credit expired'";
-      $result       = $DB->query($query_id) or die ($DB->error());
+      $result=$DB->request(['SELECT'=>'id', 'FROM'=>'glpi_notificationtemplates','WHERE'=>['itemtype'=>'PluginCreditEntity','name'=>'Credit expired']]);
 
-      if ($DB->numrows($result) > 0) {
-         $templates_id = $DB->result($result, 0, 'id');
+      if (count($result) > 0) {
+         $data=$result->next();
+         $templates_id =$data['id'];
       } else {
          $tmp = [
             'name'     => 'Credit expired',
@@ -81,18 +94,12 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       if ($templates_id) {
          if (!countElementsInTable($translation->getTable(), ['notificationtemplates_id' => $templates_id])) {
 
-            $contentText = 'The credit ##credit.voucher## will expire soon.';
-            $contentText.= 'Please, consider renew it quickly.';
-
-            $contentHtml = '<p>The credit <strong>##credit.voucher##</strong> will expire soon.</p>';
-            $contentHtml.= '<p>Please, consider renew it quickly.</p>';
-
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
             $tmp['language']                 = '';
-            $tmp['subject']                  = '##lang.credit.voucher##';
-            $tmp['content_text']             = $contentText;
-            $tmp['content_html']             = $contentHtml;
+            $tmp['subject']                  = '##credit.name## ##lang.credit.expired##';
+            $tmp['content_text']             = '##lang.credit.expired.information##';
+            $tmp['content_html']             = '##lang.credit.expired.information##';
             $translation->add($tmp);
          }
 
