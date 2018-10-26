@@ -127,20 +127,24 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "<div class='firstbloc'>";
          $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
          $out .= self::getFormUrl()."'>";
-         $out .= "<table class='tab_cadre_fixe'>";
-         $out .= "<tr class='tab_bg_1'><th colspan='7'>";
-         $out .= __('Add a credit voucher', 'credit')."</th></tr>";
-         $out .= "<tr class='tab_bg_1'>";
          $out .= "<input type='hidden' name='entities_id' value='$ID'>";
+         $out .= "<table class='tab_cadre_fixe'>";
+         $out .= "<tr class='tab_bg_1'>";
+         $out .= "<th colspan='8'>" . __('Add a credit voucher', 'credit') . "</th>";
+         $out .= "</tr>";
+         $out .= "<tr class='tab_bg_1'>";
          $out .= "<td>". __('Name')."</td>";
-         $out .= "<td>".Html::input("name", ['size' => 50])."</td>";
-         $out .= "<td class='tab_bg_2 right'>".__('Type')."</td><td>";
+         $out .= "<td colspan='3'>".Html::input("name", ['size' => 50])."</td>";
+         $out .= "<td class='tab_bg_2 right'>".__('Type')."</td>";
+         $out .= "<td>";
          $out .= PluginCreditType::dropdown(['name'    => 'plugin_credit_types_id',
                                              'display' => false]);
          $out .= "</td>";
-         $out .= "<td class='tab_bg_2 right'>".__('Start date')."</td><td>";
+         $out .= "<td class='tab_bg_2 right'>".__('Start date')."</td>";
+         $out .= "<td>";
          $out .= Html::showDateField("begin_date", ['value'   => '', 'display' => false]);
-         $out .= "</td></tr>";
+         $out .= "</td>";
+         $out .= "</tr>";
          $out .= "<tr class='tab_bg_1'>";
          $out .= "<td>".__('Active')."</td>";
          $out .= "<td>";
@@ -154,11 +158,21 @@ class PluginCreditEntity extends CommonDBTM {
                                                    'step'    => 1,
                                                    'toadd'   => [0 => __('Unlimited')],
                                                    'display' => false]);
-         $out .= "</td><td class='tab_bg_2 right'>".__('End date')."</td><td>";
+         $out .= "</td>";
+         $out .= "<td>".__('Allow overconsumption', 'credit')."</td>";
+         $out .= "<td>";
+         $out .= Dropdown::showYesNo("overconsumption_allowed", 0, -1, ['display' => false]);
+         $out .= "</td>";
+         $out .= "<td class='tab_bg_2 right'>".__('End date')."</td>";
+         $out .= "<td>";
          $out .= Html::showDateField("end_date", ['value' => '', 'display' => false]);
-         $out .= "</td><td class='tab_bg_2 right'>";
+         $out .= "</td>";
+         $out .= "</tr>";
+         $out .= "<tr class='tab_bg_1'>";
+         $out .= "<td class='tab_bg_2 center' colspan='8'>";
          $out .= "<input type='submit' name='add' value='"._sx('button', 'Add')."' class='submit'>";
-         $out .= "</td></tr>";
+         $out .= "</td>";
+         $out .= "</tr>";
          $out .= "</table>";
          $out .= Html::closeForm(false);
          $out .= "</div>";
@@ -203,6 +217,7 @@ class PluginCreditEntity extends CommonDBTM {
          $header_end .= "<th>".__('Quantity sold', 'credit')."</th>";
          $header_end .= "<th>".__('Quantity consumed', 'credit')."</th>";
          $header_end .= "<th>".__('Quantity remaining', 'credit')."</th>";
+         $header_end .= "<th>".__('Allow overconsumption', 'credit')."</th>";
          $header_end .= "</tr>";
          $out .= $header_begin.$header_top.$header_end;
 
@@ -239,8 +254,10 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "<td class='tab_date'>";
             $out .= Html::convDate($data["end_date"]);
             $out .= "</td>";
+
+            $quantity_sold = (int)$data['quantity'];
             $out .= "<td class='center'>";
-            $out .= ($data['quantity']==0) ? __('Unlimited') : $data['quantity'];;
+            $out .= 0 === $quantity_sold ? __('Unlimited') : $quantity_sold;
             $out .= "</td>";
 
             $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
@@ -262,10 +279,14 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "</a></td>";
 
             $out .= "<td class='center'>";
-            $out .= ($data['quantity']==0)
-                        ? __('Unlimited')
-                        : $data['quantity'] - $quantity_consumed;
-            $out .= "</td></tr>";
+            $out .= 0 === $quantity_sold
+                    ? __('Unlimited')
+                    : max(0, $quantity_sold - $quantity_consumed);
+
+            $out .= "</td><td>";
+            $out .= ($data["overconsumption_allowed"]) ? __('Yes') : __('No');
+            $out .= "</td>";
+            $out .= "</tr>";
          }
 
          $out .= $header_begin.$header_bottom.$header_end;
@@ -331,6 +352,14 @@ class PluginCreditEntity extends CommonDBTM {
          'datatype' => 'dropdown',
       ];
 
+      $tab[] = [
+         'id'       => 996,
+         'table'    => self::getTable(),
+         'field'    => 'overconsumption_allowed',
+         'name'     => __('Allow overconsumption', 'credit'),
+         'datatype' => 'bool',
+      ];
+
       return $tab;
    }
 
@@ -356,6 +385,7 @@ class PluginCreditEntity extends CommonDBTM {
                      `begin_date` datetime DEFAULT NULL,
                      `end_date` datetime DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
+                     `overconsumption_allowed` tinyint(1) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
@@ -365,6 +395,20 @@ class PluginCreditEntity extends CommonDBTM {
                      KEY `end_date` (`end_date`)
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
+      } else {
+         $migration->displayMessage("Upgrading $table");
+
+         if (!$DB->fieldExists($table, 'overconsumption_allowed')) {
+            //1.5.0
+            $migration->addField(
+               $table,
+               "overconsumption_allowed",
+               "TINYINT(1) NOT NULL DEFAULT '0'",
+               [
+                  'update' => "1",
+               ]
+            );
+         }
       }
    }
 
