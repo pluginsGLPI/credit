@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-22 12:21+0000\n"
+"POT-Creation-Date: 2018-10-26 11:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Cédric Anne, 2018\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/pluginsGLPI/teams/73419/ko_KR/)\n"
@@ -18,38 +18,42 @@ msgstr ""
 "Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: hook.php:78 inc/entity.class.php:330 inc/type.class.php:37
+#: hook.php:78 inc/entity.class.php:351 inc/type.class.php:37
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "신용 할인 쿠폰 유형"
 
-#: inc/entity.class.php:35 inc/ticket.class.php:35
+#: hook.php:87 inc/entity.class.php:35 inc/ticket.class.php:35
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "신용 할인 쿠폰"
 
-#: inc/entity.class.php:132
-msgid "Add a credit voucher"
-msgstr "신용 할인 쿠폰 추가"
-
-#: inc/entity.class.php:150 inc/entity.class.php:203 inc/entity.class.php:318
-msgid "Quantity sold"
-msgstr "판매 수량"
-
-#: inc/entity.class.php:204 inc/ticket.class.php:219 inc/ticket.class.php:353
-#: inc/ticket.class.php:398 inc/ticket.class.php:534
+#: hook.php:88 inc/entity.class.php:218 inc/ticket.class.php:219
+#: inc/ticket.class.php:358 inc/ticket.class.php:406 inc/ticket.class.php:573
 msgid "Quantity consumed"
 msgstr "소비 수량"
 
-#: inc/entity.class.php:205
+#: hook.php:89 inc/entity.class.php:219
 msgid "Quantity remaining"
 msgstr "잔여 수량"
 
-#: inc/entity.class.php:252 inc/entity.class.php:259 inc/entity.class.php:260
+#: inc/entity.class.php:133
+msgid "Add a credit voucher"
+msgstr "신용 할인 쿠폰 추가"
+
+#: inc/entity.class.php:154 inc/entity.class.php:217 inc/entity.class.php:339
+msgid "Quantity sold"
+msgstr "판매 수량"
+
+#: inc/entity.class.php:162 inc/entity.class.php:220 inc/entity.class.php:359
+msgid "Allow overconsumption"
+msgstr ""
+
+#: inc/entity.class.php:269 inc/entity.class.php:276 inc/entity.class.php:277
 msgid "Consumed details"
 msgstr "소비 상세"
 
-#: inc/entity.class.php:280
+#: inc/entity.class.php:301
 msgid "No credit voucher"
 msgstr "신용 할인 쿠폰 없음"
 
@@ -57,7 +61,7 @@ msgstr "신용 할인 쿠폰 없음"
 msgid "Consumed credits for this ticket"
 msgstr "이 티켓에 대해 소비된 신용"
 
-#: inc/ticket.class.php:215 inc/ticket.class.php:343
+#: inc/ticket.class.php:215 inc/ticket.class.php:347
 msgid "Voucher name"
 msgstr "할인 쿠폰 명"
 
@@ -65,15 +69,15 @@ msgstr "할인 쿠폰 명"
 msgid "Voucher type"
 msgstr "할인 쿠폰 유형"
 
-#: inc/ticket.class.php:217 inc/ticket.class.php:396 inc/ticket.class.php:526
+#: inc/ticket.class.php:217 inc/ticket.class.php:404 inc/ticket.class.php:565
 msgid "Date consumed"
 msgstr "소비 일자"
 
-#: inc/ticket.class.php:218 inc/ticket.class.php:397
+#: inc/ticket.class.php:218 inc/ticket.class.php:405
 msgid "User consumed"
 msgstr "사용자 소비"
 
-#: inc/ticket.class.php:269 inc/ticket.class.php:384
+#: inc/ticket.class.php:269 inc/ticket.class.php:392
 msgid "No credit was recorded"
 msgstr "기록된 신용 없음"
 
@@ -81,22 +85,27 @@ msgstr "기록된 신용 없음"
 msgid "Active credit vouchers for ticket entity"
 msgstr "티켓 요소에 대한 신용 할인 쿠폰 활성화"
 
-#: inc/ticket.class.php:336
+#: inc/ticket.class.php:340
 msgid "Consume a voucher ?"
 msgstr "할인 쿠폰을 사용합니까?"
 
-#: inc/ticket.class.php:378
+#: inc/ticket.class.php:386
 msgid "Detail of tickets on which consumption is declared"
 msgstr "소비로 정의된 티켓의 상세"
 
-#: inc/ticket.class.php:495
+#: inc/ticket.class.php:503
 msgid "You must provide a credit voucher"
 msgstr "신용 할인 쿠폰을 제공해야 합니다"
 
-#: inc/ticket.class.php:511
+#: inc/ticket.class.php:523 inc/ticket.class.php:532
+#, php-format
+msgid "Quantity consumed exceeds remaining credits: %d"
+msgstr ""
+
+#: inc/ticket.class.php:550
 msgid "Credit voucher successfully added."
 msgstr "신용 할인 쿠폰이 추가되었습니다"
 
-#: inc/ticket.class.php:546 setup.php:83
+#: inc/ticket.class.php:585 setup.php:84
 msgid "Credit vouchers"
 msgstr "신용 할인 쿠폰"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-22 12:21+0000\n"
+"POT-Creation-Date: 2018-10-26 11:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: liAnGjiA <liangjia@qq.com>, 2018\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/pluginsGLPI/teams/73419/zh_CN/)\n"
@@ -18,38 +18,42 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: hook.php:78 inc/entity.class.php:330 inc/type.class.php:37
+#: hook.php:78 inc/entity.class.php:351 inc/type.class.php:37
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "信用凭证类型"
 
-#: inc/entity.class.php:35 inc/ticket.class.php:35
+#: hook.php:87 inc/entity.class.php:35 inc/ticket.class.php:35
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "信用凭证"
 
-#: inc/entity.class.php:132
-msgid "Add a credit voucher"
-msgstr "添加信用凭证"
-
-#: inc/entity.class.php:150 inc/entity.class.php:203 inc/entity.class.php:318
-msgid "Quantity sold"
-msgstr "销售数量"
-
-#: inc/entity.class.php:204 inc/ticket.class.php:219 inc/ticket.class.php:353
-#: inc/ticket.class.php:398 inc/ticket.class.php:534
+#: hook.php:88 inc/entity.class.php:218 inc/ticket.class.php:219
+#: inc/ticket.class.php:358 inc/ticket.class.php:406 inc/ticket.class.php:573
 msgid "Quantity consumed"
 msgstr "消耗量"
 
-#: inc/entity.class.php:205
+#: hook.php:89 inc/entity.class.php:219
 msgid "Quantity remaining"
 msgstr "剩余量"
 
-#: inc/entity.class.php:252 inc/entity.class.php:259 inc/entity.class.php:260
+#: inc/entity.class.php:133
+msgid "Add a credit voucher"
+msgstr "添加信用凭证"
+
+#: inc/entity.class.php:154 inc/entity.class.php:217 inc/entity.class.php:339
+msgid "Quantity sold"
+msgstr "销售数量"
+
+#: inc/entity.class.php:162 inc/entity.class.php:220 inc/entity.class.php:359
+msgid "Allow overconsumption"
+msgstr ""
+
+#: inc/entity.class.php:269 inc/entity.class.php:276 inc/entity.class.php:277
 msgid "Consumed details"
 msgstr " 消耗明细"
 
-#: inc/entity.class.php:280
+#: inc/entity.class.php:301
 msgid "No credit voucher"
 msgstr "暂无信用凭证"
 
@@ -57,7 +61,7 @@ msgstr "暂无信用凭证"
 msgid "Consumed credits for this ticket"
 msgstr "消费券"
 
-#: inc/ticket.class.php:215 inc/ticket.class.php:343
+#: inc/ticket.class.php:215 inc/ticket.class.php:347
 msgid "Voucher name"
 msgstr "凭证名称"
 
@@ -65,15 +69,15 @@ msgstr "凭证名称"
 msgid "Voucher type"
 msgstr "凭证类型"
 
-#: inc/ticket.class.php:217 inc/ticket.class.php:396 inc/ticket.class.php:526
+#: inc/ticket.class.php:217 inc/ticket.class.php:404 inc/ticket.class.php:565
 msgid "Date consumed"
 msgstr "消耗日期"
 
-#: inc/ticket.class.php:218 inc/ticket.class.php:397
+#: inc/ticket.class.php:218 inc/ticket.class.php:405
 msgid "User consumed"
 msgstr "用户消费"
 
-#: inc/ticket.class.php:269 inc/ticket.class.php:384
+#: inc/ticket.class.php:269 inc/ticket.class.php:392
 msgid "No credit was recorded"
 msgstr "没有信用记录"
 
@@ -81,22 +85,27 @@ msgstr "没有信用记录"
 msgid "Active credit vouchers for ticket entity"
 msgstr "信用凭证实体票据"
 
-#: inc/ticket.class.php:336
+#: inc/ticket.class.php:340
 msgid "Consume a voucher ?"
 msgstr " 消费凭证？ "
 
-#: inc/ticket.class.php:378
+#: inc/ticket.class.php:386
 msgid "Detail of tickets on which consumption is declared"
 msgstr "申报消费的票证明细"
 
-#: inc/ticket.class.php:495
+#: inc/ticket.class.php:503
 msgid "You must provide a credit voucher"
 msgstr "你必须提供信用凭证"
 
-#: inc/ticket.class.php:511
+#: inc/ticket.class.php:523 inc/ticket.class.php:532
+#, php-format
+msgid "Quantity consumed exceeds remaining credits: %d"
+msgstr ""
+
+#: inc/ticket.class.php:550
 msgid "Credit voucher successfully added."
 msgstr "信用凭证成功添加。"
 
-#: inc/ticket.class.php:546 setup.php:83
+#: inc/ticket.class.php:585 setup.php:84
 msgid "Credit vouchers"
 msgstr "信用凭证"
