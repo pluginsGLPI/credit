@@ -23,12 +23,12 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.5.0');
+define('PLUGIN_CREDIT_VERSION', '1.6.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "9.3");
+define("PLUGIN_CREDIT_MIN_GLPI", "9.4");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "9.4");
+define("PLUGIN_CREDIT_MAX_GLPI", "9.5");
 
 /**
  * Init hooks of the plugin.
@@ -63,8 +63,8 @@ function plugin_init_credit() {
          ];
 
          $PLUGIN_HOOKS['pre_item_add']['credit'] = [
+            'ITILFollowup'   => ['PluginCreditTicket', 'consumeVoucher'],
             'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
-            'TicketFollowup' => ['PluginCreditTicket', 'consumeVoucher'],
             'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
          ];
       }
