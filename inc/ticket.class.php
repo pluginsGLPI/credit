@@ -297,8 +297,8 @@ class PluginCreditTicket extends CommonDBTM {
       $item = $params['item'];
 
       if (!($item instanceof ITILSolution)
-          && !($item instanceof TicketFollowup)
-          && !($item instanceof TicketTask)) {
+          && !($item instanceof TicketTask)
+          && !($item instanceof ITILFollowup)) {
          return;
       }
 
@@ -310,11 +310,11 @@ class PluginCreditTicket extends CommonDBTM {
       $ticket = null;
       if (array_key_exists('parent', $params['options'])
           && $params['options']['parent'] instanceof Ticket) {
-         // Ticket can be found in `parent` option for TicketFollowup and TicketTask.
+         // Ticket can be found in `parent` option for TicketTask.
          $ticket = $params['options']['parent'];
       } else if (array_key_exists('item', $params['options'])
                  && $params['options']['item'] instanceof Ticket) {
-         // Ticket can be found in `'item'` option for ITILSolution.
+         // Ticket can be found in `'item'` option for ITILFollowup and ITILSolution.
          $ticket = $params['options']['item'];
       }
 
@@ -350,7 +350,7 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= PluginCreditEntity::dropdown(['name'      => 'plugin_credit_entities_id',
                                                'entity'    => $ticket->getEntityID(),
                                                'display'   => false,
-                                               'condition' => "`is_active`='1'",
+                                               'condition' => ['is_active' => 1],
                                                'rand'      => $rand]);
          $out .= "</td><td colspan='2'></td>";
          $out .= "</tr><tr><td>";
@@ -473,12 +473,12 @@ class PluginCreditTicket extends CommonDBTM {
 
       $ticketId = null;
       if (array_key_exists('tickets_id', $item->fields)) {
-         // Ticket ID can be found in `tickets_id` field for TicketFollowup and TicketTask.
+         // Ticket ID can be found in `tickets_id` field for TicketTask.
          $ticketId = $item->fields['tickets_id'];
       } else if (array_key_exists('itemtype', $item->fields)
                  && array_key_exists('items_id', $item->fields)
                  && 'Ticket' == $item->fields['itemtype']) {
-         // Ticket ID can be found in `items_id` field for ITILSolution.
+         // Ticket ID can be found in `items_id` field for ITILFollowup and ITILSolution.
          $ticketId = $item->fields['items_id'];
       }
 
