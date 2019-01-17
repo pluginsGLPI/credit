@@ -363,6 +363,73 @@ class PluginCreditEntity extends CommonDBTM {
       return $tab;
    }
 
+   static function cronInfo($name) {
+      switch ($name) {
+         case 'creditexpired':
+            return ['description' => __('Expiration date'),
+                       'parameter'=>__('Notice')];
+      }
+      return [];
+   }
+
+   static function cronCreditExpired($task) {
+      global $CFG_GLPI,$DB;
+
+      $cron_status=1;
+
+      $days="+ ".(int)$task->fields['param']." days";
+
+      $alert   = new Alert();
+      $query=[
+         'SELECT' =>[
+            'glpi_plugin_credit_entities.*',
+         ],
+         'FROM' => 'glpi_plugin_credit_entities',
+         'LEFT JOIN'=>[
+            'glpi_alerts'=>[
+               'FKEY'=>[
+                  'glpi_alerts'=>'items_id',
+                  'glpi_plugin_credit_entities'=>'id',
+                  [
+                     'AND'=>[
+                        'glpi_alerts.itemtype'=>__CLASS__,
+                        'glpi_alerts.type'=>Alert::END,
+                     ],
+                  ],
+               ]
+            ]
+         ],
+         'WHERE' => [
+            'glpi_alerts.date'              => null,
+            'glpi_plugin_credit_entities.is_active' => 1,
+         ],
+      ];
+      foreach ($DB->request($query) as $id => $row) {
+
+         if (date("Y-m-d", strtotime('now '.$days))==date("Y-m-d", strtotime($row['end_date']))) {
+
+            $task->addVolume(1);
+            $task->log("Credit ".$row['name']." expires on ".date("Y-m-d", strtotime($row['end_date'])));
+
+            $credit= new PluginCreditEntity();
+            $credit->getFromDB($row['id']);
+            if ($CFG_GLPI["use_notifications"]) {
+               NotificationEvent::raiseEvent('expired', $credit);
+
+               $input=[
+                  'type'     => Alert::END,
+                  'itemtype' => __CLASS__,
+                  'items_id' =>$row['id'],
+               ];
+               $alert->add($input);
+               unset($alert->fields['id']);
+            }
+         }
+      }
+
+      return true;
+   }
+
    /**
     * Install all necessary tables for the plugin
     *
