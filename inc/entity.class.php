@@ -154,7 +154,7 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= __('Quantity sold', 'credit')."</td><td>";
          $out .= Dropdown::showNumber("quantity", ['value'   => '',
                                                    'min'     => 1,
-                                                   'max'     => 200,
+                                                   'max'     => 1000000,
                                                    'step'    => 1,
                                                    'toadd'   => [0 => __('Unlimited')],
                                                    'display' => false]);
@@ -339,7 +339,7 @@ class PluginCreditEntity extends CommonDBTM {
          'name'     => __('Quantity sold', 'credit'),
          'datatype' => 'number',
          'min'      => 1,
-         'max'      => 200,
+         'max'      => 1000000,
          'step'     => 1,
          'toadd'    => [0 => __('Unlimited')],
       ];
