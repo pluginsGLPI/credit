@@ -573,7 +573,7 @@ class PluginCreditTicket extends CommonDBTM {
          'name'     => __('Quantity consumed', 'credit'),
          'datatype' => 'number',
          'min'      => 1,
-         'max'      => 200,
+         'max'      => 1000000,
          'step'     => 1,
          'toadd'    => [0 => __('Unlimited')],
       ];

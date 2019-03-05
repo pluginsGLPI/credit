@@ -42,7 +42,7 @@ if (isset($_POST["entity"])) {
    } else {
       Dropdown::showNumber("plugin_credit_quantity", ['value'   => '',
                                                       'min'     => 0,
-                                                      'max'     => 200,
+                                                      'max'     => 1000000,
                                                       'step'    => 1,]);
    }
 
