@@ -89,13 +89,17 @@ function plugin_credit_get_datas(NotificationTargetTicket $target) {
    $target->data['##lang.credit.left##']    = __('Quantity remaining', 'credit');
 
    $id = $target->data['##ticket.id##'];
+   $ticket=new Ticket();
+   $ticket->getFromDB($id);
+   $entity_id=$ticket->fields['entities_id'];
 
    $query = "SELECT
          `glpi_plugin_credit_entities`.`name`,
          `glpi_plugin_credit_entities`.`quantity`,
          (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id` AND `glpi_plugin_credit_tickets`.`tickets_id` = {$id}) AS `consumed_on_ticket`,
          (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id`) AS  `consumed_total`
-      FROM `glpi_plugin_credit_entities`";
+      FROM `glpi_plugin_credit_entities`
+      WHERE `is_active`=1 and `entities_id`={$entity_id}";
 
    foreach ($DB->request($query) as $credit) {
       $target->data["credit.ticket"][] = [
