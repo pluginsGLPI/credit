@@ -307,6 +307,11 @@ class PluginCreditTicket extends CommonDBTM {
          return;
       }
 
+      // Item might be another CommonITILObject, we only want Ticket
+      if (!$params['options']['item'] instanceof Ticket) {
+         return;
+      }
+
       $ticket = null;
       if (array_key_exists('parent', $params['options'])
           && $params['options']['parent'] instanceof Ticket) {
