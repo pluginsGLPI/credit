@@ -307,24 +307,18 @@ class PluginCreditTicket extends CommonDBTM {
          return;
       }
 
-      // Item might be another CommonITILObject, we only want Ticket
-      if (!$params['options']['item'] instanceof Ticket) {
-         return;
-      }
-
       $ticket = null;
-      if (array_key_exists('parent', $params['options'])
-          && $params['options']['parent'] instanceof Ticket) {
+      if (array_key_exists('parent', $params['options'])) {
          // Ticket can be found in `parent` option for TicketTask.
          $ticket = $params['options']['parent'];
-      } else if (array_key_exists('item', $params['options'])
-                 && $params['options']['item'] instanceof Ticket) {
+      } else if (array_key_exists('item', $params['options'])) {
          // Ticket can be found in `'item'` option for ITILFollowup and ITILSolution.
          $ticket = $params['options']['item'];
       }
 
+      // Item might be another CommonITILObject, we only want Ticket
       if (!($ticket instanceof Ticket)) {
-         throw new LogicException('Ticket instance not found.');
+         return;
       }
 
       $out = "";
