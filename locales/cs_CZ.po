@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-05 09:38+0000\n"
+"POT-Creation-Date: 2019-11-08 14:47+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>, 2018\n"
 "Language-Team: Czech (Czech Republic) (https://www.transifex.com/pluginsGLPI/teams/73419/cs_CZ/)\n"
@@ -22,15 +22,7 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: hook.php:78 inc/entity.class.php:351 inc/type.class.php:37
-msgid "Credit voucher type"
-msgid_plural "Credit vouchers types"
-msgstr[0] "Typ kuponu s kreditem"
-msgstr[1] "Typy kuponů s kreditem"
-msgstr[2] "Typů kuponů s kreditem"
-msgstr[3] "Typy kuponů s kreditem"
-
-#: hook.php:87 inc/entity.class.php:35 inc/ticket.class.php:35
+#: inc/ticket.class.php:35 inc/entity.class.php:35 hook.php:87
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Kupon s kreditem"
@@ -38,14 +30,71 @@ msgstr[1] "Kupony s kreditem"
 msgstr[2] "Kuponů s kreditem"
 msgstr[3] "Kupony s kreditem"
 
-#: hook.php:88 inc/entity.class.php:218 inc/ticket.class.php:219
-#: inc/ticket.class.php:358 inc/ticket.class.php:406 inc/ticket.class.php:573
+#: inc/ticket.class.php:180
+msgid "Consumed credits for this ticket"
+msgstr "Kredit spotřebovaný na tento požadavek"
+
+#: inc/ticket.class.php:215 inc/ticket.class.php:349
+msgid "Voucher name"
+msgstr "Název kuponu"
+
+#: inc/ticket.class.php:216
+msgid "Voucher type"
+msgstr "Typ kuponu"
+
+#: inc/ticket.class.php:217 inc/ticket.class.php:406 inc/ticket.class.php:567
+msgid "Date consumed"
+msgstr "Datum spotřebování"
+
+#: inc/ticket.class.php:218 inc/ticket.class.php:407
+msgid "User consumed"
+msgstr "Uživatel který spotřeboval"
+
+#: inc/ticket.class.php:219 inc/ticket.class.php:360 inc/ticket.class.php:408
+#: inc/ticket.class.php:575 inc/entity.class.php:218 hook.php:88
 msgid "Quantity consumed"
 msgstr "Spotřebované množství"
 
-#: hook.php:89 inc/entity.class.php:219
-msgid "Quantity remaining"
-msgstr "Zbývající množství"
+#: inc/ticket.class.php:269 inc/ticket.class.php:394
+msgid "No credit was recorded"
+msgstr "Nebyl nahrán žádný kredit"
+
+#: inc/ticket.class.php:276
+msgid "Active credit vouchers for ticket entity"
+msgstr "Aktivní kupony s kreditem pro entitu požadavku"
+
+#: inc/ticket.class.php:342
+msgid "Consume a voucher ?"
+msgstr "Využít kupon?"
+
+#: inc/ticket.class.php:388
+msgid "Detail of tickets on which consumption is declared"
+msgstr "Podrobnosti požadavků na které je spotřebováváno"
+
+#: inc/ticket.class.php:505
+msgid "You must provide a credit voucher"
+msgstr "Je třeba zadat kupon s kreditem"
+
+#: inc/ticket.class.php:525 inc/ticket.class.php:534
+#, php-format
+msgid "Quantity consumed exceeds remaining credits: %d"
+msgstr "Spotřebované množství překračuje zbývající předplacené: %d"
+
+#: inc/ticket.class.php:552
+msgid "Credit voucher successfully added."
+msgstr "Kupon s kreditem úspěšně přidán."
+
+#: inc/ticket.class.php:587 setup.php:84
+msgid "Credit vouchers"
+msgstr "Kupony s kreditem"
+
+#: inc/type.class.php:37 inc/entity.class.php:351 hook.php:78
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "Typ kuponu s kreditem"
+msgstr[1] "Typy kuponů s kreditem"
+msgstr[2] "Typů kuponů s kreditem"
+msgstr[3] "Typy kuponů s kreditem"
 
 #: inc/entity.class.php:133
 msgid "Add a credit voucher"
@@ -59,6 +108,10 @@ msgstr "Prodané množství"
 msgid "Allow overconsumption"
 msgstr "Umožnit čerpat více, než je předplaceno"
 
+#: inc/entity.class.php:219 hook.php:89
+msgid "Quantity remaining"
+msgstr "Zbývající množství"
+
 #: inc/entity.class.php:269 inc/entity.class.php:276 inc/entity.class.php:277
 msgid "Consumed details"
 msgstr "Podrobnosti o spotřebovaných"
@@ -66,56 +119,3 @@ msgstr "Podrobnosti o spotřebovaných"
 #: inc/entity.class.php:301
 msgid "No credit voucher"
 msgstr "Žádný kupon s kreditem"
-
-#: inc/ticket.class.php:180
-msgid "Consumed credits for this ticket"
-msgstr "Kredit spotřebovaný na tento požadavek"
-
-#: inc/ticket.class.php:215 inc/ticket.class.php:347
-msgid "Voucher name"
-msgstr "Název kuponu"
-
-#: inc/ticket.class.php:216
-msgid "Voucher type"
-msgstr "Typ kuponu"
-
-#: inc/ticket.class.php:217 inc/ticket.class.php:404 inc/ticket.class.php:565
-msgid "Date consumed"
-msgstr "Datum spotřebování"
-
-#: inc/ticket.class.php:218 inc/ticket.class.php:405
-msgid "User consumed"
-msgstr "Uživatel který spotřeboval"
-
-#: inc/ticket.class.php:269 inc/ticket.class.php:392
-msgid "No credit was recorded"
-msgstr "Nebyl nahrán žádný kredit"
-
-#: inc/ticket.class.php:276
-msgid "Active credit vouchers for ticket entity"
-msgstr "Aktivní kupony s kreditem pro entitu požadavku"
-
-#: inc/ticket.class.php:340
-msgid "Consume a voucher ?"
-msgstr "Využít kupon?"
-
-#: inc/ticket.class.php:386
-msgid "Detail of tickets on which consumption is declared"
-msgstr "Podrobnosti požadavků na které je spotřebováváno"
-
-#: inc/ticket.class.php:503
-msgid "You must provide a credit voucher"
-msgstr "Je třeba zadat kupon s kreditem"
-
-#: inc/ticket.class.php:523 inc/ticket.class.php:532
-#, php-format
-msgid "Quantity consumed exceeds remaining credits: %d"
-msgstr "Spotřebované množství překračuje zbývající předplacené: %d"
-
-#: inc/ticket.class.php:550
-msgid "Credit voucher successfully added."
-msgstr "Kupon s kreditem úspěšně přidán."
-
-#: inc/ticket.class.php:585 setup.php:84
-msgid "Credit vouchers"
-msgstr "Kupony s kreditem"
