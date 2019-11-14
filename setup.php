@@ -23,12 +23,12 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.7.1');
+define('PLUGIN_CREDIT_VERSION', '1.8.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "9.4");
+define("PLUGIN_CREDIT_MIN_GLPI", "9.5");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "9.5");
+define("PLUGIN_CREDIT_MAX_GLPI", "9.6");
 
 /**
  * Init hooks of the plugin.
@@ -97,43 +97,4 @@ function plugin_version_credit() {
          ]
       ]
    ];
-}
-
-/**
- * Check pre-requisites before install
- *
- * @return boolean
- */
-function plugin_credit_check_prerequisites() {
-
-   //Version check is not done by core in GLPI < 9.2 but has to be delegated to core in GLPI >= 9.2.
-   $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-   if (version_compare($version, '9.2', '<')) {
-      $matchMinGlpiReq = version_compare($version, PLUGIN_CREDIT_MIN_GLPI, '>=');
-      $matchMaxGlpiReq = version_compare($version, PLUGIN_CREDIT_MAX_GLPI, '<');
-
-      if (!$matchMinGlpiReq || !$matchMaxGlpiReq) {
-         echo vsprintf(
-            'This plugin requires GLPI >= %1$s and < %2$s.',
-            [
-               PLUGIN_CREDIT_MIN_GLPI,
-               PLUGIN_CREDIT_MAX_GLPI,
-            ]
-         );
-         return false;
-      }
-   }
-
-   return true;
-}
-
-/**
- * Check configuration process
- *
- * @param boolean $verbose Whether to display message on failure. Defaults to false
- *
- * @return boolean
- */
-function plugin_credit_check_config($verbose = false) {
-   return true;
 }

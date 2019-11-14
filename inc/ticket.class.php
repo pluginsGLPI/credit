@@ -364,7 +364,7 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= Ajax::updateItemOnSelectEvent(
             "dropdown_plugin_credit_entities_id$rand",
             "plugin_credit_quantity_container$rand",
-            $CFG_GLPI["root_doc"] . "/plugins/credit/ajax/dropdownQuantity.php",
+            Plugin::getWebDir('credit') . "/ajax/dropdownQuantity.php",
             ['entity' => '__VALUE__'],
             false
          );
@@ -608,7 +608,7 @@ class PluginCreditTicket extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `tickets_id` int(11) NOT NULL DEFAULT '0',
                      `plugin_credit_entities_id` int(11) NOT NULL DEFAULT '0',
-                     `date_creation` datetime DEFAULT NULL,
+                     `date_creation` timestamp NULL DEFAULT NULL,
                      `consumed` int(11) NOT NULL DEFAULT '0',
                      `users_id` int(11) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
