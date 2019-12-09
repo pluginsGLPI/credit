@@ -313,13 +313,15 @@ class PluginCreditTicket extends CommonDBTM {
          // Ticket can be found in `parent` option for TicketTask.
          $ticket = $params['options']['parent'];
       } else if (array_key_exists('item', $params['options'])
-                 && $params['options']['item'] instanceof Ticket) {
+         && $params['options']['item'] instanceof Ticket) {
          // Ticket can be found in `'item'` option for ITILFollowup and ITILSolution.
          $ticket = $params['options']['item'];
       }
 
-      if (!($ticket instanceof Ticket)) {
-         throw new LogicException('Ticket instance not found.');
+      // No parent of type Ticket found, parent might we might be an another
+      // type of CommonITILObject so we should exit here
+      if ($ticket === null) {
+         return;
       }
 
       $out = "";
@@ -605,10 +607,10 @@ class PluginCreditTicket extends CommonDBTM {
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `tickets_id` int(11) NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id` tinyint(1) NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id` int(11) NOT NULL DEFAULT '0',
                      `date_creation` datetime DEFAULT NULL,
                      `consumed` int(11) NOT NULL DEFAULT '0',
-                     `users_id` tinyint(1) NOT NULL DEFAULT '0',
+                     `users_id` int(11) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `tickets_id` (`tickets_id`),
                      KEY `plugin_credit_entities_id` (`plugin_credit_entities_id`),
@@ -621,6 +623,15 @@ class PluginCreditTicket extends CommonDBTM {
 
          // Fix #1 in 1.0.1 : change tinyint(1) to int(11) for tickets_id
          $migration->changeField($table, 'tickets_id', 'tickets_id', 'integer');
+
+         // Change tinyint to int
+         $migration->changeField(
+            $table,
+            'plugin_credit_entities_id',
+            'plugin_credit_entities_id',
+            'integer'
+         );
+         $migration->changeField($table, 'users_id', 'users_id', 'integer');
 
          //execute the whole migration
          $migration->executeMigration();

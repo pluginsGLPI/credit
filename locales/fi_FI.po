@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-05 09:38+0000\n"
+"POT-Creation-Date: 2019-11-08 14:47+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Markku Vepsä, 2019\n"
 "Language-Team: Finnish (Finland) (https://www.transifex.com/pluginsGLPI/teams/73419/fi_FI/)\n"
@@ -21,26 +21,75 @@ msgstr ""
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hook.php:78 inc/entity.class.php:351 inc/type.class.php:37
-msgid "Credit voucher type"
-msgid_plural "Credit vouchers types"
-msgstr[0] "Arvosetelin tyyppi"
-msgstr[1] "Arvosetelien tyypit"
-
-#: hook.php:87 inc/entity.class.php:35 inc/ticket.class.php:35
+#: inc/ticket.class.php:35 inc/entity.class.php:35 hook.php:87
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Arvoseteli"
 msgstr[1] "Arvosetelit"
 
-#: hook.php:88 inc/entity.class.php:218 inc/ticket.class.php:219
-#: inc/ticket.class.php:358 inc/ticket.class.php:406 inc/ticket.class.php:573
+#: inc/ticket.class.php:180
+msgid "Consumed credits for this ticket"
+msgstr "Kulutettu arvo tälle tiketille"
+
+#: inc/ticket.class.php:215 inc/ticket.class.php:349
+msgid "Voucher name"
+msgstr "Arvosetelin nimi"
+
+#: inc/ticket.class.php:216
+msgid "Voucher type"
+msgstr "Arvosetelin tyyppi"
+
+#: inc/ticket.class.php:217 inc/ticket.class.php:406 inc/ticket.class.php:567
+msgid "Date consumed"
+msgstr "Käyttöpäivä"
+
+#: inc/ticket.class.php:218 inc/ticket.class.php:407
+msgid "User consumed"
+msgstr "Kuluttanut käyttäjä"
+
+#: inc/ticket.class.php:219 inc/ticket.class.php:360 inc/ticket.class.php:408
+#: inc/ticket.class.php:575 inc/entity.class.php:218 hook.php:88
 msgid "Quantity consumed"
 msgstr "Kulutettu määrä"
 
-#: hook.php:89 inc/entity.class.php:219
-msgid "Quantity remaining"
-msgstr "Jäljellä oleva määrä"
+#: inc/ticket.class.php:269 inc/ticket.class.php:394
+msgid "No credit was recorded"
+msgstr "Arvoa ei kirjattu"
+
+#: inc/ticket.class.php:276
+msgid "Active credit vouchers for ticket entity"
+msgstr "Yksikön tikettien aktiiviset arvosetelit"
+
+#: inc/ticket.class.php:342
+msgid "Consume a voucher ?"
+msgstr "Käytä arvoseteli ?"
+
+#: inc/ticket.class.php:388
+msgid "Detail of tickets on which consumption is declared"
+msgstr "Kulutukseen liitettyjen tikettien tiedot"
+
+#: inc/ticket.class.php:505
+msgid "You must provide a credit voucher"
+msgstr "Sinun täytyy antaa arvoseteli"
+
+#: inc/ticket.class.php:525 inc/ticket.class.php:534
+#, php-format
+msgid "Quantity consumed exceeds remaining credits: %d"
+msgstr "Kulutettu määrä ylittää jäljellä olevan määrän: %d"
+
+#: inc/ticket.class.php:552
+msgid "Credit voucher successfully added."
+msgstr "Arvoseteli lisätty onnistuneesti"
+
+#: inc/ticket.class.php:587 setup.php:84
+msgid "Credit vouchers"
+msgstr "Arvosetelit"
+
+#: inc/type.class.php:37 inc/entity.class.php:351 hook.php:78
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "Arvosetelin tyyppi"
+msgstr[1] "Arvosetelien tyypit"
 
 #: inc/entity.class.php:133
 msgid "Add a credit voucher"
@@ -54,6 +103,10 @@ msgstr "Myyty määrä"
 msgid "Allow overconsumption"
 msgstr "Salli ylikuluttaminen"
 
+#: inc/entity.class.php:219 hook.php:89
+msgid "Quantity remaining"
+msgstr "Jäljellä oleva määrä"
+
 #: inc/entity.class.php:269 inc/entity.class.php:276 inc/entity.class.php:277
 msgid "Consumed details"
 msgstr "Kulutuksen tiedot"
@@ -61,56 +114,3 @@ msgstr "Kulutuksen tiedot"
 #: inc/entity.class.php:301
 msgid "No credit voucher"
 msgstr "Ei arvoseteli"
-
-#: inc/ticket.class.php:180
-msgid "Consumed credits for this ticket"
-msgstr "Kulutettu arvo tälle tiketille"
-
-#: inc/ticket.class.php:215 inc/ticket.class.php:347
-msgid "Voucher name"
-msgstr "Arvosetelin nimi"
-
-#: inc/ticket.class.php:216
-msgid "Voucher type"
-msgstr "Arvosetelin tyyppi"
-
-#: inc/ticket.class.php:217 inc/ticket.class.php:404 inc/ticket.class.php:565
-msgid "Date consumed"
-msgstr "Käyttöpäivä"
-
-#: inc/ticket.class.php:218 inc/ticket.class.php:405
-msgid "User consumed"
-msgstr "Kuluttanut käyttäjä"
-
-#: inc/ticket.class.php:269 inc/ticket.class.php:392
-msgid "No credit was recorded"
-msgstr "Arvoa ei kirjattu"
-
-#: inc/ticket.class.php:276
-msgid "Active credit vouchers for ticket entity"
-msgstr "Yksikön tikettien aktiiviset arvosetelit"
-
-#: inc/ticket.class.php:340
-msgid "Consume a voucher ?"
-msgstr "Käytä arvoseteli ?"
-
-#: inc/ticket.class.php:386
-msgid "Detail of tickets on which consumption is declared"
-msgstr "Kulutukseen liitettyjen tikettien tiedot"
-
-#: inc/ticket.class.php:503
-msgid "You must provide a credit voucher"
-msgstr "Sinun täytyy antaa arvoseteli"
-
-#: inc/ticket.class.php:523 inc/ticket.class.php:532
-#, php-format
-msgid "Quantity consumed exceeds remaining credits: %d"
-msgstr "Kulutettu määrä ylittää jäljellä olevan määrän: %d"
-
-#: inc/ticket.class.php:550
-msgid "Credit voucher successfully added."
-msgstr "Arvoseteli lisätty onnistuneesti"
-
-#: inc/ticket.class.php:585 setup.php:84
-msgid "Credit vouchers"
-msgstr "Arvosetelit"
