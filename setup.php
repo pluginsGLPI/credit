@@ -23,7 +23,7 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.6.2');
+define('PLUGIN_CREDIT_VERSION', '1.6.3');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_CREDIT_MIN_GLPI", "9.4");
