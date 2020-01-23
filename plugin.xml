@@ -26,7 +26,8 @@
    <versions>
       <version>
          <num>1.6.3</num>
-          <compatibility>9.4</compatibility>
+          <compatibility>~9.4.0</compatibility>
+          <download_url>https://github.com/pluginsGLPI/credit/releases/download/1.6.3/glpi-credit-1.6.3.tar.bz2</download_url>
       </version>
       <version>
          <num>1.6.2</num>
@@ -118,5 +119,6 @@
       <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_ticket-tab.png</screenshot>
       <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_entity-tab.png</screenshot>
       <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_detail-consumed.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/credit.gif</screenshot>
    </screenshots>
 </root>
