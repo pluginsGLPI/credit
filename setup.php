@@ -23,7 +23,7 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.6.3');
+define('PLUGIN_CREDIT_VERSION', '1.7.0');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_CREDIT_MIN_GLPI", "9.4");
@@ -50,9 +50,13 @@ function plugin_init_credit() {
 
    if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
 
-      if (Session::haveRight('entity', UPDATE)) {
-         Plugin::registerClass('PluginCreditEntity', ['addtabon' => 'Entity']);
-      }
+      Plugin::registerClass(
+         'PluginCreditEntity',
+         [
+            'notificationtemplates_types' => true,
+            'addtabon'                    => 'Entity'
+         ]
+      );
 
       if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
          Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);

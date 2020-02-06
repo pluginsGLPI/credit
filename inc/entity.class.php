@@ -363,6 +363,89 @@ class PluginCreditEntity extends CommonDBTM {
       return $tab;
    }
 
+   static function cronInfo($name) {
+      switch ($name) {
+         case 'creditexpired':
+            return [
+               'description' => __('Expiration date', 'credit'),
+               'parameter'   => __('Notice (in days)', 'credit')
+            ];
+      }
+      return [];
+   }
+
+   static function cronCreditExpired($task) {
+      global $CFG_GLPI, $DB;
+
+      if (!$CFG_GLPI['use_notifications']) {
+         return 0;
+      }
+
+      $notice_time = (int)$task->fields['param'];
+
+      $alert = new Alert();
+      $credits_iterator = $DB->request(
+         [
+            'SELECT'    => [
+               'glpi_plugin_credit_entities.*',
+            ],
+            'FROM'      => 'glpi_plugin_credit_entities',
+            'LEFT JOIN' => [
+               'glpi_alerts' => [
+                  'ON' => [
+                     'glpi_alerts'                 => 'items_id',
+                     'glpi_plugin_credit_entities' => 'id',
+                     [
+                        'AND' => [
+                           'glpi_alerts.itemtype' => self::getType(),
+                           'glpi_alerts.type'     => Alert::END,
+                        ],
+                     ],
+                  ]
+               ]
+            ],
+            'WHERE'     => [
+               'glpi_alerts.date'                      => null,
+               'glpi_plugin_credit_entities.is_active' => 1,
+               ['NOT' => ['glpi_plugin_credit_entities.end_date' => null]],
+               new QueryExpression(
+                  sprintf(
+                     'ADDDATE(NOW(), INTERVAL %s DAY) >= %s',
+                     $notice_time,
+                     $DB->quoteName('glpi_plugin_credit_entities.end_date'),
+                  )
+               ),
+            ],
+         ]
+      );
+
+      foreach ($credits_iterator as $credit_data) {
+         $task->addVolume(1);
+         $task->log(
+            sprintf(
+               'Credit %s expires on %s',
+               $credit_data['name'],
+               date('Y-m-d', strtotime($credit_data['end_date']))
+            )
+         );
+
+         $credit = new PluginCreditEntity();
+         $credit->getFromDB($credit_data['id']);
+
+         NotificationEvent::raiseEvent('expired', $credit);
+
+         $input = [
+            'type'     => Alert::END,
+            'itemtype' => self::getType(),
+            'items_id' => $credit_data['id'],
+         ];
+         $alert->add($input);
+         unset($alert->fields['id']);
+      }
+
+      return 1;
+   }
+
    /**
     * Install all necessary tables for the plugin
     *
