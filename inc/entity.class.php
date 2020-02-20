@@ -412,7 +412,7 @@ class PluginCreditEntity extends CommonDBTM {
                   sprintf(
                      'ADDDATE(NOW(), INTERVAL %s DAY) >= %s',
                      $notice_time,
-                     $DB->quoteName('glpi_plugin_credit_entities.end_date'),
+                     $DB->quoteName('glpi_plugin_credit_entities.end_date')
                   )
                ),
             ],
