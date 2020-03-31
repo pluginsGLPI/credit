@@ -98,6 +98,74 @@ class PluginCreditEntity extends CommonDBTM {
       ]);
    }
 
+   public function calculateGlobalDefault() {
+      if (!isset($_SESSION['credit']['post_update'])) {
+         if ($this->fields['is_default_followup']
+            && $this->fields['is_default_task']
+            && $this->fields['is_default_solution']) {
+               $this->fields['is_default'] = 1;
+         } else if (!$this->fields['is_default_followup']
+            && !$this->fields['is_default_task']
+            && !$this->fields['is_default_solution']) {
+            !$this->fields['is_default'] = 0;
+         } else {
+            $this->fields['is_default'] = 2;
+         }
+         $_SESSION['credit']['post_update'] = true;
+         $this->update($this->fields);
+      } else {
+         unset($_SESSION['credit']['post_update']);
+      }
+   }
+
+   public function post_updateItem($history = 1) {
+      $this->calculateGlobalDefault();
+   }
+
+   public function post_addItem($history = 1) {
+      $this->calculateGlobalDefault();
+   }
+
+   public function prepareInputForAdd($input) {
+
+      $credit =new PluginCreditEntity();
+      $message = "";
+
+      if ($input['is_default_followup']) {
+         if (count($credit->find([
+            "entities_id" => $input["entities_id"],
+            "is_default_followup"  => $input['is_default_followup']
+         ])) > 0) {
+            $message .= __("Default credit for followups already exist", "credit")."</br>";
+         }
+      }
+
+      if ($input['is_default_task']) {
+         if (count($credit->find([
+            "entities_id" => $input["entities_id"],
+            "is_default_task"  => $input['is_default_task']
+         ])) > 0) {
+            $message .= __("Default credit for tasks already exist", "credit")."</br>";
+         }
+      }
+
+      if ($input['is_default_solution']) {
+         if (count($credit->find([
+            "entities_id" => $input["entities_id"],
+            "is_default_solution"  => $input['is_default_solution']
+         ])) > 0) {
+            $message .= __("Default credit for solutions already exist", "credit")."</br>";
+         }
+      }
+
+      if ($message != "") {
+         Session::addMessageAfterRedirect($message, false, ERROR);
+         return false;
+      }
+
+      return $input;
+   }
+
    /**
     * Get all credit vouchers for entity.
     *
@@ -121,6 +189,45 @@ class PluginCreditEntity extends CommonDBTM {
       }
 
       return $vouchers;
+   }
+
+   /**
+    * Get default credit for entity and itemtype
+    *
+    * @param $ID           integer     entities ID
+    * @param $start        integer     first line to retrieve (default 0)
+    * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
+    * @param $sqlfilter    string      to add a SQL filter (default '')
+    * @return array of vouchers
+   **/
+   static function getDefaultForEntityAndType($ID, $itemtype) {
+
+      $credit = new PluginCreditEntity();
+      $options = ["entities_id" => $ID,
+                  "is_active" => 1];
+
+      //second step check if default credit for itemtype exist
+      switch ($itemtype) {
+         case ITILFollowup::getType():
+            $options['is_default_followup'] = 1;
+            break;
+
+         case TicketTask::getType():
+            $options['is_default_task'] = 1;
+            break;
+
+         case ITILSolution::getType():
+            $options['is_default_solution'] = 1;
+            break;
+      }
+
+      $credit->getFromDBByCrit($options);
+      if (!$credit->getFromDBByCrit($options)) {
+         return 0;
+      } else {
+         return $credit->fields['id'];
+      }
+
    }
 
    /**
@@ -190,6 +297,31 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "</td>";
          $out .= "</tr>";
          $out .= "<tr class='tab_bg_1'>";
+         $out .= "<th colspan='8'>" . __('Default options', 'credit') . "</th>";
+         $out .= "</tr>";
+         $out .= "<tr>";
+         $title = __("No")." => ".__("Not considered as default")."\n";
+         $title .= __("Yes")." => ".__("Considers this credit as default for followups, tasks and solution")."\n";
+         $title .= __("Other")." => ".__("See other options for followups, tasks and solutions");
+         $out .= "<td>".__('Default for ticket', 'credit')."<i class='fa fa-info-circle' title='$title'></i></td>";
+         $out .= "<td>";
+         $out .= Dropdown::showFromArray("is_default", self::getDefaultOptions(), ['display' => false,
+                                                                                    'on_change' => 'changeDefaultVisibilityOptions(this)']);
+         $out .= "</td>";
+         $out .= "<td class='default_option_visibility' style='display:none'>".__('Default for followups', 'credit')."</td>";
+         $out .= "<td class='default_option_visibility' style='display:none'>";
+         $out .= Dropdown::showYesNo("is_default_followup", 0, -1, ['display' => false]);
+         $out .= "</td>";
+         $out .= "<td class='default_option_visibility' style='display:none'>".__('Default for tasks', 'credit')."</td>";
+         $out .= "<td class='default_option_visibility' style='display:none'>";
+         $out .= Dropdown::showYesNo("is_default_task", 0, -1, ['display' => false]);
+         $out .= "</td>";
+         $out .= "<td class='default_option_visibility' style='display:none'>".__('Default for solution', 'credit')."</td>";
+         $out .= "<td class='default_option_visibility' style='display:none'>";
+         $out .= Dropdown::showYesNo("is_default_solution", 0, -1, ['display' => false]);
+         $out .= "</td>";
+         $out .= "</tr>";
+         $out .= "<tr class='tab_bg_1'>";
          $out .= "<td class='tab_bg_2 center' colspan='8'>";
          $out .= "<input type='submit' name='add' value='"._sx('button', 'Add')."' class='submit'>";
          $out .= "</td>";
@@ -198,6 +330,8 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= Html::closeForm(false);
          $out .= "</div>";
       }
+
+      PluginCreditEntityConfig::showEntityConfig($entity, $entity::getType());
 
       $out    .= "<div class='spaced'>";
       $number  = self::countForItem($entity);
@@ -241,6 +375,10 @@ class PluginCreditEntity extends CommonDBTM {
          $header_end .= "<th>".__('Allow overconsumption', 'credit')."</th>";
          $header_end .= "<th>".__('Entity')."</th>";
          $header_end .= "<th>".__('Child entities')."</th>";
+         $header_end .= "<th>".__('Default for ticket', 'credit')."</>";
+         $header_end .= "<th>".__('Default for followups', 'credit')."</th>";
+         $header_end .= "<th>".__('Default for tasks', 'credit')."</th>";
+         $header_end .= "<th>".__('Default for solutions', 'credit')."</th>";
          $header_end .= "</tr>";
          $out .= $header_begin.$header_top.$header_end;
 
@@ -288,8 +426,8 @@ class PluginCreditEntity extends CommonDBTM {
             $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
             $out .= "<td class='center'>";
             $out .= Ajax::createIframeModalWindow('displaycreditconsumed_'.$data["id"],
-                                                  Plugin::getWebDir('credit').
-                                                  "/front/ticket.php?plugcreditentity=".
+                                          Plugin::getWebDir('credit').
+                                          "/front/ticket.php?plugcreditentity=".
                                                   $data["id"],
                                           ['title'         => __('Consumed details', 'credit'),
                                            'reloadonclose' => false,
@@ -318,6 +456,23 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "<td>";
             $out .= ($data["is_recursive"]) ? __('Yes') : __('No');
             $out .= "</td>";
+
+            $out .= "<td>";
+            $out .= self::getDefaultOptions()[$data["is_default"]];
+            $out .= "</td>";
+
+            $out .= "<td>";
+            $out .= ($data["is_default_followup"]) ? __('Yes') : __('No');
+            $out .= "</td>";
+
+            $out .= "<td>";
+            $out .= ($data["is_default_task"]) ? __('Yes') : __('No');
+            $out .= "</td>";
+
+            $out .= "<td>";
+            $out .= ($data["is_default_solution"]) ? __('Yes') : __('No');
+            $out .= "</td>";
+
             $out .= "</tr>";
          }
 
@@ -333,7 +488,9 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "<p class='center b'>".__('No credit voucher', 'credit')."</p>";
       }
       $out .= "</div>";
+
       echo $out;
+
    }
 
    function rawSearchOptions() {
@@ -392,7 +549,39 @@ class PluginCreditEntity extends CommonDBTM {
          'datatype' => 'bool',
       ];
 
+      $tab[] = [
+         'id'       => 998,
+         'table'    => self::getTable(),
+         'field'    => 'is_default_followup',
+         'name'     => __('Default for followups', 'credit'),
+         'datatype' => 'bool',
+      ];
+
+      $tab[] = [
+         'id'       => 999,
+         'table'    => self::getTable(),
+         'field'    => 'is_default_task',
+         'name'     => __('Default for tasks', 'credit'),
+         'datatype' => 'bool',
+      ];
+
+      $tab[] = [
+         'id'       => 1000,
+         'table'    => self::getTable(),
+         'field'    => 'is_default_solution',
+         'name'     => __('Default for solutions', 'credit'),
+         'datatype' => 'bool',
+      ];
+
       return $tab;
+   }
+
+   static function getDefaultOptions() {
+      return [
+         0 => __('No'),
+         1 => __('Yes'),
+         2 => __('Other'),
+      ];
    }
 
    static function cronInfo($name) {
@@ -498,10 +687,14 @@ class PluginCreditEntity extends CommonDBTM {
                      `is_recursive` tinyint NOT NULL DEFAULT '0',
                      `is_active` tinyint(1) NOT NULL DEFAULT '0',
                      `plugin_credit_types_id` tinyint(1) NOT NULL DEFAULT '0',
-                     `begin_date` timestamp NULL DEFAULT NULL,
-                     `end_date` timestamp NULL DEFAULT NULL,
+                     `begin_date` datetime DEFAULT NULL,
+                     `end_date` datetime DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
                      `overconsumption_allowed` tinyint(1) NOT NULL DEFAULT '0',
+                     `is_default` tinyint(1) NOT NULL DEFAULT '0',
+                     `is_default_followup` tinyint(1) NOT NULL DEFAULT '0',
+                     `is_default_solution` tinyint(1) NOT NULL DEFAULT '0',
+                     `is_default_task` tinyint(1) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
@@ -522,7 +715,55 @@ class PluginCreditEntity extends CommonDBTM {
                "overconsumption_allowed",
                "TINYINT(1) NOT NULL DEFAULT '0'",
                [
-                  'update' => "1",
+                  'value' => "0",
+               ]
+            );
+         }
+
+         if (!$DB->fieldExists($table, 'is_default')) {
+            //1.5.0
+            $migration->addField(
+               $table,
+               "is_default",
+               "TINYINT(1) NOT NULL DEFAULT '0'",
+               [
+                  'value' => "0",
+               ]
+            );
+         }
+
+         if (!$DB->fieldExists($table, 'is_default_followup')) {
+            //1.5.0
+            $migration->addField(
+               $table,
+               "is_default_followup",
+               "TINYINT(1) NOT NULL DEFAULT '0'",
+               [
+                  'value' => "0",
+               ]
+            );
+         }
+
+         if (!$DB->fieldExists($table, 'is_default_task')) {
+            //1.5.0
+            $migration->addField(
+               $table,
+               "is_default_task",
+               "TINYINT(1) NOT NULL DEFAULT '0'",
+               [
+                  'value' => "0",
+               ]
+            );
+         }
+
+         if (!$DB->fieldExists($table, 'is_default_solution')) {
+            //1.5.0
+            $migration->addField(
+               $table,
+               "is_default_solution",
+               "TINYINT(1) NOT NULL DEFAULT '0'",
+               [
+                  'value' => "0",
                ]
             );
          }
