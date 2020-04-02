@@ -263,8 +263,8 @@ class PluginCreditEntity extends CommonDBTM {
             $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
             $out .= "<td class='center'>";
             $out .= Ajax::createIframeModalWindow('displaycreditconsumed_'.$data["id"],
-                                                  $CFG_GLPI["root_doc"].
-                                                  "/plugins/credit/front/ticket.php?plugcreditentity=".
+                                                  Plugin::getWebDir('credit').
+                                                  "/front/ticket.php?plugcreditentity=".
                                                   $data["id"],
                                           ['title'         => __('Consumed details', 'credit'),
                                            'reloadonclose' => false,
