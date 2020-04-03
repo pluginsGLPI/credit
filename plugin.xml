@@ -19,7 +19,7 @@
    <homepage>https://pluginsglpi.github.io/credit/</homepage>
    <download>https://github.com/pluginsGLPI/credit/releases</download>
    <issues>https://github.com/pluginsGLPI/credit/issues</issues>
-   <readme>https://raw.githubusercontent.com/pluginsGLPI/credit/master/README.md</readme>
+   <readme>https://glpi-plugins.readthedocs.io/en/latest/credit/index.html</readme>
    <authors>
       <author>TECLIB'</author>
    </authors>
