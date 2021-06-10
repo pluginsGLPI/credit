@@ -64,6 +64,24 @@ class PluginCreditEntity extends CommonDBTM {
       return countElementsInTable(self::getTable(), ['entities_id' => $item->getID()]);
    }
 
+   public function prepareInputForAdd($input) {
+      if (!isset($input['name']) || $input['name'] == '') {
+         Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
+         return false;
+      }
+
+      return $input;
+   }
+
+   public function prepareInputForUpdate($input) {
+      if (isset($input['name']) && strlen($input['name']) == '') {
+         Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
+         return false;
+      }
+
+      return $input;
+   }
+
    public function post_purgeItem() {
       $pc_ticket = new PluginCreditTicket;
       $pc_ticket->deleteByCriteria([
@@ -126,7 +144,7 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "<th colspan='8'>" . __('Add a credit voucher', 'credit') . "</th>";
          $out .= "</tr>";
          $out .= "<tr class='tab_bg_1'>";
-         $out .= "<td>". __('Name')."</td>";
+         $out .= "<td>". __('Name')."<span class='red'>*</span></strong></td>";
          $out .= "<td colspan='3'>".Html::input("name", ['size' => 50])."</td>";
          $out .= "<td class='tab_bg_2 right'>".__('Type')."</td>";
          $out .= "<td>";
@@ -233,7 +251,7 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "<td width='30%'>";
             $out .= "<a href='".Entity::getFormURLWithID($ID, true);
             $out .= "&forcetab=PluginCreditEntity$1'>";
-            $out .= $data['name'];
+            $out .= $data['name'] == '' ? '(' . $data['id'] . ')' : $data['name'];
             $out .= "</a>";
             $out .= "</td>";
             $out .= "<td width='15%'>";
