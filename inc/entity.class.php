@@ -77,26 +77,28 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $ID           integer     entities ID
     * @param $start        integer     first line to retrieve (default 0)
     * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
-    * @param $sqlfilter    string      to add a SQL filter (default '')
+    * @param $sqlfilter    array       to add a SQL filter (default [])
     * @return array of vouchers
    **/
-   static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = '') {
+   static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = []) {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".self::getTable()."`
-                WHERE `entities_id` = '$ID'";
-      if ($sqlfilter) {
-         $query .= "AND ($sqlfilter) ";
-      }
-      $query .= "ORDER BY `id` DESC";
+      $request = [
+         'SELECT' => '*',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'entities_id' => $ID
+         ] + $sqlfilter,
+         'ORDER'  => ['id DESC'],
+      ];
 
       if ($limit) {
-         $query .= " LIMIT ".(int) $start.",".(int) $limit;
+         $request['START'] = $start;
+         $request['LIMIT'] = $limit;
       }
 
       $vouchers = [];
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request($request) as $data) {
          $vouchers[$data['id']] = $data;
       }
 
@@ -221,9 +223,11 @@ class PluginCreditEntity extends CommonDBTM {
          $header_end .= "</tr>";
          $out .= $header_begin.$header_top.$header_end;
 
-         $sqlfilter = "";
+         $sqlfilter = [];
          if ($itemtype == 'Ticket') {
-            $sqlfilter = "`is_active`='1'";
+            $sqlfilter = [
+               'is_active' => '1'
+            ];
          }
 
          foreach (self::getAllForEntity($ID, 0, 0, $sqlfilter) as $data) {
