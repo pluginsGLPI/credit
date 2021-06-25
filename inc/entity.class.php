@@ -112,8 +112,6 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $itemtype string Entity or Ticket
    **/
    static function showForItemtype(Entity $entity, $itemtype = 'Entity') {
-      global $DB, $CFG_GLPI;
-
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
          return false;
