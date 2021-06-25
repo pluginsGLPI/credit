@@ -79,8 +79,8 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
     * @param $sqlfilter    array       to add a SQL filter (default [])
     * @return array of vouchers
-   **/
-   static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = []) {
+    */
+   static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = []): array {
       global $DB;
 
       $request = [

@@ -72,26 +72,28 @@ class PluginCreditTicket extends CommonDBTM {
     * @param $ID           integer     tickets ID
     * @param $start        integer     first line to retrieve (default 0)
     * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
-    * @param $sqlfilter    string      to add a SQL filter (default '')
+    * @param $sqlfilter    array       to add a SQL filter (default [])
     * @return array of vouchers
-   **/
-   static function getAllForTicket($ID, $start = 0, $limit = 0, $sqlfilter = '') {
+    */
+   static function getAllForTicket($ID, $start = 0, $limit = 0, $sqlfilter = []): array {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".self::getTable()."`
-                WHERE `tickets_id` = '$ID'";
-      if ($sqlfilter) {
-         $query .= "AND ($sqlfilter) ";
-      }
-      $query .= "ORDER BY `id` DESC";
+      $request = [
+         'SELECT' => '*',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'tickets_id' => $ID,
+         ] + $sqlfilter,
+         'ORDER'  => ['id DESC'],
+      ];
 
       if ($limit) {
-         $query .= " LIMIT ".(int) $start.",".(int) $limit;
+         $request['START'] = $start;
+         $request['LIMIT'] = $limit;
       }
 
       $vouchers = [];
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request($request) as $data) {
          $vouchers[$data['id']] = $data;
       }
 
@@ -105,26 +107,28 @@ class PluginCreditTicket extends CommonDBTM {
     * @param $ID           integer     plugin_credit_entities_id ID
     * @param $start        integer     first line to retrieve (default 0)
     * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add a SQL filter (default '')
+    * @param $sqlfilter    array       to add a SQL filter (default '')
     * @return array of vouchers
    **/
-   static function getAllForCreditEntity($ID, $start = 0, $limit = 0, $sqlfilter = '') {
+   static function getAllForCreditEntity($ID, $start = 0, $limit = 0, $sqlfilter = []): array {
       global $DB;
 
-      $query = "SELECT *
-                FROM `".self::getTable()."`
-                WHERE `plugin_credit_entities_id` = '$ID'";
-      if ($sqlfilter) {
-         $query .= "AND ($sqlfilter) ";
-      }
-      $query .= " ORDER BY `id` DESC";
+      $request = [
+         'SELECT' => '*',
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'plugin_credit_entities_id' => $ID
+         ] + $sqlfilter,
+         'ORDER'  => ['id DESC'],
+      ];
 
       if ($limit) {
-         $query .= " LIMIT ".(int) $start."," .(int) $limit;
+         $request['START'] = $start;
+         $request['LIMIT'] = $limit;
       }
 
       $tickets = [];
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request($request) as $data) {
          $tickets[$data['id']] = $data;
       }
 
@@ -140,14 +144,18 @@ class PluginCreditTicket extends CommonDBTM {
       global $DB;
 
       $tot   = 0;
-      $query = "SELECT SUM(`consumed`)
-                FROM `".self::getTable()."`
-                WHERE `plugin_credit_entities_id` = '".$ID."'";
 
-      if ($result = $DB->query($query)) {
-         $sum = $DB->result($result, 0, 0);
-         if (!is_null($sum)) {
-            $tot += $sum;
+      $request = [
+         'SELECT' => ['SUM' => 'consumed as sum'],
+         'FROM'   => self::getTable(),
+         'WHERE'  => [
+            'plugin_credit_entities_id' => $ID
+         ],
+      ];
+
+      if ($result = $DB->request($request)) {
+         if ($row = $result->next()) {
+            $tot = $row['sum'];
          }
       }
 
