@@ -70,12 +70,9 @@ class PluginCreditTicket extends CommonDBTM {
     * Get all credit vouchers for a ticket.
     *
     * @param $ID           integer     tickets ID
-    * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
-    * @param $sqlfilter    array       to add a SQL filter (default [])
     * @return array of vouchers
     */
-   static function getAllForTicket($ID, $start = 0, $limit = 0, $sqlfilter = []): array {
+   static function getAllForTicket($ID): array {
       global $DB;
 
       $request = [
@@ -83,14 +80,9 @@ class PluginCreditTicket extends CommonDBTM {
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'tickets_id' => $ID,
-         ] + $sqlfilter,
+         ],
          'ORDER'  => ['id DESC'],
       ];
-
-      if ($limit) {
-         $request['START'] = $start;
-         $request['LIMIT'] = $limit;
-      }
 
       $vouchers = [];
       foreach ($DB->request($request) as $data) {
@@ -105,12 +97,9 @@ class PluginCreditTicket extends CommonDBTM {
     * Get all tickets for a credit vouchers.
     *
     * @param $ID           integer     plugin_credit_entities_id ID
-    * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    array       to add a SQL filter (default '')
     * @return array of vouchers
    **/
-   static function getAllForCreditEntity($ID, $start = 0, $limit = 0, $sqlfilter = []): array {
+   static function getAllForCreditEntity($ID): array {
       global $DB;
 
       $request = [
@@ -118,14 +107,9 @@ class PluginCreditTicket extends CommonDBTM {
          'FROM'   => self::getTable(),
          'WHERE'  => [
             'plugin_credit_entities_id' => $ID
-         ] + $sqlfilter,
+         ],
          'ORDER'  => ['id DESC'],
       ];
-
-      if ($limit) {
-         $request['START'] = $start;
-         $request['LIMIT'] = $limit;
-      }
 
       $tickets = [];
       foreach ($DB->request($request) as $data) {

@@ -75,12 +75,10 @@ class PluginCreditEntity extends CommonDBTM {
     * Get all credit vouchers for entity.
     *
     * @param $ID           integer     entities ID
-    * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
     * @param $sqlfilter    array       to add a SQL filter (default [])
     * @return array of vouchers
     */
-   static function getAllForEntity($ID, $start = 0, $limit = 0, $sqlfilter = []): array {
+   static function getAllForEntity($ID, $sqlfilter = []): array {
       global $DB;
 
       $request = [
@@ -91,11 +89,6 @@ class PluginCreditEntity extends CommonDBTM {
          ] + $sqlfilter,
          'ORDER'  => ['id DESC'],
       ];
-
-      if ($limit) {
-         $request['START'] = $start;
-         $request['LIMIT'] = $limit;
-      }
 
       $vouchers = [];
       foreach ($DB->request($request) as $data) {
@@ -228,7 +221,7 @@ class PluginCreditEntity extends CommonDBTM {
             ];
          }
 
-         foreach (self::getAllForEntity($ID, 0, 0, $sqlfilter) as $data) {
+         foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
 
             $out .= "<tr class='tab_bg_2'>";
             if ($canedit) {
