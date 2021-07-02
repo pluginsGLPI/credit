@@ -1,0 +1,113 @@
+name: unit tests
+
+on:
+  [push, pull_request]
+
+env:
+  GLPI_SOURCE: "https://github.com/glpi-project/glpi"
+  CS: 7.4
+  DB_HOST: 127.0.0.1
+  MYSQL_ROOT_USER: root
+  DB_USER: glpi
+  DB_PASSWD: glpi
+  DB_NAME: glpitest
+  OLD_DB_NAME: glpiupgradetest
+  PLUGINNAME: credit
+  AFTER_SUCCESS_BRANCH: 9.5/bugfixes
+  ATOUM_ARG: --force-terminal
+  NOCOVERAGE: -ncc
+  COVERAGE: --nccfc CommonTreeDropdown CommonDropdown CommonDBTM CommonGLPI CommonDBConnexity CommonDBRelation CommonDBChild
+  PANTHER_CHROME_DRIVER_BINARY: chromedriver
+
+jobs:
+  tests:
+    name: "Tests"
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        php-versions: [7.4]
+        env:
+          - { GLPI_BRANCH: 9.5/bugfixes, SKIP_FUNCTIONAL_TESTS: false }
+    services:
+      db:
+        image: mariadb:10.1
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+            - 3306:3306
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    steps:
+      - name: Setup PHP with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: curl, fileinfo, gd, json, mbstring, mysqli, zlib, simplexml, xml, intl, bz2
+          coverage: xdebug
+      - name: "get browser"
+        run: |
+          sudo apt update
+          sudo apt install chromium-browser chromium-chromedriver
+      - name: "Check tools"
+        run: |
+          which php
+          which mysql
+          which composer
+          php --version
+          mysql --version
+          composer --version
+          chromium-browser --version
+          ls -l /usr/bin/chromium*
+          $PANTHER_CHROME_DRIVER_BINARY --version
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Run tests"
+        env: ${{matrix.env}}
+        run: |
+          . ./tests/script-functions.sh
+          . ./tests/script-specific-functions.sh
+          init_databases
+          install_glpi && install_plugin
+          export TEST_GLPI_CONFIG_DIR="tests/config-$OLD_DB_NAME"
+          init_glpi $OLD_DB_NAME $DB_USER $DB_PASSWD && init_plugin
+          echo status of plugins
+          mysql -h$DB_HOST -u$DB_USER -p$DB_PASSWD $OLD_DB_NAME -e "select name,directory,version,state from glpi_plugins WHERE directory IN ('$PLUGINNAME')"
+          plugin_test_upgrade
+          export TEST_GLPI_CONFIG_DIR="tests/config-$DB_NAME"
+          init_glpi $DB_NAME $DB_USER $DB_PASSWD && init_plugin
+          plugin_test_install
+          mysql -h$DB_HOST -u$DB_USER -p$DB_PASSWD $OLD_DB_NAME -e "select name,directory,version,state from glpi_plugins WHERE directory IN ('$PLUGINNAME')"
+          plugin_test
+          plugin_test_functional
+          plugin_test_uninstall
+
+  style:
+    strategy:
+      matrix:
+        php-versions: [7.4]
+        env:
+          - { GLPI_BRANCH: 9.5/bugfixes }
+    name: "Code quality"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Setup PHP with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: xdebug
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Code quality tests"
+        run: |
+          . ./tests/script-functions.sh
+          . ./tests/script-specific-functions.sh
+          composer config --unset platform
+          rm composer.lock
+          composer install --no-interaction --no-progress
+          plugin_test_lint
+          plugin_test_cs
+

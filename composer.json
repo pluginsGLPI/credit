@@ -3,7 +3,8 @@
         "php": "^7.2"
     },
     "require-dev": {
-        "glpi-project/tools": "^0.1"
+        "glpi-project/tools": "^0.1",
+        "php-parallel-lint/php-parallel-lint": "^1.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -11,5 +12,9 @@
             "php": "7.2.0"
         },
         "sort-packages": true
-    }
+    },
+    "scripts": {
+      "cs": "vendor/bin/robo --no-interaction code:cs --strict",
+      "lint": "vendor/bin/parallel-lint --exclude vendor ."
+  }
 }
