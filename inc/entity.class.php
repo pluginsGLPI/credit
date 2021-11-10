@@ -297,9 +297,7 @@ class PluginCreditEntity extends CommonDBTM {
                                            'reloadonclose' => false,
                                            'display'       => false]);
 
-            $out .= "<a href='#' onClick=\"".Html::jsGetElementbyID('displaycreditconsumed_'.
-                                                                   $data["id"]).
-                                          ".dialog('open');\" ";
+            $out .= "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' ";
             $out .= "title='".__('Consumed details', 'credit')."' ";
             $out .= "alt='".__('Consumed details', 'credit')."'>";
             $out .= $quantity_consumed;
@@ -491,17 +489,20 @@ class PluginCreditEntity extends CommonDBTM {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
+         $default_charset = DBConnection::getDefaultCharset();
+         $default_collation = DBConnection::getDefaultCollation();
+
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                     `entities_id` int(11) NOT NULL DEFAULT '0',
+                     `id` int unsigned NOT NULL auto_increment,
+                     `name` varchar(255) DEFAULT NULL,
+                     `entities_id` int unsigned NOT NULL DEFAULT '0',
                      `is_recursive` tinyint NOT NULL DEFAULT '0',
-                     `is_active` tinyint(1) NOT NULL DEFAULT '0',
-                     `plugin_credit_types_id` tinyint(1) NOT NULL DEFAULT '0',
+                     `is_active` tinyint NOT NULL DEFAULT '0',
+                     `plugin_credit_types_id` tinyint unsigned NOT NULL DEFAULT '0',
                      `begin_date` timestamp NULL DEFAULT NULL,
                      `end_date` timestamp NULL DEFAULT NULL,
-                     `quantity` int(11) NOT NULL DEFAULT '0',
-                     `overconsumption_allowed` tinyint(1) NOT NULL DEFAULT '0',
+                     `quantity` int NOT NULL DEFAULT '0',
+                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
@@ -510,7 +511,7 @@ class PluginCreditEntity extends CommonDBTM {
                      KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
                      KEY `begin_date` (`begin_date`),
                      KEY `end_date` (`end_date`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       } else {
          if (!$DB->fieldExists($table, 'overconsumption_allowed')) {
@@ -518,7 +519,7 @@ class PluginCreditEntity extends CommonDBTM {
             $migration->addField(
                $table,
                "overconsumption_allowed",
-               "TINYINT(1) NOT NULL DEFAULT '0'",
+               "TINYINT NOT NULL DEFAULT '0'",
                [
                   'update' => "1",
                ]
