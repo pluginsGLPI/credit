@@ -55,7 +55,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
             ],
          ]
       );
-      $data = $req->next();
+      $data = $req->current();
       $this->data['##credit.quantity_remaining##'] = (int)$this->obj->getField('quantity') - (int)$data['consumed_total'];
 
       $this->data['##lang.credit.enddate##'] = __('End date', 'credit');
@@ -133,7 +133,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       );
 
       if (count($result) > 0) {
-         $data = $result->next();
+         $data = $result->current();
          $templates_id = $data['id'];
       } else {
          $templates_id = $template->add(

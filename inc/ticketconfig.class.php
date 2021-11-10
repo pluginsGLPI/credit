@@ -93,26 +93,9 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $rand = mt_rand();
       $out = "";
 
-      if (!$embed_in_ticket_form) {
-         $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
-         $out .= "<input type='hidden' name='id' value='{$ticket_config->getID()}' />";
-      }
-
-      $out .= "<table id='creditmainform' class='tab_cadre_fixe'><tbody>";
-      $out .= "<tr>";
-      if ($embed_in_ticket_form) {
-         $out .= "<th style='width:13%'>".__('Credit', 'credit')."</th>";
-      } else {
-         $out .= "<th colspan='8'>".self::getTypeName()."</th>";
-         $out .= "</tr>";
-         $out .= "<tr>";
-      }
-
-      $out .= "<td>".__('Default for ticket', 'credit')."</td>";
-      $out .= "<td>";
-      $out .= PluginCreditEntity::dropdown(
+      $default_ticket_dropdown = PluginCreditEntity::dropdown(
          [
-            'name'        => 'credit_default',
+            'name'        => 'plugin_credit_entities_id_default',
             'entity'      => $ticket->getEntityID(),
             'entity_sons' => true,
             'display'     => false,
@@ -121,12 +104,10 @@ class PluginCreditTicketConfig extends CommonDBTM {
             'comments'    => false,
             'rand'        => $rand,
             'on_change'   => 'PluginCredit.propagateDefaultVoucherValue(this)',
+            'width'       => $embed_in_ticket_form ? '100%' : '',
          ]
       );
-      $out .= "</td>";
-      $out .= "<td>".__('Default for followups', 'credit')."</td>";
-      $out .= "<td>";
-      $out .= PluginCreditEntity::dropdown(
+      $default_fup_dropdown = PluginCreditEntity::dropdown(
          [
             'name'        => 'plugin_credit_entities_id_followups',
             'entity'      => $ticket->getEntityID(),
@@ -136,12 +117,10 @@ class PluginCreditTicketConfig extends CommonDBTM {
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
+            'width'       => $embed_in_ticket_form ? '100%' : '',
          ]
       );
-      $out .= "</td>";
-      $out .= "<td>".__('Default for tasks', 'credit')."</td>";
-      $out .= "<td>";
-      $out .= PluginCreditEntity::dropdown(
+      $default_tasks_dropdown = PluginCreditEntity::dropdown(
          [
             'name'        => 'plugin_credit_entities_id_tasks',
             'entity'      => $ticket->getEntityID(),
@@ -151,12 +130,10 @@ class PluginCreditTicketConfig extends CommonDBTM {
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
+            'width'       => $embed_in_ticket_form ? '100%' : '',
          ]
       );
-      $out .= "</td>";
-      $out .= "<td>".__('Default for solutions', 'credit')."</td>";
-      $out .= "<td>";
-      $out .= PluginCreditEntity::dropdown(
+      $default_sol_dropdown = PluginCreditEntity::dropdown(
          [
             'name'        => 'plugin_credit_entities_id_solutions',
             'entity'      => $ticket->getEntityID(),
@@ -166,22 +143,95 @@ class PluginCreditTicketConfig extends CommonDBTM {
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
+            'width'       => $embed_in_ticket_form ? '100%' : '',
          ]
       );
-      $out .= "</td>";
-      $out .= "</tr>";
 
-      if (!$embed_in_ticket_form) {
+      if ($embed_in_ticket_form) {
+         $out .= '</div>'; // class="accordion-body"
+         $out .= '</div>'; // class="accordion-collapse"
+         $out .= '</div>'; // class="accordion-item"
+         $out .= '<div class="accordion-item">';
+         $out .= '<h2 class="accordion-header" id="heading-plugin-credit-ticket-config">';
+         $out .= '<button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#plugin-credit-ticket-config" aria-expanded="true" aria-controls="plugin-credit-ticket-config">';
+         $out .= '<span class="item-title">';
+         $out .= self::getTypeName();
+         $out .= '</span>';
+         $out .= '</button>';
+         $out .= '</h2>';
+         $out .= '<div id="plugin-credit-ticket-config" class="accordion-collapse collapse show" aria-labelledby="heading-plugin-credit-ticket-config">';
+         $out .= '<div class="accordion-body row m-0 mt-n2">';
+
+         $out .= '<div class="form-field row col-12  mb-2">';
+         $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
+         $out .= __('Default for ticket', 'credit');
+         $out .= '</label>';
+         $out .= '<div class="col-xxl-8 field-container">';
+         $out .= $default_ticket_dropdown;
+         $out .= '</div>';
+         $out .= '</div>';
+
+         $out .= '<div class="form-field row col-12  mb-2">';
+         $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
+         $out .= __('Default for followups', 'credit');
+         $out .= '</label>';
+         $out .= '<div class="col-xxl-8 field-container">';
+         $out .= $default_fup_dropdown;
+         $out .= '</div>';
+         $out .= '</div>';
+
+         $out .= '<div class="form-field row col-12  mb-2">';
+         $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
+         $out .= __('Default for tasks', 'credit');
+         $out .= '</label>';
+         $out .= '<div class="col-xxl-8 field-container">';
+         $out .= $default_tasks_dropdown;
+         $out .= '</div>';
+         $out .= '</div>';
+
+         $out .= '<div class="form-field row col-12  mb-2">';
+         $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
+         $out .= __('Default for solutions', 'credit');
+         $out .= '</label>';
+         $out .= '<div class="col-xxl-8 field-container">';
+         $out .= $default_sol_dropdown;
+         $out .= '</div>';
+         $out .= '</div>';
+
+         // $out .= '</div>'; // class="accordion-body"
+         // $out .= '</div>'; // class="accordion-collapse"
+         // $out .= '</div>'; // class="accordion-item"
+      } else {
+         $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
+         $out .= "<input type='hidden' name='id' value='{$ticket_config->getID()}' />";
+         $out .= "<table class='tab_cadre_fixe'><tbody>";
+         $out .= "<tr>";
+         $out .= "<th colspan='8'>".self::getTypeName()."</th>";
+         $out .= "</tr>";
+         $out .= "<tr>";
+         $out .= "<td>".__('Default for ticket', 'credit')."</td>";
+         $out .= "<td>";
+         $out .= $default_ticket_dropdown;
+         $out .= "</td>";
+         $out .= "<td>".__('Default for followups', 'credit')."</td>";
+         $out .= "<td>";
+         $out .= $default_fup_dropdown;
+         $out .= "</td>";
+         $out .= "<td>".__('Default for tasks', 'credit')."</td>";
+         $out .= "<td>";
+         $out .= $default_tasks_dropdown;
+         $out .= "</td>";
+         $out .= "<td>".__('Default for solutions', 'credit')."</td>";
+         $out .= "<td>";
+         $out .= $default_sol_dropdown;
+         $out .= "</td>";
+         $out .= "</tr>";
          $out .= "<tr>";
          $out .= "<td colspan='8' class='center'>";
          $out .= "<input type='submit' name='update' value='"._sx('button', 'Update')."' class='submit'>";
          $out .= "</td>";
          $out .= "</tr>";
-      }
-
-      $out .= "</tbody></table>";
-
-      if (!$embed_in_ticket_form) {
+         $out .= "</tbody></table>";
          $out .= Html::closeForm(false);
       }
 
@@ -224,27 +274,31 @@ class PluginCreditTicketConfig extends CommonDBTM {
 
       $table = self::getTable();
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       if (!$DB->tableExists($table)) {
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int NOT NULL auto_increment,
-                     `tickets_id` int NOT NULL DEFAULT '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      `credit_default` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_followups` int NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_tasks` int NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_solutions` int NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_followups` int {$default_key_sign} NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_tasks` int {$default_key_sign} NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_solutions` int {$default_key_sign} NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `tickets_id` (`tickets_id`),
                      KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
                      KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
                      KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       }
 
       // During 1.10.0 dev phase, fields were named differently and had no keys
-      $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', "int NOT NULL DEFAULT '0'");
-      $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', "int NOT NULL DEFAULT '0'");
-      $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', "int NOT NULL DEFAULT '0'");
+      $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', "int {$default_key_sign} NOT NULL DEFAULT '0'");
+      $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', "int {$default_key_sign} NOT NULL DEFAULT '0'");
+      $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', "int {$default_key_sign} NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($table);
       $migration->addKey($table, 'plugin_credit_entities_id_followups');
       $migration->addKey($table, 'plugin_credit_entities_id_tasks');

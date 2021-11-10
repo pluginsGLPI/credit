@@ -144,7 +144,7 @@ class PluginCreditTicket extends CommonDBTM {
       ];
 
       if ($result = $DB->request($request)) {
-         if ($row = $result->next()) {
+         if ($row = $result->current()) {
             $tot = $row['sum'];
          }
       }
@@ -681,37 +681,41 @@ class PluginCreditTicket extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `tickets_id` int(11) NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id` int(11) NOT NULL DEFAULT '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      `date_creation` timestamp NULL DEFAULT NULL,
-                     `consumed` int(11) NOT NULL DEFAULT '0',
-                     `users_id` int(11) NOT NULL DEFAULT '0',
+                     `consumed` int NOT NULL DEFAULT '0',
+                     `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `tickets_id` (`tickets_id`),
                      KEY `plugin_credit_entities_id` (`plugin_credit_entities_id`),
                      KEY `date_creation` (`date_creation`),
                      KEY `consumed` (`consumed`),
                      KEY `users_id` (`users_id`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       } else {
 
-         // Fix #1 in 1.0.1 : change tinyint(1) to int(11) for tickets_id
-         $migration->changeField($table, 'tickets_id', 'tickets_id', 'integer');
+         // Fix #1 in 1.0.1 : change tinyint to int for tickets_id
+         $migration->changeField($table, 'tickets_id', 'tickets_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 
          // Change tinyint to int
          $migration->changeField(
             $table,
             'plugin_credit_entities_id',
             'plugin_credit_entities_id',
-            'integer'
+            "int {$default_key_sign} NOT NULL DEFAULT 0"
          );
-         $migration->changeField($table, 'users_id', 'users_id', 'integer');
+         $migration->changeField($table, 'users_id', 'users_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 
          //execute the whole migration
          $migration->executeMigration();

@@ -32,9 +32,9 @@
 define('PLUGIN_CREDIT_VERSION', '1.10.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "9.5");
+define("PLUGIN_CREDIT_MIN_GLPI", "10.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "9.6");
+define("PLUGIN_CREDIT_MAX_GLPI", "10.0.99");
 
 /**
  * Init hooks of the plugin.
@@ -46,11 +46,6 @@ function plugin_init_credit() {
    global $PLUGIN_HOOKS, $CFG_GLPI;
 
    $plugin = new Plugin();
-
-   // Hack for vertical display
-   if (isset($CFG_GLPI['layout_excluded_pages'])) {
-      array_push($CFG_GLPI['layout_excluded_pages'], "type.form.php");
-   }
 
    $PLUGIN_HOOKS['csrf_compliant']['credit'] = true;
 
