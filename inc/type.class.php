@@ -51,20 +51,24 @@ class PluginCreditType extends CommonTreeDropdown {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `entities_id` int(11) NOT NULL DEFAULT '0',
-                     `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                     `is_recursive` tinyint NOT NULL DEFAULT '0',
                      `name` varchar(255) NOT NULL DEFAULT '',
-                     `comment` text collate utf8_unicode_ci,
+                     `comment` text,
                      `completename` VARCHAR(255) NULL DEFAULT NULL,
-                     `plugin_credit_types_id` INT(11) NOT NULL DEFAULT '0',
-                     `level` INT(11) NOT NULL DEFAULT '1',
-                     `sons_cache` LONGTEXT NULL COLLATE 'utf8_unicode_ci',
-                     `ancestors_cache` LONGTEXT NULL COLLATE 'utf8_unicode_ci',
+                     `plugin_credit_types_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
+                     `level` INT NOT NULL DEFAULT '1',
+                     `sons_cache` LONGTEXT NULL,
+                     `ancestors_cache` LONGTEXT NULL,
                      `date_mod` timestamp NULL DEFAULT NULL,
                      `date_creation` timestamp NULL DEFAULT NULL,
                      PRIMARY KEY (`id`),
@@ -74,7 +78,7 @@ class PluginCreditType extends CommonTreeDropdown {
                      KEY `is_recursive` (`is_recursive`),
                      KEY `date_mod` (`date_mod`),
                      KEY `date_creation` (`date_creation`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       }
    }

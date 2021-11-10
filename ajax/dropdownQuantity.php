@@ -44,7 +44,7 @@ if (isset($_POST["entity"])) {
          'id' => $_POST['entity'],
       ],
    ];
-   $entity_result = $DB->request($entity_query)->next();
+   $entity_result = $DB->request($entity_query)->current();
 
    $overconsumption_allowed = $entity_result['overconsumption_allowed'];
    $quantity_sold           = (int)$entity_result['quantity'];
@@ -59,7 +59,7 @@ if (isset($_POST["entity"])) {
             'plugin_credit_entities_id' => $_POST['entity'],
          ],
       ];
-      $ticket_result = $DB->request($ticket_query)->next();
+      $ticket_result = $DB->request($ticket_query)->current();
 
       $consumed = (int)$ticket_result['consumed_total'];
       $max      = max(0, $quantity_sold - $consumed);
