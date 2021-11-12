@@ -35,15 +35,17 @@ if (isset($_POST["entity"])) {
       $consumed = (int)$ticket_result['consumed_total'];
       $max      = max(0, $quantity_sold - $consumed);
 
-      Dropdown::showNumber("plugin_credit_quantity", ['value'   => '',
-                                                      'min'     => 0,
-                                                      'max'     => $max,
-                                                      'step'    => 1,]);
+      Dropdown::showFromArray("plugin_credit_quantity", getHoursArray($max),[]);
    } else {
-      Dropdown::showNumber("plugin_credit_quantity", ['value'   => '',
-                                                      'min'     => 0,
-                                                      'max'     => 1000000,
-                                                      'step'    => 1,]);
+      Dropdown::showFromArray("plugin_credit_quantity", getHoursArray(24000),[]);
    }
 
+}
+
+function getHoursArray($max) {
+   $remaining_time = [];
+   for($i = 15; $i <= $max; $i+=15) 
+      $remaining_time[$i] = $i < 60 ? $i . ' mins' : floor($i / 60) . (floor($i/60 < 2) ? __(' hour  ') : __(' hours ')) . ($i % 60 > 0  ? $i % 60  . ' mins' : '');
+   
+   return $remaining_time;
 }

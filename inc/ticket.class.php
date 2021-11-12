@@ -244,7 +244,7 @@ class PluginCreditTicket extends CommonDBTM {
             $out .= getUserName($data["users_id"], $showuserlink);
             $out .= "</td>";
             $out .= "<td class='center'>";
-            $out .= $data['consumed'];
+            $out .= hoursAndMins($data['consumed']);
             $out .= "</td></tr>";
          }
 
@@ -441,7 +441,7 @@ class PluginCreditTicket extends CommonDBTM {
             $out .= getUserName($data["users_id"], $showuserlink);
             $out .= "</td>";
             $out .= "<td class='center'>";
-            $out .= $data['consumed'];
+            $out .= hoursAndMins($data['consumed']);
             $out .= "</td></tr>";
          }
 
@@ -515,7 +515,7 @@ class PluginCreditTicket extends CommonDBTM {
             Session::addMessageAfterRedirect(
                sprintf(
                   __('Quantity consumed exceeds remaining credits: %d', 'credit'),
-                  $quantity_remaining
+                  hoursAndMins($quantity_remaining)
                ),
                true,
                WARNING
@@ -524,7 +524,7 @@ class PluginCreditTicket extends CommonDBTM {
             Session::addMessageAfterRedirect(
                sprintf(
                   __('Quantity consumed exceeds remaining credits: %d', 'credit'),
-                  $quantity_remaining
+                  hoursAndMins($quantity_remaining)
                ),
                true,
                ERROR
@@ -641,4 +641,10 @@ class PluginCreditTicket extends CommonDBTM {
       $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
+}
+
+function hoursAndMins($allMins) {
+   $hours = floor($allMins / 60);
+   $mins = floor($allMins % 60);
+   return $hours . ($hours < 2 ? __(' hour ') : __(' hours ')) . ($mins > 0 ? $mins . __(' mins ') : '');
 }

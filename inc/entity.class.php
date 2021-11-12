@@ -163,12 +163,8 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "</td>";
          $out .= "<td class='tab_bg_2 right'>";
          $out .= __('Quantity sold', 'credit')."</td><td>";
-         $out .= Dropdown::showNumber("quantity", ['value'   => '',
-                                                   'min'     => 1,
-                                                   'max'     => 1000000,
-                                                   'step'    => 1,
-                                                   'toadd'   => [0 => __('Unlimited')],
-                                                   'display' => false]);
+         $out .= DropDown::showFromArray("quantity", getQuantityHoursArray(), ['value' => 1200,
+                                                                              'display' => false]);
          $out .= "</td>";
          $out .= "<td>".__('Allow overconsumption', 'credit')."</td>";
          $out .= "<td>";
@@ -269,8 +265,9 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "</td>";
 
             $quantity_sold = (int)$data['quantity'];
+            $quantity_sold_hours =  floor($quantity_sold /60);
             $out .= "<td class='center'>";
-            $out .= 0 === $quantity_sold ? __('Unlimited') : $quantity_sold;
+            $out .= $quantity_sold_hours . ($quantity_sold_hours < 2 ? __(' hour ') : __(' hours '));
             $out .= "</td>";
 
             $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
@@ -288,14 +285,12 @@ class PluginCreditEntity extends CommonDBTM {
                                           ".dialog('open');\" ";
             $out .= "title='".__('Consumed details', 'credit')."' ";
             $out .= "alt='".__('Consumed details', 'credit')."'>";
-            $out .= $quantity_consumed;
+            $out .= hoursAndMins($quantity_consumed);
             $out .= "</a></td>";
 
             $out .= "<td class='center'>";
-            $out .= 0 === $quantity_sold
-                    ? __('Unlimited')
-                    : max(0, $quantity_sold - $quantity_consumed);
-
+            $spent = $quantity_sold - $quantity_consumed;
+            $out .= hoursAndMins($spent);
             $out .= "</td><td>";
             $out .= ($data["overconsumption_allowed"]) ? __('Yes') : __('No');
             $out .= "</td>";
@@ -350,11 +345,7 @@ class PluginCreditEntity extends CommonDBTM {
          'table'    => self::getTable(),
          'field'    => 'quantity',
          'name'     => __('Quantity sold', 'credit'),
-         'datatype' => 'number',
-         'min'      => 1,
-         'max'      => 1000000,
-         'step'     => 1,
-         'toadd'    => [0 => __('Unlimited')],
+         'datatype' => 'specific',
       ];
 
       $tab[] = [
@@ -459,6 +450,18 @@ class PluginCreditEntity extends CommonDBTM {
       return 1;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      return  DropDown::showFromArray("quantity", getQuantityHoursArray(), [
+         'value' => 1200,
+         'display' => false]);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+      return  DropDown::showFromArray("quantity", getQuantityHoursArray(), [
+         'value' => 1200,
+         'display' => false]);
+   }
+
    /**
     * Install all necessary tables for the plugin
     *
@@ -519,4 +522,12 @@ class PluginCreditEntity extends CommonDBTM {
       $migration->dropTable($table);
    }
 
+}
+
+function getQuantityHoursArray () {
+   $remaining_time = [];
+   for($i = 60; $i <= 24000; $i+=60) 
+      $remaining_time[$i] = floor($i / 60) . (floor($i/60 < 2) ? __(' hour  ') : __(' hours '));
+   
+   return $remaining_time;
 }
