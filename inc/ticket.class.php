@@ -565,11 +565,7 @@ class PluginCreditTicket extends CommonDBTM {
          'table'    => self::getTable(),
          'field'    => 'consumed',
          'name'     => __('Quantity consumed', 'credit'),
-         'datatype' => 'number',
-         'min'      => 1,
-         'max'      => 1000000,
-         'step'     => 1,
-         'toadd'    => [0 => __('Unlimited')],
+         'datatype' => 'specific',
       ];
 
       $tab[] = [
@@ -581,6 +577,18 @@ class PluginCreditTicket extends CommonDBTM {
       ];
 
       return $tab;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      return  DropDown::showFromArray("quantity", getQuantityHoursArray(), [
+         'value' => 1200,
+         'display' => false]);
+   }
+
+   static function getSpecificValueToSelect($field, $name='', $values='', array $options=array()) {
+      return  DropDown::showFromArray("quantity", getQuantityHoursArray(), [
+         'value' => 1200,
+         'display' => false]);
    }
 
    /**
