@@ -486,19 +486,20 @@ class PluginCreditEntity extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int unsigned NOT NULL auto_increment,
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
                      `name` varchar(255) DEFAULT NULL,
-                     `entities_id` int unsigned NOT NULL DEFAULT '0',
+                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      `is_recursive` tinyint NOT NULL DEFAULT '0',
                      `is_active` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_types_id` tinyint unsigned NOT NULL DEFAULT '0',
+                     `plugin_credit_types_id` tinyint {$default_key_sign} NOT NULL DEFAULT '0',
                      `begin_date` timestamp NULL DEFAULT NULL,
                      `end_date` timestamp NULL DEFAULT NULL,
                      `quantity` int NOT NULL DEFAULT '0',
@@ -514,31 +515,15 @@ class PluginCreditEntity extends CommonDBTM {
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       } else {
-         if (!$DB->fieldExists($table, 'overconsumption_allowed')) {
-            //1.5.0
-            $migration->addField(
-               $table,
-               "overconsumption_allowed",
-               "TINYINT NOT NULL DEFAULT '0'",
-               [
-                  'update' => "1",
-               ]
-            );
-         }
 
-         if (!$DB->fieldExists($table, 'is_recursive')) {
-            //1.9.0
-            $migration->addField(
-               $table,
-               "is_recursive",
-               "TINYINT NOT NULL DEFAULT '0'",
-               [
-                  'update' => "0",
-               ]
-            );
-            $migration->addKey($table, 'is_recursive');
-         }
+         // 1.5.0
+         $migration->addField($table, 'overconsumption_allowed', 'bool', ['update' => "1"]);
 
+         // 1.9.0
+         $migration->addField($table, 'is_recursive', 'bool');
+         $migration->addKey($table, 'is_recursive');
+
+         // 1.10.0
          $migration->dropField($table, 'is_default'); // Was created during dev phase of 1.10.0, then removed
       }
    }

@@ -51,20 +51,21 @@ class PluginCreditType extends CommonTreeDropdown {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int unsigned NOT NULL auto_increment,
-                     `entities_id` int unsigned NOT NULL DEFAULT '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      `is_recursive` tinyint NOT NULL DEFAULT '0',
                      `name` varchar(255) NOT NULL DEFAULT '',
                      `comment` text,
                      `completename` VARCHAR(255) NULL DEFAULT NULL,
-                     `plugin_credit_types_id` INT unsigned NOT NULL DEFAULT '0',
+                     `plugin_credit_types_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
                      `level` INT NOT NULL DEFAULT '1',
                      `sons_cache` LONGTEXT NULL,
                      `ancestors_cache` LONGTEXT NULL,
