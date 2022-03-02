@@ -67,7 +67,10 @@ class PluginCreditEntity extends CommonDBTM {
     * @param $item    CommonDBTM object
    **/
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable(self::getTable(), ['entities_id' => $item->getID()]);
+      return countElementsInTable(
+         self::getTable(),
+         getEntitiesRestrictCriteria('', '', $item->getID(), true)
+      );
    }
 
    public function prepareInputForAdd($input) {
@@ -108,9 +111,7 @@ class PluginCreditEntity extends CommonDBTM {
       $request = [
          'SELECT' => '*',
          'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'entities_id' => $ID
-         ] + $sqlfilter,
+         'WHERE'  => getEntitiesRestrictCriteria('', '', $ID, true) + $sqlfilter,
          'ORDER'  => ['id DESC'],
       ];
 
@@ -147,11 +148,11 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "<input type='hidden' name='entities_id' value='$ID'>";
          $out .= "<table class='tab_cadre_fixe'>";
          $out .= "<tr class='tab_bg_1'>";
-         $out .= "<th colspan='8'>" . __('Add a credit voucher', 'credit') . "</th>";
+         $out .= "<th colspan='10'>" . __('Add a credit voucher', 'credit') . "</th>";
          $out .= "</tr>";
          $out .= "<tr class='tab_bg_1'>";
          $out .= "<td>". __('Name')."<span class='red'>*</span></strong></td>";
-         $out .= "<td colspan='3'>".Html::input("name", ['size' => 50])."</td>";
+         $out .= "<td colspan='5'>".Html::input("name", ['size' => 50])."</td>";
          $out .= "<td class='tab_bg_2 right'>".__('Type')."</td>";
          $out .= "<td>";
          $out .= PluginCreditType::dropdown(['name'    => 'plugin_credit_types_id',
@@ -166,6 +167,9 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "<td>".__('Active')."</td>";
          $out .= "<td>";
          $out .= Dropdown::showYesNo("is_active", 0, -1, ['display' => false]);
+         $out .= "</td>";
+         $out .= "<td class='tab_bg_2 right'>".__('Child entities')."</td><td>";
+         $out .= Dropdown::showYesNo("is_recursive", 0, -1, ['display' => false]);
          $out .= "</td>";
          $out .= "<td class='tab_bg_2 right'>";
          $out .= __('Quantity sold', 'credit')."</td><td>";
@@ -235,6 +239,8 @@ class PluginCreditEntity extends CommonDBTM {
          $header_end .= "<th>".__('Quantity consumed', 'credit')."</th>";
          $header_end .= "<th>".__('Quantity remaining', 'credit')."</th>";
          $header_end .= "<th>".__('Allow overconsumption', 'credit')."</th>";
+         $header_end .= "<th>".__('Entity')."</th>";
+         $header_end .= "<th>".__('Child entities')."</th>";
          $header_end .= "</tr>";
          $out .= $header_begin.$header_top.$header_end;
 
@@ -304,6 +310,13 @@ class PluginCreditEntity extends CommonDBTM {
 
             $out .= "</td><td>";
             $out .= ($data["overconsumption_allowed"]) ? __('Yes') : __('No');
+            $out .= "</td>";
+
+            $out .= "<td>";
+            $out .= Dropdown::getDropdownName(Entity::getTable(), $data['entities_id']);
+            $out .= "</td>";
+            $out .= "<td>";
+            $out .= ($data["is_recursive"]) ? __('Yes') : __('No');
             $out .= "</td>";
             $out .= "</tr>";
          }
@@ -482,6 +495,7 @@ class PluginCreditEntity extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                      `entities_id` int(11) NOT NULL DEFAULT '0',
+                     `is_recursive` tinyint NOT NULL DEFAULT '0',
                      `is_active` tinyint(1) NOT NULL DEFAULT '0',
                      `plugin_credit_types_id` tinyint(1) NOT NULL DEFAULT '0',
                      `begin_date` timestamp NULL DEFAULT NULL,
@@ -491,6 +505,7 @@ class PluginCreditEntity extends CommonDBTM {
                      PRIMARY KEY (`id`),
                      KEY `name` (`name`),
                      KEY `entities_id` (`entities_id`),
+                     KEY `is_recursive` (`is_recursive`),
                      KEY `is_active` (`is_active`),
                      KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
                      KEY `begin_date` (`begin_date`),
@@ -510,6 +525,19 @@ class PluginCreditEntity extends CommonDBTM {
                   'update' => "1",
                ]
             );
+         }
+         if (!$DB->fieldExists($table, 'is_recursive')) {
+            //1.9.0
+            $migration->displayMessage("Add field 'is_recursive'");
+            $migration->addField(
+               $table,
+               "is_recursive",
+               "TINYINT NOT NULL DEFAULT '0'",
+               [
+                  'update' => "0",
+               ]
+            );
+            $migration->addKey($table, 'is_recursive');
          }
       }
    }
