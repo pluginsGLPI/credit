@@ -172,6 +172,48 @@ class PluginCreditTicket extends CommonDBTM {
       }
 
       $out = "";
+      if ($canedit) {
+         $rand = mt_rand();
+         $out .= "<div class='firstbloc'>";
+         $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
+         $out .= self::getFormUrl()."'>";
+         $out .= "<input type='hidden' name='tickets_id' value='$ID'>";
+         $out .= "<label for='voucher'>";
+         $out .= __('Voucher name', 'credit');
+         $out .= "</label>";
+         $out .= ' ';
+         $out .= PluginCreditEntity::dropdown(
+            [
+               'name'      => 'plugin_credit_entities_id',
+               'comments'  => false,
+               'entity'    => $ticket->getEntityID(),
+               'entity_sons' => true,
+               'display'   => false,
+               'condition' => ['is_active' => 1],
+               'rand'      => $rand
+            ]
+         );
+         $out .= ' ';
+         $out .= "<label for='plugin_credit_quantity'>";
+         $out .= __('Quantity consumed', 'credit');
+         $out .= "</label>";
+         $out .= ' ';
+         $out .= "<span id='plugin_credit_quantity_container$rand'>";
+         $out .= Dropdown::showNumber('', ['value' => null, 'min' => 0, 'max' => 0, 'display' => false]); // placeholder
+         $out .= "</span>";
+         $out .= Ajax::updateItemOnSelectEvent(
+            "dropdown_plugin_credit_entities_id$rand",
+            "plugin_credit_quantity_container$rand",
+            Plugin::getWebDir('credit') . "/ajax/dropdownQuantity.php",
+            ['entity' => '__VALUE__'],
+            false
+         );
+         $out .= ' ';
+         $out .= "<input type='submit' name='add' value='"._sx('button', 'Add')."' class='submit'>";
+         $out .= Html::closeForm(false);
+         $out .= "</div>";
+      }
+
       $out .= "<div class='spaced'>";
       $out .= "<table class='tab_cadre_fixe'>";
       $out .= "<tr class='tab_bg_1'><th colspan='2'>";
