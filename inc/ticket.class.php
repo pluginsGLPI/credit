@@ -165,10 +165,14 @@ class PluginCreditTicket extends CommonDBTM {
          return false;
       }
 
-      $canedit = $ticket->canEdit($ID);
-      if (in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
-          || in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
-         $canedit = false;
+      $canedit = false;
+      if (Session::haveRight(Entity::$rightname, UPDATE)) {
+         $canedit = true; // Entity admin has always right to update credits
+      } else if (
+         $ticket->canEdit($ID)
+         && !in_array($ticket->fields['status'], array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()))
+      ) {
+         $canedit = true;
       }
 
       $out = "";
