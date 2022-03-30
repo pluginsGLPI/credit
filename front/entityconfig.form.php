@@ -31,15 +31,15 @@
 
 include ('../../../inc/includes.php');
 
-$entityConfig = new PluginCreditEntityConfig();
+$entity_config = new PluginCreditEntityConfig();
 
 if (isset($_POST["add"])) {
-   $entityConfig->check(-1, UPDATE, $_POST);
-   $entityConfig->add($_POST);
+   $entity_config->check(-1, UPDATE, $_POST);
+   $entity_config->add($_POST);
    Html::back();
 } elseif (isset($_POST["update"])) {
-   $entityConfig->check(-1, UPDATE, $_POST);
-   $entityConfig->update($_POST);
+   $entity_config->check(-1, UPDATE, $_POST);
+   $entity_config->update($_POST);
    Html::back();
 }
 

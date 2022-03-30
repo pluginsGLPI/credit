@@ -383,15 +383,15 @@ class PluginCreditTicket extends CommonDBTM {
          $canedit = false;
       }
 
-      $entityConfig = new PluginCreditEntityConfig();
-      $entityConfig->getFromDBByCrit(['entities_id' => $ticket->getEntityID()]);
+      $entity_config = new PluginCreditEntityConfig();
+      $entity_config->getFromDBByCrit(['entities_id' => $ticket->getEntityID()]);
       $consume = false;
       if ($item instanceof ITILSolution) {
-         $consume = $entityConfig->fields['consume_voucher_for_solutions'] ?? 0;
+         $consume = $entity_config->fields['consume_voucher_for_solutions'] ?? 0;
       } else if ($item instanceof TicketTask) {
-         $consume = $entityConfig->fields['consume_voucher_for_tasks'] ?? 0;
+         $consume = $entity_config->fields['consume_voucher_for_tasks'] ?? 0;
       } else if ($item instanceof ITILFollowup) {
-         $consume = $entityConfig->fields['consume_voucher_for_followups'] ?? 0;
+         $consume = $entity_config->fields['consume_voucher_for_followups'] ?? 0;
       }
 
       $rand = mt_rand();
@@ -426,7 +426,6 @@ class PluginCreditTicket extends CommonDBTM {
                                                'value'     => $default_credit,
                                                'condition' => ['is_active' => 1],
                                                'rand'      => $rand]);
-
          $out .= "</td><td colspan='2'></td>";
          $out .= "</tr><tr><td>";
          $out .= "<label for='plugin_credit_quantity'>";

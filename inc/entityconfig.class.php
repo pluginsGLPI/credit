@@ -131,7 +131,7 @@ class PluginCreditEntityConfig extends CommonDBTM {
       }
       $out .= Html::closeForm(false);
       $out .= "</div>";
-      echo $out;
+      return $out;
    }
 
    /**

@@ -33,15 +33,15 @@ include ('../../../inc/includes.php');
 
 Session::checkLoginUser();
 
-$ticketConfig = new PluginCreditTicketConfig();
+$ticket_config = new PluginCreditTicketConfig();
 
 if (isset($_POST["add"])) {
-   $ticketConfig->check(-1, UPDATE, $_POST);
-   $ticketConfig->add($_POST);
+   $ticket_config->check(-1, UPDATE, $_POST);
+   $ticket_config->add($_POST);
    Html::back();
 } elseif (isset($_POST["update"])) {
-   $ticketConfig->check(-1, UPDATE, $_POST);
-   $ticketConfig->update($_POST);
+   $ticket_config->check(-1, UPDATE, $_POST);
+   $ticket_config->update($_POST);
    Html::back();
 }
 

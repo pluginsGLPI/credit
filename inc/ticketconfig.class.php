@@ -80,7 +80,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
    static function showForTicket(Ticket $ticket) {
 
       if (!Session::haveRight("entity", UPDATE)) {
-         return true;
+         return;
       }
 
       //load ticket configuration
@@ -208,7 +208,10 @@ class PluginCreditTicketConfig extends CommonDBTM {
                      `plugin_credit_entities_id_tasks` tinyint NOT NULL DEFAULT '0',
                      `plugin_credit_entities_id_solutions` tinyint NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
-                     KEY `tickets_id` (`tickets_id`)
+                     KEY `tickets_id` (`tickets_id`),
+                     KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
+                     KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
+                     KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
@@ -217,6 +220,10 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', 'bool');
       $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', 'bool');
       $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', 'bool');
+      $migration->migrationOneTable($table);
+      $migration->addKey($table, 'plugin_credit_entities_id_followups');
+      $migration->addKey($table, 'plugin_credit_entities_id_tasks');
+      $migration->addKey($table, 'plugin_credit_entities_id_solutions');
 
       $migration->addKey($table, 'tickets_id');
    }

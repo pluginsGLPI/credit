@@ -74,7 +74,8 @@ class PluginCreditEntity extends CommonDBTM {
    }
 
    public function prepareInputForAdd($input) {
-      if (!$this->validateInput($input)) {
+      if (!isset($input['name']) || $input['name'] == '') {
+         Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
          return false;
       }
 
@@ -82,7 +83,8 @@ class PluginCreditEntity extends CommonDBTM {
    }
 
    public function prepareInputForUpdate($input) {
-      if (!$this->validateInput($input)) {
+      if (isset($input['name']) && strlen($input['name']) == '') {
+         Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
          return false;
       }
 
@@ -94,16 +96,6 @@ class PluginCreditEntity extends CommonDBTM {
       $pc_ticket->deleteByCriteria([
          'plugin_credit_entities_id' => $this->getID()
       ]);
-   }
-
-   public function validateInput($input): bool {
-
-      if (isset($input['name']) && strlen($input['name']) == '') {
-         Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'), false, ERROR);
-         return false;
-      }
-
-      return true;
    }
 
    /**
@@ -140,14 +132,14 @@ class PluginCreditEntity extends CommonDBTM {
    static function showForItemtype(Entity $entity, $itemtype = 'Entity') {
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
-         return false;
+         return;
       }
 
       $out     = "";
       $canedit = $itemtype === 'Entity' && $entity->canEdit($ID);
 
       if ($itemtype === 'Entity') {
-         PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
+         $out .= PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
       }
 
       if ($itemtype === 'Entity' && $canedit) {
@@ -328,7 +320,6 @@ class PluginCreditEntity extends CommonDBTM {
             $out .= "<td>";
             $out .= ($data["is_recursive"]) ? __('Yes') : __('No');
             $out .= "</td>";
-
             $out .= "</tr>";
          }
 
@@ -507,8 +498,8 @@ class PluginCreditEntity extends CommonDBTM {
                      `is_recursive` tinyint NOT NULL DEFAULT '0',
                      `is_active` tinyint(1) NOT NULL DEFAULT '0',
                      `plugin_credit_types_id` tinyint(1) NOT NULL DEFAULT '0',
-                     `begin_date` timestamp DEFAULT NULL,
-                     `end_date` timestamp DEFAULT NULL,
+                     `begin_date` timestamp NULL DEFAULT NULL,
+                     `end_date` timestamp NULL DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
                      `overconsumption_allowed` tinyint(1) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
