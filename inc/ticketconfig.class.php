@@ -107,7 +107,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
-            'on_change'   => 'propageSelected(this)',
+            'on_change'   => 'PluginCredit.propagateDefaultVoucherValue(this)',
          ]
       );
       $out .= "</td>";
