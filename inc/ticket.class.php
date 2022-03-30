@@ -175,8 +175,6 @@ class PluginCreditTicket extends CommonDBTM {
          $canedit = true;
       }
 
-      PluginCreditTicketConfig::showForTicket($ticket);
-
       $out = "";
       if ($canedit) {
          $rand = mt_rand();
@@ -219,6 +217,8 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= Html::closeForm(false);
          $out .= "</div>";
       }
+
+      PluginCreditTicketConfig::showForTicket($ticket);
 
       $out .= "<div class='spaced'>";
       $out .= "<table class='tab_cadre_fixe'>";

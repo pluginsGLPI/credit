@@ -141,7 +141,7 @@ class PluginCreditEntityConfig extends CommonDBTM {
     * @param string  $itemtype
     *
     * @return null|int
-   **/
+    */
    static function getDefaultForEntityAndType($entity_id, $itemtype) {
 
       $config = new self();
@@ -150,19 +150,19 @@ class PluginCreditEntityConfig extends CommonDBTM {
       $voucher_id = null;
       switch ($itemtype) {
          case ITILFollowup::getType():
-            $voucher_id = $config->fields['plugin_credit_entities_id_followups'] ?: null;
+            $voucher_id = $config->fields['plugin_credit_entities_id_followups'] ?? null;
             break;
 
          case TicketTask::getType():
-            $voucher_id = $config->fields['plugin_credit_entities_id_tasks'] ?: null;
+            $voucher_id = $config->fields['plugin_credit_entities_id_tasks'] ?? null;
             break;
 
          case ITILSolution::getType():
-            $voucher_id = $config->fields['plugin_credit_entities_id_solutions'] ?: null;
+            $voucher_id = $config->fields['plugin_credit_entities_id_solutions'] ?? null;
             break;
       }
 
-      return $voucher_id;
+      return $voucher_id ?: null;
    }
 
    static function install(Migration $migration) {

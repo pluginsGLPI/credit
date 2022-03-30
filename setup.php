@@ -77,6 +77,14 @@ function plugin_init_credit() {
             'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
             'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
          ];
+
+         $PLUGIN_HOOKS['item_add']['credit'] = [
+            'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
+         ];
+         // Update config on 'pre_item_update' as only changing these fields in ticket form will not trigger 'item_update'.
+         $PLUGIN_HOOKS['pre_item_update']['credit'] = [
+            'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
+         ];
       }
       $PLUGIN_HOOKS['add_javascript']['credit'] = [
          'js/credit.js'
