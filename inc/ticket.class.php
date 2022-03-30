@@ -216,9 +216,10 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= "<input type='submit' name='add' value='"._sx('button', 'Add')."' class='submit'>";
          $out .= Html::closeForm(false);
          $out .= "</div>";
+
+         $out .= PluginCreditTicketConfig::showForTicket($ticket);
       }
 
-      $out .= PluginCreditTicketConfig::showForTicket($ticket);
 
       $out .= "<div class='spaced'>";
       $out .= "<table class='tab_cadre_fixe'>";
@@ -343,7 +344,7 @@ class PluginCreditTicket extends CommonDBTM {
       $item = $params['item'];
 
       if ($item instanceof Ticket) {
-         echo PluginCreditTicketConfig::showForTicket($item);
+         echo PluginCreditTicketConfig::showForTicket($item, true);
          return;
       }
 

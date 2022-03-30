@@ -76,8 +76,9 @@ class PluginCreditTicketConfig extends CommonDBTM {
     * Show default credit option ticket
     *
     * @param Ticket $ticket
+    * @param bool $embed_in_ticket_form
    **/
-   static function showForTicket(Ticket $ticket) {
+   static function showForTicket(Ticket $ticket, bool $embed_in_ticket_form = false) {
 
       if (!Session::haveRight("entity", UPDATE)) {
          return;
@@ -91,9 +92,21 @@ class PluginCreditTicketConfig extends CommonDBTM {
 
       $rand = mt_rand();
       $out = "";
+
+      if (!$embed_in_ticket_form) {
+         $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
+         $out .= "<input type='hidden' name='id' value='{$ticket_config->getID()}' />";
+      }
+
       $out .= "<table id='creditmainform' class='tab_cadre_fixe'><tbody>";
       $out .= "<tr>";
-      $out .= "<th style='width:13%'>".__('Credit', 'credit')."</th>";
+      if ($embed_in_ticket_form) {
+         $out .= "<th style='width:13%'>".__('Credit', 'credit')."</th>";
+      } else {
+         $out .= "<th colspan='8'>".self::getTypeName()."</th>";
+         $out .= "</tr>";
+         $out .= "<tr>";
+      }
 
       $out .= "<td>".__('Default for ticket', 'credit')."</td>";
       $out .= "<td>";
@@ -103,7 +116,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
             'entity'      => $ticket->getEntityID(),
             'entity_sons' => true,
             'display'     => false,
-            'value'       => $ticket_config->fields['credit_default'] ?? 0,
+            'value'       => 0,
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
@@ -157,8 +170,20 @@ class PluginCreditTicketConfig extends CommonDBTM {
       );
       $out .= "</td>";
       $out .= "</tr>";
-      $out .= "<tr class='tab_bg_1'>";
+
+      if (!$embed_in_ticket_form) {
+         $out .= "<tr>";
+         $out .= "<td colspan='8' class='center'>";
+         $out .= "<input type='submit' name='update' value='"._sx('button', 'Update')."' class='submit'>";
+         $out .= "</td>";
+         $out .= "</tr>";
+      }
+
       $out .= "</tbody></table>";
+
+      if (!$embed_in_ticket_form) {
+         $out .= Html::closeForm(false);
+      }
 
       return $out;
    }
@@ -204,9 +229,9 @@ class PluginCreditTicketConfig extends CommonDBTM {
                      `id` int NOT NULL auto_increment,
                      `tickets_id` int NOT NULL DEFAULT '0',
                      `credit_default` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_followups` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_tasks` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_solutions` tinyint NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_followups` int NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_tasks` int NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_solutions` int NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `tickets_id` (`tickets_id`),
                      KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
@@ -217,13 +242,15 @@ class PluginCreditTicketConfig extends CommonDBTM {
       }
 
       // During 1.10.0 dev phase, fields were named differently and had no keys
-      $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', 'bool');
-      $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', 'bool');
-      $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', 'bool');
+      $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', "int NOT NULL DEFAULT '0'");
+      $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', "int NOT NULL DEFAULT '0'");
+      $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', "int NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($table);
       $migration->addKey($table, 'plugin_credit_entities_id_followups');
       $migration->addKey($table, 'plugin_credit_entities_id_tasks');
       $migration->addKey($table, 'plugin_credit_entities_id_solutions');
+
+      $migration->dropField($table, 'credit_default'); // Was created during dev phase of 1.10.0, then removed
 
       $migration->addKey($table, 'tickets_id');
    }
