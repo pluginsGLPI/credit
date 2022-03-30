@@ -144,11 +144,13 @@ class PluginCreditEntity extends CommonDBTM {
       }
 
       $out     = "";
-      $canedit = $itemtype == 'Ticket'
-                  ? false
-                  : $entity->canEdit($ID);
+      $canedit = $itemtype === 'Entity' && $entity->canEdit($ID);
 
-      if ($canedit) {
+      if ($itemtype === 'Entity') {
+         PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
+      }
+
+      if ($itemtype === 'Entity' && $canedit) {
          $rand = mt_rand();
          $out .= "<div class='firstbloc'>";
          $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
@@ -206,8 +208,6 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= Html::closeForm(false);
          $out .= "</div>";
       }
-
-      PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
 
       $out    .= "<div class='spaced'>";
       $number  = self::countForItem($entity);
@@ -500,8 +500,6 @@ class PluginCreditEntity extends CommonDBTM {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -524,8 +522,6 @@ class PluginCreditEntity extends CommonDBTM {
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       } else {
-         $migration->displayMessage("Upgrading $table");
-
          if (!$DB->fieldExists($table, 'overconsumption_allowed')) {
             //1.5.0
             $migration->addField(
@@ -540,7 +536,6 @@ class PluginCreditEntity extends CommonDBTM {
 
          if (!$DB->fieldExists($table, 'is_recursive')) {
             //1.9.0
-            $migration->displayMessage("Add field 'is_recursive'");
             $migration->addField(
                $table,
                "is_recursive",
@@ -563,7 +558,6 @@ class PluginCreditEntity extends CommonDBTM {
     */
    static function uninstall(Migration $migration) {
       $table = self::getTable();
-      $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
 

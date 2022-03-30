@@ -50,6 +50,7 @@ function plugin_credit_install() {
          }
       }
    }
+   $migration->executeMigration();
 
    CronTask::register(
       'PluginCreditEntity',
@@ -85,6 +86,9 @@ function plugin_credit_uninstall() {
          }
       }
    }
+
+   $migration->executeMigration();
+
    return true;
 }
 

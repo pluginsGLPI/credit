@@ -218,7 +218,7 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= "</div>";
       }
 
-      PluginCreditTicketConfig::showForTicket($ticket);
+      $out .= PluginCreditTicketConfig::showForTicket($ticket);
 
       $out .= "<div class='spaced'>";
       $out .= "<table class='tab_cadre_fixe'>";
@@ -343,7 +343,7 @@ class PluginCreditTicket extends CommonDBTM {
       $item = $params['item'];
 
       if ($item instanceof Ticket) {
-         PluginCreditTicketConfig::showForTicket($item);
+         echo PluginCreditTicketConfig::showForTicket($item);
          return;
       }
 
@@ -684,8 +684,6 @@ class PluginCreditTicket extends CommonDBTM {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -728,7 +726,6 @@ class PluginCreditTicket extends CommonDBTM {
    static function uninstall(Migration $migration) {
 
       $table = self::getTable();
-      $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
 }

@@ -114,8 +114,6 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
    public static function install(Migration $migration) {
       global $DB;
 
-      $migration->displayMessage("Migrate PluginCreditEntity notifications");
-
       $template     = new NotificationTemplate();
       $translation  = new NotificationTemplateTranslation();
       $notification = new Notification();

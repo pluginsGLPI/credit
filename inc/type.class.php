@@ -54,8 +54,6 @@ class PluginCreditType extends CommonTreeDropdown {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -89,7 +87,6 @@ class PluginCreditType extends CommonTreeDropdown {
    static function uninstall(Migration $migration) {
 
       $table = self::getTable();
-      $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
 

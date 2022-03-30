@@ -56,15 +56,15 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $voucher_id = null;
       switch ($itemtype) {
          case ITILFollowup::getType():
-            $voucher_id = $ticket_config->fields['credit_default_followup'] ?? null;
+            $voucher_id = $ticket_config->fields['plugin_credit_entities_id_followups'] ?? null;
             break;
 
          case TicketTask::getType():
-            $voucher_id = $ticket_config->fields['credit_default_task'] ?? null;
+            $voucher_id = $ticket_config->fields['plugin_credit_entities_id_tasks'] ?? null;
             break;
 
          case ITILSolution::getType():
-            $voucher_id = $ticket_config->fields['credit_default_solution'] ?? null;
+            $voucher_id = $ticket_config->fields['plugin_credit_entities_id_solutions'] ?? null;
             break;
       }
 
@@ -75,9 +75,9 @@ class PluginCreditTicketConfig extends CommonDBTM {
    /**
     * Show default credit option ticket
     *
-    * @param $ticket Ticket object
+    * @param Ticket $ticket
    **/
-   static function showForTicket(Ticket $ticket, $isTicket = false) {
+   static function showForTicket(Ticket $ticket) {
 
       if (!Session::haveRight("entity", UPDATE)) {
          return true;
@@ -115,11 +115,11 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $out .= "<td>";
       $out .= PluginCreditEntity::dropdown(
          [
-            'name'        => 'credit_default_followup',
+            'name'        => 'plugin_credit_entities_id_followups',
             'entity'      => $ticket->getEntityID(),
             'entity_sons' => true,
             'display'     => false,
-            'value'       => $ticket_config->fields['credit_default_followup'] ?? 0,
+            'value'       => $ticket_config->fields['plugin_credit_entities_id_followups'] ?? 0,
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
@@ -130,11 +130,11 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $out .= "<td>";
       $out .= PluginCreditEntity::dropdown(
          [
-            'name'        => 'credit_default_task',
+            'name'        => 'plugin_credit_entities_id_tasks',
             'entity'      => $ticket->getEntityID(),
             'entity_sons' => true,
             'display'     => false,
-            'value'       => $ticket_config->fields['credit_default_task'] ?? 0,
+            'value'       => $ticket_config->fields['plugin_credit_entities_id_tasks'] ?? 0,
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
@@ -145,11 +145,11 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $out .= "<td>";
       $out .= PluginCreditEntity::dropdown(
          [
-            'name'        => 'credit_default_solution',
+            'name'        => 'plugin_credit_entities_id_solutions',
             'entity'      => $ticket->getEntityID(),
             'entity_sons' => true,
             'display'     => false,
-            'value'       => $ticket_config->fields['credit_default_solution'] ?? 0,
+            'value'       => $ticket_config->fields['plugin_credit_entities_id_solutions'] ?? 0,
             'condition'   => ['is_active' => 1],
             'comments'    => false,
             'rand'        => $rand,
@@ -159,7 +159,8 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $out .= "</tr>";
       $out .= "<tr class='tab_bg_1'>";
       $out .= "</tbody></table>";
-      echo $out;
+
+      return $out;
    }
 
    static function updateConfig(Ticket $ticket) {
@@ -170,9 +171,9 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $input = [];
 
       $config_fields = [
-         'credit_default_followup',
-         'credit_default_task',
-         'credit_default_solution',
+         'plugin_credit_entities_id_followups',
+         'plugin_credit_entities_id_tasks',
+         'plugin_credit_entities_id_solutions',
       ];
       foreach ($config_fields as $field) {
          if (array_key_exists($field, $ticket->input)) {
@@ -199,20 +200,23 @@ class PluginCreditTicketConfig extends CommonDBTM {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `tickets_id` int(11) NOT NULL DEFAULT '0',
-                     `credit_default` tinyint(1) NOT NULL DEFAULT '0',
-                     `credit_default_followup` tinyint(1) NOT NULL DEFAULT '0',
-                     `credit_default_solution` tinyint(1) NOT NULL DEFAULT '0',
-                     `credit_default_task` tinyint(1) NOT NULL DEFAULT '0',
+                     `id` int NOT NULL auto_increment,
+                     `tickets_id` int NOT NULL DEFAULT '0',
+                     `credit_default` tinyint NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_followups` tinyint NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_tasks` tinyint NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_solutions` tinyint NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `tickets_id` (`tickets_id`)
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
+
+      // During 1.10.0 dev phase, fields were named differently and had no keys
+      $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', 'bool');
+      $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', 'bool');
+      $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', 'bool');
 
       $migration->addKey($table, 'tickets_id');
    }
@@ -220,7 +224,6 @@ class PluginCreditTicketConfig extends CommonDBTM {
    static function uninstall(Migration $migration) {
 
       $table = self::getTable();
-      $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
 }
