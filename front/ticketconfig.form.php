@@ -35,15 +35,13 @@ Session::checkLoginUser();
 
 $ticketConfig = new PluginCreditTicketConfig();
 
-if (isset($_POST["update"])) {
-   $ticketConfig->check(-1, UPDATE, $_POST);
-   $ticketConfig->update($_POST);
-   Html::back();
-}
-
 if (isset($_POST["add"])) {
    $ticketConfig->check(-1, UPDATE, $_POST);
    $ticketConfig->add($_POST);
+   Html::back();
+} elseif (isset($_POST["update"])) {
+   $ticketConfig->check(-1, UPDATE, $_POST);
+   $ticketConfig->update($_POST);
    Html::back();
 }
 

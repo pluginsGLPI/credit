@@ -307,7 +307,7 @@ class PluginCreditEntity extends CommonDBTM {
          $out .= "</div>";
       }
 
-      PluginCreditEntityConfig::showEntityConfig($entity, $entity::getType());
+      PluginCreditEntityConfig::showEntityConfigForm($entity, $entity::getType());
 
       $out    .= "<div class='spaced'>";
       $number  = self::countForItem($entity);
@@ -670,7 +670,10 @@ class PluginCreditEntity extends CommonDBTM {
                      KEY `is_active` (`is_active`),
                      KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
                      KEY `begin_date` (`begin_date`),
-                     KEY `end_date` (`end_date`)
+                     KEY `end_date` (`end_date`),
+                     KEY `is_default_for_followups` (`is_default_for_followups`),
+                     KEY `is_default_for_solutions` (`is_default_for_solutions`),
+                     KEY `is_default_for_tasks` (`is_default_for_tasks`)
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       } else {
@@ -719,6 +722,10 @@ class PluginCreditEntity extends CommonDBTM {
          } else {
             $migration->addField($table, 'is_default_for_solutions', 'bool');
          }
+         $migration->migrationOneTable($table);
+         $migration->addKey($table, 'is_default_for_followups');
+         $migration->addKey($table, 'is_default_for_tasks');
+         $migration->addKey($table, 'is_default_for_solutions');
       }
    }
 

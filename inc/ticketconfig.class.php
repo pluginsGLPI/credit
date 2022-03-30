@@ -54,20 +54,12 @@ class PluginCreditTicketConfig extends CommonDBTM {
    }
 
    public function prepareInputForAdd($input) {
-      if (!$this->validateInput($input)) {
-         return false;
-      }
-
       $input['credit_default'] = $this->computeDefault($input);
 
       return $input;
    }
 
    public function prepareInputForUpdate($input) {
-      if (!$this->validateInput($input)) {
-         return false;
-      }
-
       $input['credit_default'] = $this->computeDefault($input);
 
       return $input;
@@ -85,14 +77,6 @@ class PluginCreditTicketConfig extends CommonDBTM {
          $default = 0;
       }
       return $default;
-   }
-
-   public function post_updateItem($history = 1) {
-      $this->calculateGlobalDefault();
-   }
-
-   public function post_addItem($history = 1) {
-      $this->calculateGlobalDefault();
    }
 
    /**
@@ -302,11 +286,6 @@ class PluginCreditTicketConfig extends CommonDBTM {
       }
    }
 
-   /**
-    * Install all necessary table for the plugin
-    *
-    * @return boolean True if success
-    */
    static function install(Migration $migration) {
       global $DB;
 
@@ -322,17 +301,13 @@ class PluginCreditTicketConfig extends CommonDBTM {
                      `credit_default_followup` tinyint(1) NOT NULL DEFAULT '0',
                      `credit_default_solution` tinyint(1) NOT NULL DEFAULT '0',
                      `credit_default_task` tinyint(1) NOT NULL DEFAULT '0',
-                     PRIMARY KEY (`id`)
+                     PRIMARY KEY (`id`),
+                     KEY `tickets_id` (`tickets_id`)
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
    }
 
-   /**
-    * Uninstall previously installed table of the plugin
-    *
-    * @return boolean True if success
-    */
    static function uninstall(Migration $migration) {
 
       $table = self::getTable();

@@ -384,14 +384,14 @@ class PluginCreditTicket extends CommonDBTM {
       }
 
       $entityConfig = new PluginCreditEntityConfig();
-      $values = $entityConfig->getConfigurationValues($ticket->getEntityID());
+      $entityConfig->getFromDBByCrit(['entities_id' => $ticket->getEntityID()]);
       $consume = false;
       if ($item instanceof ITILSolution) {
-         $consume = $values['consume_voucher_solution'];
+         $consume = $entityConfig->fields['consume_voucher_for_solutions'] ?? 0;
       } else if ($item instanceof TicketTask) {
-         $consume = $values['consume_voucher_tasks'];
+         $consume = $entityConfig->fields['consume_voucher_for_tasks'] ?? 0;
       } else if ($item instanceof ITILFollowup) {
-         $consume = $values['consume_voucher_followups'];
+         $consume = $entityConfig->fields['consume_voucher_for_followups'] ?? 0;
       }
 
       $rand = mt_rand();
