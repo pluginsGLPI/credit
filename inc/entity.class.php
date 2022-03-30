@@ -78,8 +78,6 @@ class PluginCreditEntity extends CommonDBTM {
          return false;
       }
 
-      $input['is_default'] = $this->computeIsDefault($input);
-
       return $input;
    }
 
@@ -87,8 +85,6 @@ class PluginCreditEntity extends CommonDBTM {
       if (!$this->validateInput($input)) {
          return false;
       }
-
-      $input['is_default'] = $this->computeIsDefault($input);
 
       return $input;
    }
@@ -98,22 +94,6 @@ class PluginCreditEntity extends CommonDBTM {
       $pc_ticket->deleteByCriteria([
          'plugin_credit_entities_id' => $this->getID()
       ]);
-   }
-
-   public function computeIsDefault(array $input) {
-      $is_default_for_followups = $input['is_default_followup'] ?? $this->fields['is_default_followup'] ?? 0;
-      $is_default_for_tasks     = $input['is_default_task'] ?? $this->fields['is_default_task'] ?? 0;
-      $is_default_for_solutions = $input['is_default_solution'] ?? $this->fields['is_default_solution'] ?? 0;
-
-      $is_default = null;
-      if ($is_default_for_followups && $is_default_for_tasks && $is_default_for_solutions) {
-         $is_default = 1;
-      } else if (!$is_default_for_followups && !$is_default_for_tasks && !$is_default_for_solutions) {
-         $is_default = 0;
-      } else {
-         $is_default = 2;
-      }
-      return $is_default;
    }
 
    public function validateInput($input): bool {
@@ -680,7 +660,6 @@ class PluginCreditEntity extends CommonDBTM {
                      `end_date` timestamp DEFAULT NULL,
                      `quantity` int(11) NOT NULL DEFAULT '0',
                      `overconsumption_allowed` tinyint(1) NOT NULL DEFAULT '0',
-                     `is_default` tinyint(1) NOT NULL DEFAULT '0',
                      `is_default_followup` tinyint(1) NOT NULL DEFAULT '0',
                      `is_default_solution` tinyint(1) NOT NULL DEFAULT '0',
                      `is_default_task` tinyint(1) NOT NULL DEFAULT '0',
@@ -723,17 +702,7 @@ class PluginCreditEntity extends CommonDBTM {
             $migration->addKey($table, 'is_recursive');
          }
 
-         if (!$DB->fieldExists($table, 'is_default')) {
-            //1.10.0
-            $migration->addField(
-               $table,
-               "is_default",
-               "TINYINT(1) NOT NULL DEFAULT '0'",
-               [
-                  'value' => "0",
-               ]
-            );
-         }
+         $migration->dropField($table, 'is_default'); // Was added during dev phase of 1.10.0
 
          if (!$DB->fieldExists($table, 'is_default_followup')) {
             //1.10.0
