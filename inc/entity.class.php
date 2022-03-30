@@ -132,15 +132,17 @@ class PluginCreditEntity extends CommonDBTM {
    static function showForItemtype(Entity $entity, $itemtype = 'Entity') {
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
-         return false;
+         return;
       }
 
       $out     = "";
-      $canedit = $itemtype == 'Ticket'
-                  ? false
-                  : $entity->canEdit($ID);
+      $canedit = $itemtype === 'Entity' && $entity->canEdit($ID);
 
-      if ($canedit) {
+      if ($itemtype === 'Entity') {
+         $out .= PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
+      }
+
+      if ($itemtype === 'Entity' && $canedit) {
          $rand = mt_rand();
          $out .= "<div class='firstbloc'>";
          $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
@@ -489,8 +491,6 @@ class PluginCreditEntity extends CommonDBTM {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -513,8 +513,6 @@ class PluginCreditEntity extends CommonDBTM {
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       } else {
-         $migration->displayMessage("Upgrading $table");
-
          if (!$DB->fieldExists($table, 'overconsumption_allowed')) {
             //1.5.0
             $migration->addField(
@@ -526,9 +524,9 @@ class PluginCreditEntity extends CommonDBTM {
                ]
             );
          }
+
          if (!$DB->fieldExists($table, 'is_recursive')) {
             //1.9.0
-            $migration->displayMessage("Add field 'is_recursive'");
             $migration->addField(
                $table,
                "is_recursive",
@@ -539,6 +537,8 @@ class PluginCreditEntity extends CommonDBTM {
             );
             $migration->addKey($table, 'is_recursive');
          }
+
+         $migration->dropField($table, 'is_default'); // Was created during dev phase of 1.10.0, then removed
       }
    }
 
@@ -549,7 +549,6 @@ class PluginCreditEntity extends CommonDBTM {
     */
    static function uninstall(Migration $migration) {
       $table = self::getTable();
-      $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
 

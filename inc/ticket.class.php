@@ -218,6 +218,8 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= "</div>";
       }
 
+      $out .= PluginCreditTicketConfig::showForTicket($ticket);
+
       $out .= "<div class='spaced'>";
       $out .= "<table class='tab_cadre_fixe'>";
       $out .= "<tr class='tab_bg_1'><th colspan='2'>";
@@ -340,6 +342,11 @@ class PluginCreditTicket extends CommonDBTM {
 
       $item = $params['item'];
 
+      if ($item instanceof Ticket) {
+         echo PluginCreditTicketConfig::showForTicket($item);
+         return;
+      }
+
       if (!($item instanceof ITILSolution)
           && !($item instanceof TicketTask)
           && !($item instanceof ITILFollowup)) {
@@ -376,6 +383,17 @@ class PluginCreditTicket extends CommonDBTM {
          $canedit = false;
       }
 
+      $entity_config = new PluginCreditEntityConfig();
+      $entity_config->getFromDBByCrit(['entities_id' => $ticket->getEntityID()]);
+      $consume = false;
+      if ($item instanceof ITILSolution) {
+         $consume = $entity_config->fields['consume_voucher_for_solutions'] ?? 0;
+      } else if ($item instanceof TicketTask) {
+         $consume = $entity_config->fields['consume_voucher_for_tasks'] ?? 0;
+      } else if ($item instanceof ITILFollowup) {
+         $consume = $entity_config->fields['consume_voucher_for_followups'] ?? 0;
+      }
+
       $rand = mt_rand();
       if ($canedit) {
          $out .= "<tr><th colspan='2'>";
@@ -386,17 +404,26 @@ class PluginCreditTicket extends CommonDBTM {
          $out .= __('Consume a voucher ?', 'credit');
          $out .= "</label>";
          $out .= "</td><td>";
-         $out .= Dropdown::showYesNo('plugin_credit_consumed_voucher', 0, -1, ['display' => false]);
+         $out .= Dropdown::showYesNo('plugin_credit_consumed_voucher', $consume, -1, ['display' => false]);
          $out .= "</td><td colspan='2'></td>";
          $out .= "</tr><tr><td>";
          $out .= "<label for='voucher'>";
          $out .= __('Voucher name', 'credit');
          $out .= "</label>";
          $out .= "</td><td>";
+
+         //get default value for ticket
+         $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
+         if ($default_credit == 0) {
+            //get default value for entity
+            $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
+         }
+
          $out .= PluginCreditEntity::dropdown(['name'      => 'plugin_credit_entities_id',
                                                'entity'    => $ticket->getEntityID(),
                                                'entity_sons' => true,
                                                'display'   => false,
+                                               'value'     => $default_credit,
                                                'condition' => ['is_active' => 1],
                                                'rand'      => $rand]);
          $out .= "</td><td colspan='2'></td>";
@@ -414,6 +441,15 @@ class PluginCreditTicket extends CommonDBTM {
             false
          );
          $out .= "</td><td colspan='2'></td></tr>";
+      }
+
+      //trigger change to force load quantity select
+      if ($default_credit > 0) {
+         $out .= Html::scriptBlock("
+            $(document).ready(function() {
+               $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
+            });
+         ");
       }
 
       echo $out;
@@ -647,8 +683,6 @@ class PluginCreditTicket extends CommonDBTM {
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `tickets_id` int(11) NOT NULL DEFAULT '0',
@@ -691,7 +725,6 @@ class PluginCreditTicket extends CommonDBTM {
    static function uninstall(Migration $migration) {
 
       $table = self::getTable();
-      $migration->displayMessage("Uninstalling $table");
       $migration->dropTable($table);
    }
 }
