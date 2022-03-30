@@ -1,25 +1,31 @@
 <?php
+
 /**
- * --------------------------------------------------------------------------
+ * -------------------------------------------------------------------------
+ * Credit plugin for GLPI
+ * -------------------------------------------------------------------------
+ *
  * LICENSE
  *
- * This file is part of credit.
+ * This file is part of Credit.
  *
- * credit is free software; you can redistribute it and/or modify
+ * Credit is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * credit is distributed in the hope that it will be useful,
+ * Credit is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * --------------------------------------------------------------------------
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Credit. If not, see <http://www.gnu.org/licenses/>.
+ * -------------------------------------------------------------------------
  * @author    François Legastelois
- * @copyright Copyright (C) 2017-2018 by Teclib'.
+ * @copyright Copyright (C) 2017-2022 by Credit plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/credit
- * @link      https://pluginsglpi.github.io/credit/
  * -------------------------------------------------------------------------
  */
 
@@ -32,7 +38,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
    public static $rightname = 'entity';
 
    static function getTypeName($nb = 0) {
-      return _n('Default credit options', 'Credit vouchers', $nb, 'credit');
+      return _n('Default voucher option', 'Default voucher options', $nb, 'credit');
    }
 
    static function createTicketOption(Ticket $ticket) {
@@ -47,19 +53,38 @@ class PluginCreditTicketConfig extends CommonDBTM {
       return $ticketConfig;
    }
 
-   public function calculateGlobalDefault() {
-      if (!isset($_SESSION['credit']['post_update'])) {
-         if (($this->fields['credit_default_followup'] ===  $this->fields['credit_default_task'])
-         && ($this->fields['credit_default_task'] ===  $this->fields['credit_default_solution'])) {
-            $this->fields['credit_default'] = $this->fields['credit_default_solution'];
-         } else {
-            $this->fields['credit_default'] = 0;
-         }
-         $_SESSION['credit']['post_update'] = true;
-         $this->update($this->fields);
-      } else {
-         unset($_SESSION['credit']['post_update']);
+   public function prepareInputForAdd($input) {
+      if (!$this->validateInput($input)) {
+         return false;
       }
+
+      $input['credit_default'] = $this->computeDefault($input);
+
+      return $input;
+   }
+
+   public function prepareInputForUpdate($input) {
+      if (!$this->validateInput($input)) {
+         return false;
+      }
+
+      $input['credit_default'] = $this->computeDefault($input);
+
+      return $input;
+   }
+
+   public function computeDefault(array $input) {
+      $default_for_followups = $input['credit_default_followup'] ?? $this->fields['credit_default_followup'] ?? 0;
+      $default_for_tasks     = $input['credit_default_task'] ?? $this->fields['credit_default_task'] ?? 0;
+      $default_for_solutions = $input['credit_default'] ?? $this->fields['credit_default'] ?? 0;
+
+      $default = null;
+      if ($default_for_followups === $default_for_tasks && $default_for_tasks === $default_for_solutions) {
+         $default = $default_for_followups;
+      } else {
+         $default = 0;
+      }
+      return $default;
    }
 
    public function post_updateItem($history = 1) {
@@ -77,7 +102,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
     * @param $start        integer     first line to retrieve (default 0)
     * @param $limit        integer     max number of line to retrieve (0 for all) (default 0)
     * @param $sqlfilter    string      to add a SQL filter (default '')
-    * @return array of vouchers
+    * @return int
    **/
    static function getDefaultForTicket($ID, $itemtype) {
       $ticketConfig = new PluginCreditTicketConfig();
@@ -181,7 +206,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
                                                                      ]);
       $out .= "</td>";
 
-      $out .= "<td >".__('Default for solution', 'credit')."</td>";
+      $out .= "<td >".__('Default for solutions', 'credit')."</td>";
       $out .= "<td>";
       $out .= Dropdown::showFromArray("credit_default_solution", $values, ["display" => false,
                                                                         'display_emptychoice' => true,
@@ -208,9 +233,8 @@ class PluginCreditTicketConfig extends CommonDBTM {
 
    }
 
-   static function showForTicket($params) {
-      $item = $params['item'];
-      echo self::showForTicketTab($item, true);
+   static function showForTicket(Ticket $ticket) {
+      self::showForTicketTab($ticket, true);
    }
 
    static function manageTicket(CommonDBTM $item) {

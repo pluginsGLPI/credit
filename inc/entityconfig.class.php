@@ -1,25 +1,31 @@
 <?php
+
 /**
- * --------------------------------------------------------------------------
+ * -------------------------------------------------------------------------
+ * Credit plugin for GLPI
+ * -------------------------------------------------------------------------
+ *
  * LICENSE
  *
- * This file is part of credit.
+ * This file is part of Credit.
  *
- * credit is free software; you can redistribute it and/or modify
+ * Credit is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * credit is distributed in the hope that it will be useful,
+ * Credit is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * --------------------------------------------------------------------------
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Credit. If not, see <http://www.gnu.org/licenses/>.
+ * -------------------------------------------------------------------------
  * @author    François Legastelois
- * @copyright Copyright (C) 2017-2018 by Teclib'.
+ * @copyright Copyright (C) 2017-2022 by Credit plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/credit
- * @link      https://pluginsglpi.github.io/credit/
  * -------------------------------------------------------------------------
  */
 
@@ -64,7 +70,7 @@ class PluginCreditEntityConfig extends CommonDBTM {
          $out .= Dropdown::showYesNo("consume_voucher_tasks", $values['consume_voucher_tasks'], -1, ['display' => false]);
          $out .= "</td>";
 
-         $out .= "<td>".__('By default consume a voucher for solution', 'credit')."</td>";
+         $out .= "<td>".__('By default consume a voucher for solutions', 'credit')."</td>";
          $out .= "<td>";
          $out .= Dropdown::showYesNo("consume_voucher_solution", $values['consume_voucher_solution'], -1, ['display' => false]);
          $out .= "</td>";
@@ -78,28 +84,27 @@ class PluginCreditEntityConfig extends CommonDBTM {
 
 
    public function saveConfiguration($data) {
-      $config = new Config();
       $values[$data['config_name']] = json_encode([
          'consume_voucher_followups' => $data['consume_voucher_followups'],
          'consume_voucher_tasks' => $data['consume_voucher_tasks'],
          'consume_voucher_solution' => $data['consume_voucher_solution']]);
-      $config->setConfigurationValues('plugin:credit', $values);
+      Config::setConfigurationValues('plugin:credit', $values);
    }
 
    public function getConfigurationValues($entity_id) {
-      $config = new Config();
-      $values = $config->getConfigurationValues('plugin:credit', ["name" =>Entity::getType()."-".$entity_id]);
-      //create default values
+      $config_key = sprintf('%s-%s', Entity::getType(), $entity_id);
+      $config = Config::getConfigurationValues('plugin:credit', [$config_key])[$config_key] ?? '[]';
+
+      $values = json_decode($config, true);
+
       if (empty($values)) {
-         $values[Entity::getType()."-".$entity_id] = json_encode([
+         $values = [
             'consume_voucher_followups' => 0,
-            'consume_voucher_tasks' => 0,
-            'consume_voucher_solution' => 0]);
-         $config->setConfigurationValues('plugin:credit', $values);
-         return json_decode($values[Entity::getType()."-".$entity_id], true);
-      } else {
-         return json_decode($values[Entity::getType()."-".$entity_id], true);
+            'consume_voucher_tasks'     => 0,
+            'consume_voucher_solution'  => 0,
+         ];
       }
 
+      return $values;
    }
 }

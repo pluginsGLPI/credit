@@ -77,9 +77,10 @@ function plugin_init_credit() {
             'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
             'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
          ];
-
       }
-      $PLUGIN_HOOKS['add_javascript']['credit'][] = "js/credit.js";
+      $PLUGIN_HOOKS['add_javascript']['credit'] = [
+         'js/credit.js'
+      ];
       $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
    }
 }
