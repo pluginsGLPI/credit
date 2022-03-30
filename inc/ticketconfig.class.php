@@ -306,6 +306,8 @@ class PluginCreditTicketConfig extends CommonDBTM {
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
+
+      $migration->addKey($table, 'tickets_id');
    }
 
    static function uninstall(Migration $migration) {

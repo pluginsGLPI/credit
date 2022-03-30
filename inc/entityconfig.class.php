@@ -41,25 +41,23 @@ class PluginCreditEntityConfig extends CommonDBTM {
       return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
    }
 
-   static function showEntityConfigForm(Entity $entity, $itemtype = 'Entity') {
+   static function showEntityConfigForm($entity_id) {
 
-      $ID = $entity->getField('id');
-
-      //get configuration values
       $config = new self();
-      $config->getFromDBByCrit(['entities_id' => $ID]);
+      $config->getFromDBByCrit(['entities_id' => $entity_id]);
 
       $out = "";
       $rand = mt_rand();
       $out .= "<div class='firstbloc'>";
       $out .= "<form name='creditentityconfig_form$rand' id='creditentityconfig_form$rand' method='post' action='";
       $out .= self::getFormUrl()."'>";
-      $out .= "<input type='hidden' name='entities_id' value='$ID'>";
+      $out .= "<input type='hidden' name='entities_id' value='$entity_id'>";
       $out .= "<table class='tab_cadre_fixe'>";
       $out .= "<tr class='tab_bg_1'>";
       $out .= "<th colspan='8'>" . __('Default options for entity', 'credit') . "</th>";
       $out .= "</tr>";
 
+      $out .= "<tr>";
       $out .= "<td>".__('By default consume a voucher for followups', 'credit')."</td>";
       $out .= "<td>";
       $out .= Dropdown::showYesNo("consume_voucher_for_followups", $config->fields['consume_voucher_for_followups'] ?? 0, -1, ['display' => false]);
@@ -74,6 +72,55 @@ class PluginCreditEntityConfig extends CommonDBTM {
       $out .= "<td>";
       $out .= Dropdown::showYesNo("consume_voucher_for_solutions", $config->fields['consume_voucher_for_solutions'] ?? 0, -1, ['display' => false]);
       $out .= "</td>";
+      $out .= "</tr>";
+
+      $out .= "<tr>";
+      $out .= "<td>".__('Default for followups', 'credit')."</td>";
+      $out .= "<td>";
+      $out .= PluginCreditEntity::dropdown(
+         [
+            'name'        => 'plugin_credit_entities_id_followups',
+            'entity'      => $entity_id,
+            'entity_sons' => true,
+            'display'     => false,
+            'value'       => $config->fields['plugin_credit_entities_id_followups'] ?? 0,
+            'condition'   => ['is_active' => 1],
+            'comments'    => false,
+            'rand'        => $rand,
+         ]
+      );
+      $out .= "</td>";
+      $out .= "<td>".__('Default for tasks', 'credit')."</td>";
+      $out .= "<td>";
+      $out .= PluginCreditEntity::dropdown(
+         [
+            'name'        => 'plugin_credit_entities_id_tasks',
+            'entity'      => $entity_id,
+            'entity_sons' => true,
+            'display'     => false,
+            'value'       => $config->fields['plugin_credit_entities_id_tasks'] ?? 0,
+            'condition'   => ['is_active' => 1],
+            'comments'    => false,
+            'rand'        => $rand,
+         ]
+      );
+      $out .= "</td>";
+      $out .= "<td>".__('Default for solutions', 'credit')."</td>";
+      $out .= "<td>";
+      $out .= PluginCreditEntity::dropdown(
+         [
+            'name'        => 'plugin_credit_entities_id_solutions',
+            'entity'      => $entity_id,
+            'entity_sons' => true,
+            'display'     => false,
+            'value'       => $config->fields['plugin_credit_entities_id_solutions'] ?? 0,
+            'condition'   => ['is_active' => 1],
+            'comments'    => false,
+            'rand'        => $rand,
+         ]
+      );
+      $out .= "</td>";
+      $out .= "</tr>";
 
       $out .= "</table>";
       if ($config->isNewItem()) {
@@ -87,6 +134,37 @@ class PluginCreditEntityConfig extends CommonDBTM {
       echo $out;
    }
 
+   /**
+    * Get default credit for entity and itemtype
+    *
+    * @param int     $entity_id
+    * @param string  $itemtype
+    *
+    * @return null|int
+   **/
+   static function getDefaultForEntityAndType($entity_id, $itemtype) {
+
+      $config = new self();
+      $config->getFromDBByCrit(['entities_id' => $entity_id]);
+
+      $voucher_id = null;
+      switch ($itemtype) {
+         case ITILFollowup::getType():
+            $voucher_id = $config->fields['plugin_credit_entities_id_followups'] ?: null;
+            break;
+
+         case TicketTask::getType():
+            $voucher_id = $config->fields['plugin_credit_entities_id_tasks'] ?: null;
+            break;
+
+         case ITILSolution::getType():
+            $voucher_id = $config->fields['plugin_credit_entities_id_solutions'] ?: null;
+            break;
+      }
+
+      return $voucher_id;
+   }
+
    static function install(Migration $migration) {
       global $DB;
 
@@ -97,12 +175,18 @@ class PluginCreditEntityConfig extends CommonDBTM {
 
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int(11) NOT NULL auto_increment,
-                     `entities_id` int(11) NOT NULL DEFAULT '0',
-                     `consume_voucher_for_followups` tinyint(1) NOT NULL DEFAULT '0',
-                     `consume_voucher_for_tasks` tinyint(1) NOT NULL DEFAULT '0',
-                     `consume_voucher_for_solutions` tinyint(1) NOT NULL DEFAULT '0',
+                     `entities_id` int NOT NULL DEFAULT '0',
+                     `consume_voucher_for_followups` tinyint NOT NULL DEFAULT '0',
+                     `consume_voucher_for_tasks` tinyint NOT NULL DEFAULT '0',
+                     `consume_voucher_for_solutions` tinyint NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_followups` int NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_tasks` int NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_solutions` int NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
-                     KEY `entities_id` (`entities_id`)
+                     KEY `entities_id` (`entities_id`),
+                     KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
+                     KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
+                     KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
                   ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query) or die($DB->error());
       }
@@ -115,17 +199,62 @@ class PluginCreditEntityConfig extends CommonDBTM {
             continue;
          }
          $entity_id = $entity_match['id'];
-         $values = json_decode($config, true);
+         $values = @json_decode($config, true);
+         $input = [
+            'entities_id'                   => $entity_id,
+            'consume_voucher_for_followups' => $values['consume_voucher_followups'] ?? 0,
+            'consume_voucher_for_tasks'     => $values['consume_voucher_tasks'] ?? 0,
+            'consume_voucher_for_solutions' => $values['consume_voucher_solution'] ?? 0,
+         ];
+
          $entity_config = new self();
-         $entity_config->add(
-            [
-               'entities_id'                  => $entity_id,
-               'consume_voucher_for_followups' => $values['consume_voucher_followups'],
-               'consume_voucher_for_tasks'     => $values['consume_voucher_tasks'],
-               'consume_voucher_for_solutions' => $values['consume_voucher_solution'],
-            ]
-         );
+         if ($entity_config->getFromDBByCrit(['entities_id' => $entity_id])) {
+            $entity_config->update(['id' => $entity_config->getID()] + $input);
+         } else {
+            $entity_config->add($input);
+         }
          Config::deleteConfigurationValues('plugin:credit', [$key]);
+      }
+
+      // During 1.10.0 dev phase, defaults were defined by a boulean on glpi_plugin_credit_entities.
+      $vouchers_table = PluginCreditEntity::getTable();
+      if (
+         $DB->fieldExists($vouchers_table, 'is_default_followup')
+         || $DB->fieldExists($vouchers_table, 'is_default_task')
+         || $DB->fieldExists($vouchers_table, 'is_default_solution')
+      ) {
+         $vouchers_iterator = $DB->request(['FROM' => PluginCreditEntity::getTable(), 'WHERE' => ['is_active' => 1]]);
+         foreach ($vouchers_iterator as $voucher_data) {
+            $is_default_for_followups = $voucher_data['is_default_followup'] ?? 0;
+            $is_default_for_tasks     = $voucher_data['is_default_task'] ?? 0;
+            $is_default_for_solutions = $voucher_data['is_default_solution'] ?? 0;
+
+            if (!$is_default_for_followups && !$is_default_for_tasks && !$is_default_for_solutions) {
+               continue;
+            }
+            $entities_id = $voucher_data['entities_id'];
+            $input = [
+               'entities_id' => $entities_id,
+            ];
+            if ($is_default_for_followups) {
+               $input['plugin_credit_entities_id_followups'] = $voucher_data['id'];
+            }
+            if ($is_default_for_tasks) {
+               $input['plugin_credit_entities_id_tasks'] = $voucher_data['id'];
+            }
+            if ($is_default_for_solutions) {
+               $input['plugin_credit_entities_id_solutions'] = $voucher_data['id'];
+            }
+            $entity_config = new self();
+            if ($entity_config->getFromDBByCrit(['entities_id' => $voucher_data['entities_id']])) {
+               $entity_config->update(['id' => $entity_config->getID()] + $input);
+            } else {
+               $entity_config->add($input);
+            }
+         }
+         $migration->dropField($vouchers_table, 'is_default_followup');
+         $migration->dropField($vouchers_table, 'is_default_task');
+         $migration->dropField($vouchers_table, 'is_default_solution');
       }
    }
 
