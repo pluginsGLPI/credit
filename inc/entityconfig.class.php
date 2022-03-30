@@ -168,24 +168,28 @@ class PluginCreditEntityConfig extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `entities_id` int NOT NULL DEFAULT '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      `consume_voucher_for_followups` tinyint NOT NULL DEFAULT '0',
                      `consume_voucher_for_tasks` tinyint NOT NULL DEFAULT '0',
                      `consume_voucher_for_solutions` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_followups` int NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_tasks` int NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_solutions` int NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_followups` int {$default_key_sign} NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_tasks` int {$default_key_sign} NOT NULL DEFAULT '0',
+                     `plugin_credit_entities_id_solutions` int {$default_key_sign} NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `entities_id` (`entities_id`),
                      KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
                      KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
                      KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       }
 
