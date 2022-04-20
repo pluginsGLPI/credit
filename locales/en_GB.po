@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-31 08:43+0000\n"
-"PO-Revision-Date: 2022-03-31 08:43+0000\n"
+"POT-Creation-Date: 2022-04-20 11:52+0000\n"
+"PO-Revision-Date: 2022-04-20 11:52+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_GB\n"
@@ -25,7 +25,7 @@ msgstr "Active credit vouchers for ticket entity"
 msgid "Add a credit voucher"
 msgstr "Add a credit voucher"
 
-#: inc/entity.class.php:185 inc/entity.class.php:243 inc/entity.class.php:393
+#: inc/entity.class.php:185 inc/entity.class.php:243 inc/entity.class.php:391
 msgid "Allow overconsumption"
 msgstr "Allow overconsumption"
 
@@ -49,13 +49,9 @@ msgstr "Consume a voucher ?"
 msgid "Consumed credits for this ticket"
 msgstr "Consumed credits for this ticket"
 
-#: inc/entity.class.php:296 inc/entity.class.php:303 inc/entity.class.php:304
+#: inc/entity.class.php:296 inc/entity.class.php:301 inc/entity.class.php:302
 msgid "Consumed details"
 msgstr "Consumed details"
-
-#: inc/ticketconfig.class.php:104
-msgid "Credit"
-msgstr "Credit"
 
 #: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
 #: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
@@ -77,13 +73,13 @@ msgstr "Credit voucher name is mandatory."
 msgid "Credit voucher successfully added."
 msgstr "Credit voucher successfully added."
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:385
+#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Credit voucher type"
 msgstr[1] "Credit vouchers types"
 
-#: inc/ticket.class.php:669 setup.php:105
+#: inc/ticket.class.php:669 setup.php:100
 msgid "Credit vouchers"
 msgstr "Credit vouchers"
 
@@ -91,19 +87,22 @@ msgstr "Credit vouchers"
 msgid "Date consumed"
 msgstr "Date consumed"
 
-#: inc/ticketconfig.class.php:127 inc/entityconfig.class.php:78
+#: inc/ticketconfig.class.php:176 inc/ticketconfig.class.php:216
+#: inc/entityconfig.class.php:78
 msgid "Default for followups"
 msgstr "Default for followups"
 
-#: inc/ticketconfig.class.php:157 inc/entityconfig.class.php:108
+#: inc/ticketconfig.class.php:194 inc/ticketconfig.class.php:224
+#: inc/entityconfig.class.php:108
 msgid "Default for solutions"
 msgstr "Default for solutions"
 
-#: inc/ticketconfig.class.php:142 inc/entityconfig.class.php:93
+#: inc/ticketconfig.class.php:185 inc/ticketconfig.class.php:220
+#: inc/entityconfig.class.php:93
 msgid "Default for tasks"
 msgstr "Default for tasks"
 
-#: inc/ticketconfig.class.php:111
+#: inc/ticketconfig.class.php:167 inc/ticketconfig.class.php:212
 msgid "Default for ticket"
 msgstr "Default for ticket"
 
@@ -126,11 +125,11 @@ msgstr "Detail of tickets on which consumption is declared"
 msgid "End date"
 msgstr "End date"
 
-#: inc/entity.class.php:404 inc/notificationtargetentity.class.php:36
+#: inc/entity.class.php:402 inc/notificationtargetentity.class.php:36
 msgid "Expiration date"
 msgstr "Expiration date"
 
-#: inc/entity.class.php:335
+#: inc/entity.class.php:333
 msgid "No credit voucher"
 msgstr "No credit voucher"
 
@@ -138,7 +137,7 @@ msgstr "No credit voucher"
 msgid "No credit was recorded"
 msgstr "No credit was recorded"
 
-#: inc/entity.class.php:405
+#: inc/entity.class.php:403
 msgid "Notice (in days)"
 msgstr "Notice (in days)"
 
@@ -159,7 +158,7 @@ msgstr "Quantity consumed exceeds remaining credits: %d"
 msgid "Quantity remaining"
 msgstr "Quantity remaining"
 
-#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:373
+#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:371
 #: inc/notificationtargetentity.class.php:63
 #: inc/notificationtargetentity.class.php:77
 msgid "Quantity sold"

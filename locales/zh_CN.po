@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-31 08:43+0000\n"
+"POT-Creation-Date: 2022-04-20 11:52+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: liAnGjiA <liangjia@qq.com>, 2018\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/pluginsGLPI/teams/73419/zh_CN/)\n"
@@ -30,7 +30,7 @@ msgstr "信用凭证实体票据"
 msgid "Add a credit voucher"
 msgstr "添加信用凭证"
 
-#: inc/entity.class.php:185 inc/entity.class.php:243 inc/entity.class.php:393
+#: inc/entity.class.php:185 inc/entity.class.php:243 inc/entity.class.php:391
 msgid "Allow overconsumption"
 msgstr ""
 
@@ -54,13 +54,9 @@ msgstr " 消费凭证？ "
 msgid "Consumed credits for this ticket"
 msgstr "消费券"
 
-#: inc/entity.class.php:296 inc/entity.class.php:303 inc/entity.class.php:304
+#: inc/entity.class.php:296 inc/entity.class.php:301 inc/entity.class.php:302
 msgid "Consumed details"
 msgstr " 消耗明细"
-
-#: inc/ticketconfig.class.php:104
-msgid "Credit"
-msgstr ""
 
 #: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
 #: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
@@ -81,12 +77,12 @@ msgstr ""
 msgid "Credit voucher successfully added."
 msgstr "信用凭证成功添加。"
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:385
+#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "信用凭证类型"
 
-#: inc/ticket.class.php:669 setup.php:105
+#: inc/ticket.class.php:669 setup.php:100
 msgid "Credit vouchers"
 msgstr "信用凭证"
 
@@ -94,19 +90,22 @@ msgstr "信用凭证"
 msgid "Date consumed"
 msgstr "消耗日期"
 
-#: inc/ticketconfig.class.php:127 inc/entityconfig.class.php:78
+#: inc/ticketconfig.class.php:176 inc/ticketconfig.class.php:216
+#: inc/entityconfig.class.php:78
 msgid "Default for followups"
 msgstr ""
 
-#: inc/ticketconfig.class.php:157 inc/entityconfig.class.php:108
+#: inc/ticketconfig.class.php:194 inc/ticketconfig.class.php:224
+#: inc/entityconfig.class.php:108
 msgid "Default for solutions"
 msgstr ""
 
-#: inc/ticketconfig.class.php:142 inc/entityconfig.class.php:93
+#: inc/ticketconfig.class.php:185 inc/ticketconfig.class.php:220
+#: inc/entityconfig.class.php:93
 msgid "Default for tasks"
 msgstr ""
 
-#: inc/ticketconfig.class.php:111
+#: inc/ticketconfig.class.php:167 inc/ticketconfig.class.php:212
 msgid "Default for ticket"
 msgstr ""
 
@@ -128,11 +127,11 @@ msgstr "申报消费的票证明细"
 msgid "End date"
 msgstr ""
 
-#: inc/entity.class.php:404 inc/notificationtargetentity.class.php:36
+#: inc/entity.class.php:402 inc/notificationtargetentity.class.php:36
 msgid "Expiration date"
 msgstr ""
 
-#: inc/entity.class.php:335
+#: inc/entity.class.php:333
 msgid "No credit voucher"
 msgstr "暂无信用凭证"
 
@@ -140,7 +139,7 @@ msgstr "暂无信用凭证"
 msgid "No credit was recorded"
 msgstr "没有信用记录"
 
-#: inc/entity.class.php:405
+#: inc/entity.class.php:403
 msgid "Notice (in days)"
 msgstr ""
 
@@ -161,7 +160,7 @@ msgstr ""
 msgid "Quantity remaining"
 msgstr "剩余量"
 
-#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:373
+#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:371
 #: inc/notificationtargetentity.class.php:63
 #: inc/notificationtargetentity.class.php:77
 msgid "Quantity sold"

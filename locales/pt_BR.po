@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-31 08:43+0000\n"
+"POT-Creation-Date: 2022-04-20 11:52+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Rodrigo de Almeida Sottomaior Macedo <rmsolucoeseminformatica@protonmail.com>, 2020\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/pluginsGLPI/teams/73419/pt_BR/)\n"
@@ -31,7 +31,7 @@ msgstr "Ativar cargas de crédito para chamados da entidade"
 msgid "Add a credit voucher"
 msgstr "Adicionar carga de crédito"
 
-#: inc/entity.class.php:185 inc/entity.class.php:243 inc/entity.class.php:393
+#: inc/entity.class.php:185 inc/entity.class.php:243 inc/entity.class.php:391
 msgid "Allow overconsumption"
 msgstr "Permitir consumo acima do permitido"
 
@@ -55,13 +55,9 @@ msgstr "Consumir crédito?"
 msgid "Consumed credits for this ticket"
 msgstr "Consuma cargas para este ticket"
 
-#: inc/entity.class.php:296 inc/entity.class.php:303 inc/entity.class.php:304
+#: inc/entity.class.php:296 inc/entity.class.php:301 inc/entity.class.php:302
 msgid "Consumed details"
 msgstr "Consumo detalhado"
-
-#: inc/ticketconfig.class.php:104
-msgid "Credit"
-msgstr ""
 
 #: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
 #: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
@@ -83,13 +79,13 @@ msgstr ""
 msgid "Credit voucher successfully added."
 msgstr "Carga de crédito adicionada com sucesso."
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:385
+#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Tipo de carga de crédito"
 msgstr[1] "Tipos de cargas de crédito"
 
-#: inc/ticket.class.php:669 setup.php:105
+#: inc/ticket.class.php:669 setup.php:100
 msgid "Credit vouchers"
 msgstr "Carga de créditos"
 
@@ -97,19 +93,22 @@ msgstr "Carga de créditos"
 msgid "Date consumed"
 msgstr "Data de consumo"
 
-#: inc/ticketconfig.class.php:127 inc/entityconfig.class.php:78
+#: inc/ticketconfig.class.php:176 inc/ticketconfig.class.php:216
+#: inc/entityconfig.class.php:78
 msgid "Default for followups"
 msgstr ""
 
-#: inc/ticketconfig.class.php:157 inc/entityconfig.class.php:108
+#: inc/ticketconfig.class.php:194 inc/ticketconfig.class.php:224
+#: inc/entityconfig.class.php:108
 msgid "Default for solutions"
 msgstr ""
 
-#: inc/ticketconfig.class.php:142 inc/entityconfig.class.php:93
+#: inc/ticketconfig.class.php:185 inc/ticketconfig.class.php:220
+#: inc/entityconfig.class.php:93
 msgid "Default for tasks"
 msgstr ""
 
-#: inc/ticketconfig.class.php:111
+#: inc/ticketconfig.class.php:167 inc/ticketconfig.class.php:212
 msgid "Default for ticket"
 msgstr ""
 
@@ -132,11 +131,11 @@ msgstr "Detalhe dos chamados em que o consumo é declarado"
 msgid "End date"
 msgstr "Data final"
 
-#: inc/entity.class.php:404 inc/notificationtargetentity.class.php:36
+#: inc/entity.class.php:402 inc/notificationtargetentity.class.php:36
 msgid "Expiration date"
 msgstr "Data de validade"
 
-#: inc/entity.class.php:335
+#: inc/entity.class.php:333
 msgid "No credit voucher"
 msgstr "Sem cargas restantes"
 
@@ -144,7 +143,7 @@ msgstr "Sem cargas restantes"
 msgid "No credit was recorded"
 msgstr "Nenhum registro de consumo"
 
-#: inc/entity.class.php:405
+#: inc/entity.class.php:403
 msgid "Notice (in days)"
 msgstr ""
 "Aviso (em dias)\n"
@@ -167,7 +166,7 @@ msgstr "A quantidade consumida é maior do que os créditos restantes: %d"
 msgid "Quantity remaining"
 msgstr "Quantidade restante"
 
-#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:373
+#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:371
 #: inc/notificationtargetentity.class.php:63
 #: inc/notificationtargetentity.class.php:77
 msgid "Quantity sold"
