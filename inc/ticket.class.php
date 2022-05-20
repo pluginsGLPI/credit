@@ -191,7 +191,7 @@ class PluginCreditTicket extends CommonDBTM {
                'name'      => 'plugin_credit_entities_id',
                'comments'  => false,
                'entity'    => $ticket->getEntityID(),
-               'entity_sons' => true,
+               'entity_sons' => false,
                'display'   => false,
                'condition' => ['is_active' => 1],
                'rand'      => $rand
@@ -422,7 +422,7 @@ class PluginCreditTicket extends CommonDBTM {
 
          $out .= PluginCreditEntity::dropdown(['name'      => 'plugin_credit_entities_id',
                                                'entity'    => $ticket->getEntityID(),
-                                               'entity_sons' => true,
+                                               'entity_sons' => false,
                                                'display'   => false,
                                                'value'     => $default_credit,
                                                'condition' => ['is_active' => 1],
