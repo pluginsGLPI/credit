@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-20 11:52+0000\n"
+"POT-Creation-Date: 2022-05-25 09:32+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>, 2020\n"
 "Language-Team: Croatian (Croatia) (https://www.transifex.com/pluginsGLPI/teams/73419/hr_HR/)\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Language: hr_HR\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: inc/ticket.class.php:323
+#: inc/ticket.class.php:322
 msgid "Active credit vouchers for ticket entity"
 msgstr "Aktivni vrijednosni kupon za entitet naloga"
 
@@ -45,11 +45,11 @@ msgstr ""
 msgid "By default consume a voucher for tasks"
 msgstr ""
 
-#: inc/ticket.class.php:405
+#: inc/ticket.class.php:404
 msgid "Consume a voucher ?"
 msgstr "Trošiti vrijednosni kupon?"
 
-#: inc/ticket.class.php:227
+#: inc/ticket.class.php:226
 msgid "Consumed credits for this ticket"
 msgstr "Potrošeni kredit za ovaj nalog"
 
@@ -57,9 +57,8 @@ msgstr "Potrošeni kredit za ovaj nalog"
 msgid "Consumed details"
 msgstr "Detalji potrošnje"
 
-#: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
-#: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
-#: inc/notificationtargetentity.class.php:76
+#: inc/entityconfig.class.php:41 inc/ticket.class.php:41
+#: inc/entity.class.php:41 setup.php:97
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Vrijednosni kupon"
@@ -74,22 +73,18 @@ msgstr "Istek vrijednosnog kupona"
 msgid "Credit voucher name is mandatory."
 msgstr ""
 
-#: front/ticket.form.php:52 inc/ticket.class.php:634
+#: front/ticket.form.php:52 inc/ticket.class.php:632
 msgid "Credit voucher successfully added."
 msgstr "Vrijednosni kupon uspješno je dodan."
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
+#: inc/type.class.php:43
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Vrsta vrijednosnog kupona"
 msgstr[1] "Vrste vrijednosnih kupona"
 msgstr[2] "Vrste vrijednosnih kupona"
 
-#: inc/ticket.class.php:669 setup.php:100
-msgid "Credit vouchers"
-msgstr "Vrijednosni kuponi"
-
-#: inc/ticket.class.php:264 inc/ticket.class.php:488 inc/ticket.class.php:649
+#: inc/ticket.class.php:263 inc/ticket.class.php:486 inc/ticket.class.php:647
 msgid "Date consumed"
 msgstr "Datum potrošnje"
 
@@ -123,7 +118,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: inc/ticket.class.php:470
+#: inc/ticket.class.php:468
 msgid "Detail of tickets on which consumption is declared"
 msgstr "Detalji naloga u kojima je prijavljena potrošnja"
 
@@ -140,7 +135,7 @@ msgstr "Datum isteka"
 msgid "No credit voucher"
 msgstr "Nema vrijednosnog kupona"
 
-#: inc/ticket.class.php:316 inc/ticket.class.php:476
+#: inc/ticket.class.php:315 inc/ticket.class.php:474
 msgid "No credit was recorded"
 msgstr "Kredit nije zapisan"
 
@@ -148,18 +143,18 @@ msgstr "Kredit nije zapisan"
 msgid "Notice (in days)"
 msgstr "Obavještavanje (u danima)"
 
-#: hook.php:109 inc/ticket.class.php:202 inc/ticket.class.php:266
-#: inc/ticket.class.php:433 inc/ticket.class.php:490 inc/ticket.class.php:657
+#: hook.php:107 inc/ticket.class.php:201 inc/ticket.class.php:265
+#: inc/ticket.class.php:431 inc/ticket.class.php:488 inc/ticket.class.php:655
 #: inc/entity.class.php:241
 msgid "Quantity consumed"
 msgstr "Potrošena količina"
 
-#: inc/ticket.class.php:607 inc/ticket.class.php:616
+#: inc/ticket.class.php:605 inc/ticket.class.php:614
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
 msgstr "Potrošena količina prelazi preostale kredite: %d"
 
-#: hook.php:110 inc/entity.class.php:242
+#: hook.php:108 inc/entity.class.php:242
 #: inc/notificationtargetentity.class.php:62
 #: inc/notificationtargetentity.class.php:79
 msgid "Quantity remaining"
@@ -176,18 +171,18 @@ msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr "Vrijednosni kupon će uskoro isteći. Razmisli o kupnji novog."
 
-#: inc/ticket.class.php:265 inc/ticket.class.php:489
+#: inc/ticket.class.php:264 inc/ticket.class.php:487
 msgid "User consumed"
 msgstr "Potrošač"
 
-#: inc/ticket.class.php:186 inc/ticket.class.php:262 inc/ticket.class.php:412
+#: inc/ticket.class.php:186 inc/ticket.class.php:261 inc/ticket.class.php:411
 msgid "Voucher name"
 msgstr "Ime vrijednosnog kupona"
 
-#: inc/ticket.class.php:263
+#: inc/ticket.class.php:262
 msgid "Voucher type"
 msgstr "Vrsta vrijednosnog kupona"
 
-#: inc/ticket.class.php:587
+#: inc/ticket.class.php:585
 msgid "You must provide a credit voucher"
 msgstr "Moraš zadati vrijednosni kupon"

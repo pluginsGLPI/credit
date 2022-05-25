@@ -380,7 +380,7 @@ class PluginCreditEntity extends CommonDBTM {
          'id'       => 995,
          'table'    => PluginCreditType::getTable(),
          'field'    => 'name',
-         'name'     => __('Credit voucher type', 'credit'),
+         'name'     => PluginCreditType::getTypeName(),
          'datatype' => 'dropdown',
       ];
 

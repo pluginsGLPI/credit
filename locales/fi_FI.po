@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-20 11:52+0000\n"
+"POT-Creation-Date: 2022-05-25 09:32+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Markku Vepsä, 2019\n"
 "Language-Team: Finnish (Finland) (https://www.transifex.com/pluginsGLPI/teams/73419/fi_FI/)\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: inc/ticket.class.php:323
+#: inc/ticket.class.php:322
 msgid "Active credit vouchers for ticket entity"
 msgstr "Yksikön tikettien aktiiviset arvosetelit"
 
@@ -45,11 +45,11 @@ msgstr ""
 msgid "By default consume a voucher for tasks"
 msgstr ""
 
-#: inc/ticket.class.php:405
+#: inc/ticket.class.php:404
 msgid "Consume a voucher ?"
 msgstr "Käytä arvoseteli ?"
 
-#: inc/ticket.class.php:227
+#: inc/ticket.class.php:226
 msgid "Consumed credits for this ticket"
 msgstr "Kulutettu arvo tälle tiketille"
 
@@ -57,9 +57,8 @@ msgstr "Kulutettu arvo tälle tiketille"
 msgid "Consumed details"
 msgstr "Kulutuksen tiedot"
 
-#: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
-#: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
-#: inc/notificationtargetentity.class.php:76
+#: inc/entityconfig.class.php:41 inc/ticket.class.php:41
+#: inc/entity.class.php:41 setup.php:97
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Arvoseteli"
@@ -73,21 +72,17 @@ msgstr ""
 msgid "Credit voucher name is mandatory."
 msgstr ""
 
-#: front/ticket.form.php:52 inc/ticket.class.php:634
+#: front/ticket.form.php:52 inc/ticket.class.php:632
 msgid "Credit voucher successfully added."
 msgstr "Arvoseteli lisätty onnistuneesti"
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
+#: inc/type.class.php:43
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Arvosetelin tyyppi"
 msgstr[1] "Arvosetelien tyypit"
 
-#: inc/ticket.class.php:669 setup.php:100
-msgid "Credit vouchers"
-msgstr "Arvosetelit"
-
-#: inc/ticket.class.php:264 inc/ticket.class.php:488 inc/ticket.class.php:649
+#: inc/ticket.class.php:263 inc/ticket.class.php:486 inc/ticket.class.php:647
 msgid "Date consumed"
 msgstr "Käyttöpäivä"
 
@@ -120,7 +115,7 @@ msgid_plural "Default voucher options"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/ticket.class.php:470
+#: inc/ticket.class.php:468
 msgid "Detail of tickets on which consumption is declared"
 msgstr "Kulutukseen liitettyjen tikettien tiedot"
 
@@ -137,7 +132,7 @@ msgstr ""
 msgid "No credit voucher"
 msgstr "Ei arvoseteli"
 
-#: inc/ticket.class.php:316 inc/ticket.class.php:476
+#: inc/ticket.class.php:315 inc/ticket.class.php:474
 msgid "No credit was recorded"
 msgstr "Arvoa ei kirjattu"
 
@@ -145,18 +140,18 @@ msgstr "Arvoa ei kirjattu"
 msgid "Notice (in days)"
 msgstr ""
 
-#: hook.php:109 inc/ticket.class.php:202 inc/ticket.class.php:266
-#: inc/ticket.class.php:433 inc/ticket.class.php:490 inc/ticket.class.php:657
+#: hook.php:107 inc/ticket.class.php:201 inc/ticket.class.php:265
+#: inc/ticket.class.php:431 inc/ticket.class.php:488 inc/ticket.class.php:655
 #: inc/entity.class.php:241
 msgid "Quantity consumed"
 msgstr "Kulutettu määrä"
 
-#: inc/ticket.class.php:607 inc/ticket.class.php:616
+#: inc/ticket.class.php:605 inc/ticket.class.php:614
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
 msgstr "Kulutettu määrä ylittää jäljellä olevan määrän: %d"
 
-#: hook.php:110 inc/entity.class.php:242
+#: hook.php:108 inc/entity.class.php:242
 #: inc/notificationtargetentity.class.php:62
 #: inc/notificationtargetentity.class.php:79
 msgid "Quantity remaining"
@@ -173,18 +168,18 @@ msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr ""
 
-#: inc/ticket.class.php:265 inc/ticket.class.php:489
+#: inc/ticket.class.php:264 inc/ticket.class.php:487
 msgid "User consumed"
 msgstr "Kuluttanut käyttäjä"
 
-#: inc/ticket.class.php:186 inc/ticket.class.php:262 inc/ticket.class.php:412
+#: inc/ticket.class.php:186 inc/ticket.class.php:261 inc/ticket.class.php:411
 msgid "Voucher name"
 msgstr "Arvosetelin nimi"
 
-#: inc/ticket.class.php:263
+#: inc/ticket.class.php:262
 msgid "Voucher type"
 msgstr "Arvosetelin tyyppi"
 
-#: inc/ticket.class.php:587
+#: inc/ticket.class.php:585
 msgid "You must provide a credit voucher"
 msgstr "Sinun täytyy antaa arvoseteli"

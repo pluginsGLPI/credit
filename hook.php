@@ -96,16 +96,14 @@ function plugin_credit_uninstall() {
  * Define Dropdown tables to be manage in GLPI :
  */
 function plugin_credit_getDropdown() {
-   return ['PluginCreditType' => _n('Credit voucher type', 'Credit vouchers types',
-                                    Session::getPluralNumber(),
-                                    'credit')];
+   return ['PluginCreditType' => PluginCreditType::getTypeName(Session::getPluralNumber())];
 }
 
 function plugin_credit_get_datas(NotificationTargetTicket $target) {
 
    global $DB;
 
-   $target->data['##lang.credit.voucher##'] = __('Credit voucher', 'credit');
+   $target->data['##lang.credit.voucher##'] = PluginCreditEntity::getTypeName();
    $target->data['##lang.credit.used##']    = __('Quantity consumed', 'credit');
    $target->data['##lang.credit.left##']    = __('Quantity remaining', 'credit');
 

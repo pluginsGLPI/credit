@@ -61,7 +61,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       $this->data['##lang.credit.enddate##'] = __('End date', 'credit');
       $this->data['##lang.credit.quantity_remaining##'] = __('Quantity remaining', 'credit');
       $this->data['##lang.credit.quantity_sold##'] = __('Quantity sold', 'credit');
-      $this->data['##lang.credit.name##'] = __('Credit voucher', 'credit');
+      $this->data['##lang.credit.name##'] = PluginCreditEntity::getTypeName();
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -73,7 +73,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
 
    public function getTags() {
       $tags = [
-         'credit.name'               => __('Credit voucher', 'credit'),
+         'credit.name'               => PluginCreditEntity::getTypeName(),
          'credit.quantity_sold'      => __('Quantity sold', 'credit'),
          'credit.enddate'            => __('End date', 'credit'),
          'credit.quantity_remaining' => __('Quantity remaining', 'credit'),

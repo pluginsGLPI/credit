@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-20 11:52+0000\n"
+"POT-Creation-Date: 2022-05-25 09:32+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Cédric Anne, 2022\n"
 "Language-Team: French (France) (https://www.transifex.com/pluginsGLPI/teams/73419/fr_FR/)\n"
@@ -19,9 +19,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: inc/ticket.class.php:323
+#: inc/ticket.class.php:322
 msgid "Active credit vouchers for ticket entity"
 msgstr "Crédits actifs pour l'entité du ticket"
 
@@ -45,11 +45,11 @@ msgstr "Par défaut, consomme un crédit pour les solutions"
 msgid "By default consume a voucher for tasks"
 msgstr "Par défaut, consomme un crédit pour les tâches"
 
-#: inc/ticket.class.php:405
+#: inc/ticket.class.php:404
 msgid "Consume a voucher ?"
 msgstr "Consommation de crédit"
 
-#: inc/ticket.class.php:227
+#: inc/ticket.class.php:226
 msgid "Consumed credits for this ticket"
 msgstr "Crédits déjà consommés pour ce ticket"
 
@@ -57,13 +57,13 @@ msgstr "Crédits déjà consommés pour ce ticket"
 msgid "Consumed details"
 msgstr "Détail des crédits consommés"
 
-#: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
-#: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
-#: inc/notificationtargetentity.class.php:76
+#: inc/entityconfig.class.php:41 inc/ticket.class.php:41
+#: inc/entity.class.php:41 setup.php:97
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Crédit"
 msgstr[1] "Crédits"
+msgstr[2] "Crédits"
 
 #: inc/notificationtargetentity.class.php:93
 msgid "Credit voucher expiration"
@@ -73,21 +73,18 @@ msgstr "Expiration du crédit"
 msgid "Credit voucher name is mandatory."
 msgstr "Le nom du crédit est obligatoire."
 
-#: front/ticket.form.php:52 inc/ticket.class.php:634
+#: front/ticket.form.php:52 inc/ticket.class.php:632
 msgid "Credit voucher successfully added."
 msgstr "Crédit sauvegardé avec succès."
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
+#: inc/type.class.php:43
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Type de crédit"
 msgstr[1] "Types de crédits"
+msgstr[2] "Types de crédits"
 
-#: inc/ticket.class.php:669 setup.php:100
-msgid "Credit vouchers"
-msgstr "Crédits"
-
-#: inc/ticket.class.php:264 inc/ticket.class.php:488 inc/ticket.class.php:649
+#: inc/ticket.class.php:263 inc/ticket.class.php:486 inc/ticket.class.php:647
 msgid "Date consumed"
 msgstr "Date de consommation"
 
@@ -119,8 +116,9 @@ msgid "Default voucher option"
 msgid_plural "Default voucher options"
 msgstr[0] "Option par défaut pour le crédit"
 msgstr[1] "Options par défaut pour le crédit"
+msgstr[2] "Options par défaut pour le crédit"
 
-#: inc/ticket.class.php:470
+#: inc/ticket.class.php:468
 msgid "Detail of tickets on which consumption is declared"
 msgstr ""
 "Détail des tickets pour lesquels une consommation de crédit est déclarée"
@@ -138,7 +136,7 @@ msgstr "Date d'expiration"
 msgid "No credit voucher"
 msgstr "Aucun crédit déclaré"
 
-#: inc/ticket.class.php:316 inc/ticket.class.php:476
+#: inc/ticket.class.php:315 inc/ticket.class.php:474
 msgid "No credit was recorded"
 msgstr "Aucun crédit déclaré"
 
@@ -146,18 +144,18 @@ msgstr "Aucun crédit déclaré"
 msgid "Notice (in days)"
 msgstr "Préavis (en jours)"
 
-#: hook.php:109 inc/ticket.class.php:202 inc/ticket.class.php:266
-#: inc/ticket.class.php:433 inc/ticket.class.php:490 inc/ticket.class.php:657
+#: hook.php:107 inc/ticket.class.php:201 inc/ticket.class.php:265
+#: inc/ticket.class.php:431 inc/ticket.class.php:488 inc/ticket.class.php:655
 #: inc/entity.class.php:241
 msgid "Quantity consumed"
 msgstr "Quantité consommée"
 
-#: inc/ticket.class.php:607 inc/ticket.class.php:616
+#: inc/ticket.class.php:605 inc/ticket.class.php:614
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
 msgstr "La quantité consommée excède les crédits restants: %d"
 
-#: hook.php:110 inc/entity.class.php:242
+#: hook.php:108 inc/entity.class.php:242
 #: inc/notificationtargetentity.class.php:62
 #: inc/notificationtargetentity.class.php:79
 msgid "Quantity remaining"
@@ -176,19 +174,19 @@ msgstr ""
 "Ce crédit va expirer prochainement. Veuillez considérer en acheter un "
 "nouveau."
 
-#: inc/ticket.class.php:265 inc/ticket.class.php:489
+#: inc/ticket.class.php:264 inc/ticket.class.php:487
 msgid "User consumed"
 msgstr "Utilisateur déclarant"
 
-#: inc/ticket.class.php:186 inc/ticket.class.php:262 inc/ticket.class.php:412
+#: inc/ticket.class.php:186 inc/ticket.class.php:261 inc/ticket.class.php:411
 msgid "Voucher name"
 msgstr "Nom du crédit"
 
-#: inc/ticket.class.php:263
+#: inc/ticket.class.php:262
 msgid "Voucher type"
 msgstr "Type de crédit"
 
-#: inc/ticket.class.php:587
+#: inc/ticket.class.php:585
 msgid "You must provide a credit voucher"
 msgstr ""
 "Vous devez préciser un crédit sur lequel consommer la quantité souhaitée."

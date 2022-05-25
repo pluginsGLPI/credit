@@ -664,7 +664,7 @@ class PluginCreditTicket extends CommonDBTM {
          'id'       => 883,
          'table'    => PluginCreditEntity::getTable(),
          'field'    => 'name',
-         'name'     => __('Credit vouchers', 'credit'),
+         'name'     => PluginCreditEntity::getTypeName(Session::getPluralNumber()),
          'datatype' => 'dropdown',
       ];
 

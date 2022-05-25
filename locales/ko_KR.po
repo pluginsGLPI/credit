@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-20 11:52+0000\n"
+"POT-Creation-Date: 2022-05-25 09:32+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: SeongHyeon Cho <jaymz9634@gmail.com>, 2022\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/pluginsGLPI/teams/73419/ko_KR/)\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: inc/ticket.class.php:323
+#: inc/ticket.class.php:322
 msgid "Active credit vouchers for ticket entity"
 msgstr "티켓 요소에 대한 크레딧 쿠폰 활성화"
 
@@ -45,11 +45,11 @@ msgstr ""
 msgid "By default consume a voucher for tasks"
 msgstr ""
 
-#: inc/ticket.class.php:405
+#: inc/ticket.class.php:404
 msgid "Consume a voucher ?"
 msgstr "쿠폰을 사용합니까?"
 
-#: inc/ticket.class.php:227
+#: inc/ticket.class.php:226
 msgid "Consumed credits for this ticket"
 msgstr "이 티켓에 대해 소비된 신용"
 
@@ -57,9 +57,8 @@ msgstr "이 티켓에 대해 소비된 신용"
 msgid "Consumed details"
 msgstr "소비 상세"
 
-#: hook.php:108 inc/entityconfig.class.php:41 inc/ticket.class.php:41
-#: inc/entity.class.php:41 inc/notificationtargetentity.class.php:64
-#: inc/notificationtargetentity.class.php:76
+#: inc/entityconfig.class.php:41 inc/ticket.class.php:41
+#: inc/entity.class.php:41 setup.php:97
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "크레딧 쿠폰"
@@ -72,20 +71,16 @@ msgstr "크레딧 쿠폰 만료"
 msgid "Credit voucher name is mandatory."
 msgstr ""
 
-#: front/ticket.form.php:52 inc/ticket.class.php:634
+#: front/ticket.form.php:52 inc/ticket.class.php:632
 msgid "Credit voucher successfully added."
 msgstr "크레딧 쿠폰이 추가되었습니다"
 
-#: hook.php:99 inc/type.class.php:43 inc/entity.class.php:383
+#: inc/type.class.php:43
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "크레딧 쿠폰 유형"
 
-#: inc/ticket.class.php:669 setup.php:100
-msgid "Credit vouchers"
-msgstr "크레딧 쿠폰"
-
-#: inc/ticket.class.php:264 inc/ticket.class.php:488 inc/ticket.class.php:649
+#: inc/ticket.class.php:263 inc/ticket.class.php:486 inc/ticket.class.php:647
 msgid "Date consumed"
 msgstr "소비 일자"
 
@@ -117,7 +112,7 @@ msgid "Default voucher option"
 msgid_plural "Default voucher options"
 msgstr[0] ""
 
-#: inc/ticket.class.php:470
+#: inc/ticket.class.php:468
 msgid "Detail of tickets on which consumption is declared"
 msgstr "소비로 정의된 티켓의 상세"
 
@@ -134,7 +129,7 @@ msgstr "만료 일자"
 msgid "No credit voucher"
 msgstr "크레딧 쿠폰 없음"
 
-#: inc/ticket.class.php:316 inc/ticket.class.php:476
+#: inc/ticket.class.php:315 inc/ticket.class.php:474
 msgid "No credit was recorded"
 msgstr "기록된 크레딧 없음"
 
@@ -142,18 +137,18 @@ msgstr "기록된 크레딧 없음"
 msgid "Notice (in days)"
 msgstr "알림 (일)"
 
-#: hook.php:109 inc/ticket.class.php:202 inc/ticket.class.php:266
-#: inc/ticket.class.php:433 inc/ticket.class.php:490 inc/ticket.class.php:657
+#: hook.php:107 inc/ticket.class.php:201 inc/ticket.class.php:265
+#: inc/ticket.class.php:431 inc/ticket.class.php:488 inc/ticket.class.php:655
 #: inc/entity.class.php:241
 msgid "Quantity consumed"
 msgstr "소비 수량"
 
-#: inc/ticket.class.php:607 inc/ticket.class.php:616
+#: inc/ticket.class.php:605 inc/ticket.class.php:614
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
 msgstr "사용된 수량이 잔여 크레딧을 초과합니다: %d"
 
-#: hook.php:110 inc/entity.class.php:242
+#: hook.php:108 inc/entity.class.php:242
 #: inc/notificationtargetentity.class.php:62
 #: inc/notificationtargetentity.class.php:79
 msgid "Quantity remaining"
@@ -170,18 +165,18 @@ msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr "이 크레딧 쿠폰은 곧 만료됩니다. 새 것을 구매하는 것을 고려해 주세요."
 
-#: inc/ticket.class.php:265 inc/ticket.class.php:489
+#: inc/ticket.class.php:264 inc/ticket.class.php:487
 msgid "User consumed"
 msgstr "사용자 소비"
 
-#: inc/ticket.class.php:186 inc/ticket.class.php:262 inc/ticket.class.php:412
+#: inc/ticket.class.php:186 inc/ticket.class.php:261 inc/ticket.class.php:411
 msgid "Voucher name"
 msgstr "쿠폰 명"
 
-#: inc/ticket.class.php:263
+#: inc/ticket.class.php:262
 msgid "Voucher type"
 msgstr "쿠폰 유형"
 
-#: inc/ticket.class.php:587
+#: inc/ticket.class.php:585
 msgid "You must provide a credit voucher"
 msgstr "크레딧 쿠폰을 제공해야 합니다"
