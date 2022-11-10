@@ -445,7 +445,7 @@ class PluginCreditTicket extends CommonDBTM {
       //trigger change to force load quantity select
       if ($default_credit > 0) {
          $out .= Html::scriptBlock("
-            $(document).ready(function() {
+            $('.timeline-buttons').on('click', function() {
                $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
             });
          ");
