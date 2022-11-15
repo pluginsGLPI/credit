@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-25 09:32+0000\n"
+"POT-Creation-Date: 2022-11-15 12:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Credit voucher name is mandatory."
 msgstr ""
 
-#: front/ticket.form.php:52 inc/ticket.class.php:632
+#: inc/ticket.class.php:632 front/ticket.form.php:52
 msgid "Credit voucher successfully added."
 msgstr ""
 
@@ -83,18 +83,18 @@ msgstr[1] ""
 msgid "Date consumed"
 msgstr ""
 
-#: inc/ticketconfig.class.php:176 inc/ticketconfig.class.php:216
-#: inc/entityconfig.class.php:78
+#: inc/entityconfig.class.php:78 inc/ticketconfig.class.php:176
+#: inc/ticketconfig.class.php:216
 msgid "Default for followups"
 msgstr ""
 
-#: inc/ticketconfig.class.php:194 inc/ticketconfig.class.php:224
-#: inc/entityconfig.class.php:108
+#: inc/entityconfig.class.php:108 inc/ticketconfig.class.php:194
+#: inc/ticketconfig.class.php:224
 msgid "Default for solutions"
 msgstr ""
 
-#: inc/ticketconfig.class.php:185 inc/ticketconfig.class.php:220
-#: inc/entityconfig.class.php:93
+#: inc/entityconfig.class.php:93 inc/ticketconfig.class.php:185
+#: inc/ticketconfig.class.php:220
 msgid "Default for tasks"
 msgstr ""
 
@@ -121,7 +121,7 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: inc/entity.class.php:402 inc/notificationtargetentity.class.php:36
+#: inc/notificationtargetentity.class.php:36 inc/entity.class.php:402
 msgid "Expiration date"
 msgstr ""
 
@@ -137,9 +137,9 @@ msgstr ""
 msgid "Notice (in days)"
 msgstr ""
 
-#: hook.php:107 inc/ticket.class.php:201 inc/ticket.class.php:265
-#: inc/ticket.class.php:431 inc/ticket.class.php:488 inc/ticket.class.php:655
-#: inc/entity.class.php:241
+#: inc/ticket.class.php:201 inc/ticket.class.php:265 inc/ticket.class.php:431
+#: inc/ticket.class.php:488 inc/ticket.class.php:655 inc/entity.class.php:241
+#: hook.php:107
 msgid "Quantity consumed"
 msgstr ""
 
@@ -148,15 +148,15 @@ msgstr ""
 msgid "Quantity consumed exceeds remaining credits: %d"
 msgstr ""
 
-#: hook.php:108 inc/entity.class.php:242
 #: inc/notificationtargetentity.class.php:62
-#: inc/notificationtargetentity.class.php:79
+#: inc/notificationtargetentity.class.php:79 inc/entity.class.php:242
+#: hook.php:108
 msgid "Quantity remaining"
 msgstr ""
 
-#: inc/entity.class.php:177 inc/entity.class.php:240 inc/entity.class.php:371
 #: inc/notificationtargetentity.class.php:63
-#: inc/notificationtargetentity.class.php:77
+#: inc/notificationtargetentity.class.php:77 inc/entity.class.php:177
+#: inc/entity.class.php:240 inc/entity.class.php:371
 msgid "Quantity sold"
 msgstr ""
 
