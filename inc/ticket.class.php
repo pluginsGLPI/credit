@@ -343,7 +343,6 @@ class PluginCreditTicket extends CommonDBTM {
       $item = $params['item'];
 
       if ($item instanceof Ticket) {
-         echo PluginCreditTicketConfig::showForTicket($item, true);
          return;
       }
 
