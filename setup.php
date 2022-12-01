@@ -83,6 +83,8 @@ function plugin_init_credit() {
       ];
       $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
    }
+
+   Plugin::registerClass(PluginCreditProfile::class, ['addtabon' => Profile::class]);
 }
 
 
