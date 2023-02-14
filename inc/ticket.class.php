@@ -440,15 +440,15 @@ class PluginCreditTicket extends CommonDBTM {
             false
          );
          $out .= "</td><td colspan='2'></td></tr>";
-      }
 
-      //trigger change to force load quantity select
-      if ($default_credit > 0) {
-         $out .= Html::scriptBlock("
-            $('.timeline-buttons').on('click', function() {
-               $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
-            });
-         ");
+         //trigger change to force load quantity select
+         if ($default_credit > 0) {
+            $out .= Html::scriptBlock("
+               $('.timeline-buttons').on('click', function() {
+                  $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
+               });
+            ");
+         }
       }
 
       echo $out;
