@@ -208,15 +208,24 @@ class PluginCreditEntity extends CommonDBTM {
          if ($canedit) {
             $rand = mt_rand();
             $out .= Html::getOpenMassiveActionsForm('mass'.__CLASS__.$rand);
+
+            $specific_actions = [
+               'update' => _x('button', 'Update'),
+               'purge'  => _x('button', 'Delete permanently'),
+            ];
+            MassiveAction::getAddTransferList($specific_actions);
+
+            // Remove icons
+            $specific_actions = array_map(function ($action) {
+               return strip_tags($action);
+            }, $specific_actions);
+
             $massiveactionparams = [
                'num_displayed'    => $number,
                'container'        => 'mass'.__CLASS__.$rand,
                'rand'             => $rand,
                'display'          => false,
-               'specific_actions' => [
-                  'update' => _x('button', 'Update'),
-                  'purge'  => _x('button', 'Delete permanently')
-               ]
+               'specific_actions' => $specific_actions,
             ];
             $out .= Html::showMassiveActions($massiveactionparams);
          }
