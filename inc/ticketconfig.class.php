@@ -68,11 +68,11 @@ class PluginCreditTicketConfig extends CommonDBTM {
             break;
       }
 
-      $credit_entity = new PluginCreditEntity();
-      $credit_entity->getFromDBByCrit(array_merge(
+      $criteria = array_merge(
          ['id' => $voucher_id],
-         PluginCreditEntity::getActiveFilter()));
-      if ($credit_entity->isNewItem()) {
+         PluginCreditEntity::getActiveFilter()
+      );
+      if (countElementsInTable(PluginCreditEntity::getTable(), $criteria) === 0) {
          $voucher_id = null;
       }
 
