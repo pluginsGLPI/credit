@@ -538,4 +538,20 @@ class PluginCreditEntity extends CommonDBTM {
       $migration->dropTable($table);
    }
 
+
+   public static function getActiveFilter() {
+      global $DB;
+      return [
+         'glpi_plugin_credit_entities.is_active' => 1,
+         'OR' => [
+            'glpi_plugin_credit_entities.end_date' => null,
+            new QueryExpression(
+               sprintf(
+                  'NOW() < %s',
+                  $DB->quoteName('glpi_plugin_credit_entities.end_date')
+               )
+            ),
+         ],
+      ];
+   }
 }

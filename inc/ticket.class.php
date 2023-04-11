@@ -192,7 +192,7 @@ class PluginCreditTicket extends CommonDBTM {
                'comments'  => false,
                'entity'    => $ticket->getEntityID(),
                'display'   => false,
-               'condition' => ['is_active' => 1],
+               'condition' => PluginCreditEntity::getActiveFilter(),
                'rand'      => $rand
             ]
          );
@@ -423,7 +423,7 @@ class PluginCreditTicket extends CommonDBTM {
                                                'entity'    => $ticket->getEntityID(),
                                                'display'   => false,
                                                'value'     => $default_credit,
-                                               'condition' => ['is_active' => 1],
+                                               'condition' => PluginCreditEntity::getActiveFilter(),
                                                'rand'      => $rand]);
          $out .= "</td><td colspan='2'></td>";
          $out .= "</tr><tr><td>";
