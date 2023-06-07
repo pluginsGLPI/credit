@@ -50,6 +50,13 @@ function plugin_credit_install() {
          }
       }
    }
+
+   $migration->addRight(
+      PluginCreditTicketConfig::$rightname,
+      PluginCreditTicketConfig::TICKET_TAB | PluginCreditTicketConfig::TICKET_FORM,
+      ['entity' => UPDATE]
+   );
+
    $migration->executeMigration();
 
    CronTask::register(

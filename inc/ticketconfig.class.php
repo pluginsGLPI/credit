@@ -91,9 +91,6 @@ class PluginCreditTicketConfig extends CommonDBTM {
    **/
    static function showForTicket(Ticket $ticket, bool $embed_in_ticket_form = false) {
 
-      if (!Session::haveRight("entity", UPDATE)) {
-         return;
-      }
       if ($embed_in_ticket_form && !Session::haveRight(self::$rightname, self::TICKET_FORM)) {
          return;
       }
