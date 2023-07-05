@@ -217,7 +217,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
          // $out .= '</div>'; // class="accordion-item"
       } else {
          $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
-         $out .= "<input type='hidden' name='id' value='{$ticket_config->getID()}' />";
+         $out .= "<input type='hidden' name='tickets_id' value='{$ticket->getID()}' />";
          $out .= "<table class='tab_cadre_fixe'><tbody>";
          $out .= "<tr>";
          $out .= "<th colspan='8'>".self::getTypeName()."</th>";
@@ -253,7 +253,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
    }
 
    static function updateConfig(Ticket $ticket) {
-      if (!Session::haveRight("entity", UPDATE)) {
+      if (!Session::haveRight(self::$rightname, self::TICKET_FORM)) {
          return;
       }
 

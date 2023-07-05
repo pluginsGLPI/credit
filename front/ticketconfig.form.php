@@ -35,13 +35,18 @@ Session::checkLoginUser();
 
 $ticket_config = new PluginCreditTicketConfig();
 
-if (isset($_POST["add"])) {
-   $ticket_config->check(-1, UPDATE, $_POST);
-   $ticket_config->add($_POST);
-   Html::back();
-} elseif (isset($_POST["update"])) {
-   $ticket_config->check(-1, UPDATE, $_POST);
-   $ticket_config->update($_POST);
+if (!Session::haveRight($ticket_config::$rightname, PluginCreditTicketConfig::TICKET_TAB)) {
+    Html::displayRightError();
+}
+
+if (isset($_POST["update"])) {
+   $tickets_id = (int)$_POST['tickets_id'];
+   if ($ticket_config->getFromDBByCrit(['tickets_id' => $tickets_id])) {
+      $_POST['id'] = $ticket_config->getID();
+      $ticket_config->update($_POST);
+   } else {
+      $ticket_config->add($_POST);
+   }
    Html::back();
 }
 
