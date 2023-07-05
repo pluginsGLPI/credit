@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginCreditTicketConfig extends CommonDBTM {
 
-   public static $rightname = 'plugin_creditticketconfig';
+   public static $rightname = 'plugin_credit_ticketconfig';
 
    const TICKET_TAB  = 1024;
    const TICKET_FORM = 2048;

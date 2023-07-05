@@ -52,10 +52,10 @@ class PluginCreditProfile extends Profile
 
         $rights = [['itemtype'  => PluginCreditTicketConfig::getType(),
                     'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
-                    'field'     => 'plugin_creditticketconfig']];
+                    'field'     => PluginCreditTicketConfig::$rightname]];
         $matrix_options['title'] = PluginCreditTicketConfig::getTypeName(Session::getPluralNumber());
         $profile->displayRightsChoiceMatrix($rights, $matrix_options);
-  
+
         echo "<div class='center'>";
         echo Html::hidden('id', ['value' => $ID]);
         echo Html::submit(_sx('button', 'Save'), ['name' => 'update']);
