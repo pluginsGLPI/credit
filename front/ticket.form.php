@@ -23,7 +23,7 @@
  * along with Credit. If not, see <http://www.gnu.org/licenses/>.
  * -------------------------------------------------------------------------
  * @author    François Legastelois
- * @copyright Copyright (C) 2017-2022 by Credit plugin team.
+ * @copyright Copyright (C) 2017-2023 by Credit plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/credit
  * -------------------------------------------------------------------------

@@ -22,7 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Credit. If not, see <http://www.gnu.org/licenses/>.
  * -------------------------------------------------------------------------
- * @copyright Copyright (C) 2017-2022 by Credit plugin team.
+ * @author    François Legastelois
+ * @copyright Copyright (C) 2017-2023 by Credit plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/credit
  * -------------------------------------------------------------------------
