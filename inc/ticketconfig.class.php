@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginCreditTicketConfig extends CommonDBTM {
 
-   public static $rightname = 'entity';
+   public static $rightname = 'plugin_credit_ticketconfig';
+
+   const TICKET_TAB  = 1024;
+   const TICKET_FORM = 2048;
 
    static function getTypeName($nb = 0) {
       return _n('Default voucher option', 'Default voucher options', $nb, 'credit');
@@ -88,7 +91,10 @@ class PluginCreditTicketConfig extends CommonDBTM {
    **/
    static function showForTicket(Ticket $ticket, bool $embed_in_ticket_form = false) {
 
-      if (!Session::haveRight("entity", UPDATE)) {
+      if ($embed_in_ticket_form && !Session::haveRight(self::$rightname, self::TICKET_FORM)) {
+         return;
+      }
+      if (!$embed_in_ticket_form && !Session::haveRight(self::$rightname, self::TICKET_TAB)) {
          return;
       }
 
@@ -211,7 +217,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
          // $out .= '</div>'; // class="accordion-item"
       } else {
          $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
-         $out .= "<input type='hidden' name='id' value='{$ticket_config->getID()}' />";
+         $out .= "<input type='hidden' name='tickets_id' value='{$ticket->getID()}' />";
          $out .= "<table class='tab_cadre_fixe'><tbody>";
          $out .= "<tr>";
          $out .= "<th colspan='8'>".self::getTypeName()."</th>";
@@ -247,7 +253,7 @@ class PluginCreditTicketConfig extends CommonDBTM {
    }
 
    static function updateConfig(Ticket $ticket) {
-      if (!Session::haveRight("entity", UPDATE)) {
+      if (!Session::haveRight(self::$rightname, self::TICKET_FORM)) {
          return;
       }
 
@@ -321,5 +327,13 @@ class PluginCreditTicketConfig extends CommonDBTM {
 
       $table = self::getTable();
       $migration->dropTable($table);
+   }
+
+   public function getRights($interface = 'central')
+   {
+      return [
+         self::TICKET_TAB  => __('Update in ticket tab', 'credit'),
+         self::TICKET_FORM => __('Update in ticket form', 'credit'),
+      ];
    }
 }
