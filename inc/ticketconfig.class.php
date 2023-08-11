@@ -162,18 +162,19 @@ class PluginCreditTicketConfig extends CommonDBTM {
       );
 
       if ($embed_in_ticket_form) {
+         $uncollapsed = (importArrayFromDB(Config::getSafeConfig()['itil_layout'])['items']['plugin-credit-ticket-config'] ?? 'true') == 'true';
          $out .= '</div>'; // class="accordion-body"
          $out .= '</div>'; // class="accordion-collapse"
          $out .= '</div>'; // class="accordion-item"
          $out .= '<div class="accordion-item">';
          $out .= '<h2 class="accordion-header" id="heading-plugin-credit-ticket-config">';
-         $out .= '<button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#plugin-credit-ticket-config" aria-expanded="true" aria-controls="plugin-credit-ticket-config">';
+         $out .= '<button class="accordion-button '.($uncollapsed ? '' : 'collapsed').'" type="button" data-bs-toggle="collapse" data-bs-target="#plugin-credit-ticket-config" aria-expanded="true" aria-controls="plugin-credit-ticket-config">';
          $out .= '<span class="item-title">';
          $out .= self::getTypeName();
          $out .= '</span>';
          $out .= '</button>';
          $out .= '</h2>';
-         $out .= '<div id="plugin-credit-ticket-config" class="accordion-collapse collapse show" aria-labelledby="heading-plugin-credit-ticket-config">';
+         $out .= '<div id="plugin-credit-ticket-config" class="accordion-collapse collapse '.($uncollapsed ? 'show' : '').'" aria-labelledby="heading-plugin-credit-ticket-config">';
          $out .= '<div class="accordion-body row m-0 mt-n2">';
 
          $out .= '<div class="form-field row col-12  mb-2">';
