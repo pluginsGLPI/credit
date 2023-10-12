@@ -29,12 +29,14 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
+
 define('PLUGIN_CREDIT_VERSION', '1.12.0');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_CREDIT_MIN_GLPI", "10.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "10.0.99");
+define("PLUGIN_CREDIT_MAX_GLPI", "10.1.99");
 
 /**
  * Init hooks of the plugin.
@@ -49,39 +51,43 @@ function plugin_init_credit() {
 
    $PLUGIN_HOOKS['csrf_compliant']['credit'] = true;
 
-   if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
+   if ($plugin->isActivated('credit')) {
+       $PLUGIN_HOOKS[Hooks::REDEFINE_API_SCHEMAS]['credit'] = 'plugin_credit_redefine_api_schemas';
+       $PLUGIN_HOOKS[Hooks::API_CONTROLLERS]['credit'] = ['PluginCreditApicontroller'];
+       if (Session::getLoginUserID()) {
 
-      Plugin::registerClass(
-         'PluginCreditEntity',
-         [
-            'notificationtemplates_types' => true,
-            'addtabon'                    => 'Entity'
-         ]
-      );
+           Plugin::registerClass(
+               'PluginCreditEntity',
+               [
+                   'notificationtemplates_types' => true,
+                   'addtabon' => 'Entity'
+               ]
+           );
 
-      if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
-         Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
+           if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
+               Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
-         $PLUGIN_HOOKS['post_item_form']['credit'] = [
-            'PluginCreditTicket',
-            'displayVoucherInTicketProcessingForm'
-         ];
+               $PLUGIN_HOOKS['post_item_form']['credit'] = [
+                   'PluginCreditTicket',
+                   'displayVoucherInTicketProcessingForm'
+               ];
 
-         $PLUGIN_HOOKS['item_add']['credit'] = [
-            'ITILFollowup'   => ['PluginCreditTicket', 'consumeVoucher'],
-            'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
-            'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
-            'Ticket'         => ['PluginCreditTicketConfig', 'updateConfig'],
-         ];
-         // Update config on 'pre_item_update' as only changing these fields in ticket form will not trigger 'item_update'.
-         $PLUGIN_HOOKS['pre_item_update']['credit'] = [
-            'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
-         ];
-      }
-      $PLUGIN_HOOKS['add_javascript']['credit'] = [
-         'js/credit.js'
-      ];
-      $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
+               $PLUGIN_HOOKS['item_add']['credit'] = [
+                   'ITILFollowup' => ['PluginCreditTicket', 'consumeVoucher'],
+                   'ITILSolution' => ['PluginCreditTicket', 'consumeVoucher'],
+                   'TicketTask' => ['PluginCreditTicket', 'consumeVoucher'],
+                   'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
+               ];
+               // Update config on 'pre_item_update' as only changing these fields in ticket form will not trigger 'item_update'.
+               $PLUGIN_HOOKS['pre_item_update']['credit'] = [
+                   'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
+               ];
+           }
+           $PLUGIN_HOOKS['add_javascript']['credit'] = [
+               'js/credit.js'
+           ];
+           $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
+       }
    }
 
    Plugin::registerClass(PluginCreditProfile::class, ['addtabon' => Profile::class]);
