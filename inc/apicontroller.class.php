@@ -141,9 +141,9 @@ final class PluginCreditApicontroller extends AbstractController
                     'x-readonly' => true,
                 ],
                 'entity' => AbstractController::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'consume_for_followups' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'consume_for_tasks' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'consume_for_solutions' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'consume_for_followups' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'consume_voucher_for_followups'],
+                'consume_for_tasks' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'consume_voucher_for_tasks'],
+                'consume_for_solutions' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'consume_voucher_for_solutions'],
                 'followups_credit' => AbstractController::getDropdownTypeSchema(
                     class: PluginCreditEntity::class,
                     field: 'plugin_credit_entities_id_followups',
