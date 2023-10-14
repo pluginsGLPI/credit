@@ -229,6 +229,12 @@ function plugin_credit_redefine_api_schemas(array $data): array {
                     'type' => Schema::TYPE_OBJECT,
                     'x-itemtype' => PluginCreditTicket::class,
                     'x-full-schema' => 'CreditConsumption',
+                    'x-join' => [
+                        'table' => PluginCreditTicket::getTable(),
+                        'fkey' => 'id',
+                        'field' => 'tickets_id',
+                        'x-primary-property' => 'id'
+                    ],
                     'properties' => [
                         'id' => [
                             'type' => Schema::TYPE_INTEGER,
@@ -262,15 +268,21 @@ function plugin_credit_redefine_api_schemas(array $data): array {
                 'type' => Schema::TYPE_OBJECT,
                 'x-itemtype' => PluginCreditTicketConfig::class,
                 'x-full-schema' => 'CreditTicketConfig',
+                'x-join' => [
+                    'table' => PluginCreditTicketConfig::getTable(),
+                    'fkey' => 'id',
+                    'field' => 'tickets_id',
+                    'x-primary-property' => 'id'
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Schema::TYPE_INTEGER,
                         'format' => Schema::FORMAT_INTEGER_INT64,
                         'x-readonly' => true,
                     ],
-                    'followups_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, full_schema: 'Credit'),
-                    'tasks_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, full_schema: 'Credit'),
-                    'solutions_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, full_schema: 'Credit'),
+                    'followups_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, field: 'plugin_credit_entities_id_followups', full_schema: 'Credit'),
+                    'tasks_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, field: 'plugin_credit_entities_id_tasks', full_schema: 'Credit'),
+                    'solutions_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, field: 'plugin_credit_entities_id_solutions', full_schema: 'Credit'),
                 ]
             ];
         }
