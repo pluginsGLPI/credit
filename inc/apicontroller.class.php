@@ -85,7 +85,7 @@ final class PluginCreditApicontroller extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => AbstractController::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'parent' => AbstractController::getDropdownTypeSchema(class: PluginCreditType::class, full_schema: 'PluginCreditType'),
+                'parent' => AbstractController::getDropdownTypeSchema(class: PluginCreditType::class, full_schema: 'CreditType'),
                 'level' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'date_creation' => [
                     'type' => Doc\Schema::TYPE_STRING,
