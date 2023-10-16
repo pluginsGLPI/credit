@@ -156,7 +156,7 @@ function plugin_credit_redefine_api_schemas(array $data): array {
                         'table' => PluginCreditEntity::getTable(),
                         'fkey' => 'id',
                         'field' => 'entities_id',
-                        'x-primary-property' => 'id'
+                        'primary-property' => 'id'
                     ],
                     'properties' => [
                         'id' => [
@@ -194,7 +194,7 @@ function plugin_credit_redefine_api_schemas(array $data): array {
                     'table' => PluginCreditEntityConfig::getTable(),
                     'fkey' => 'id',
                     'field' => 'entities_id',
-                    'x-primary-property' => 'id'
+                    'primary-property' => 'id'
                 ],
                 'properties' => [
                     'id' => [
@@ -233,7 +233,7 @@ function plugin_credit_redefine_api_schemas(array $data): array {
                         'table' => PluginCreditTicket::getTable(),
                         'fkey' => 'id',
                         'field' => 'tickets_id',
-                        'x-primary-property' => 'id'
+                        'primary-property' => 'id'
                     ],
                     'properties' => [
                         'id' => [
@@ -272,7 +272,7 @@ function plugin_credit_redefine_api_schemas(array $data): array {
                     'table' => PluginCreditTicketConfig::getTable(),
                     'fkey' => 'id',
                     'field' => 'tickets_id',
-                    'x-primary-property' => 'id'
+                    'primary-property' => 'id'
                 ],
                 'properties' => [
                     'id' => [
