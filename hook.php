@@ -29,6 +29,9 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Doc\Schema;
+
 /**
  * Plugin install process
  *
@@ -134,4 +137,156 @@ function plugin_credit_get_datas(NotificationTargetTicket $target) {
          '##credit.left##'    => (int)$credit['quantity'] - (int)$credit['consumed_total'],
       ];
    }
+}
+
+function plugin_credit_redefine_api_schemas(array $data): array {
+    // Handle modifications to existing schemas
+    foreach ($data['schemas'] as &$schema) {
+        if (!isset($schema['x-itemtype'])) {
+            continue;
+        }
+        if ($schema['x-itemtype'] === Entity::class) {
+            $schema['properties']['credits'] = [
+                'type' => Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Schema::TYPE_OBJECT,
+                    'x-itemtype' => PluginCreditEntity::class,
+                    'x-full-schema' => 'Credit',
+                    'x-join' => [
+                        'table' => PluginCreditEntity::getTable(),
+                        'fkey' => 'id',
+                        'field' => 'entities_id',
+                        'primary-property' => 'id'
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Schema::TYPE_INTEGER,
+                            'format' => Schema::FORMAT_INTEGER_INT64,
+                            'x-readonly' => true,
+                        ],
+                        'name' => ['type' => Schema::TYPE_STRING],
+                        'is_recursive' => ['type' => Schema::TYPE_BOOLEAN],
+                        'is_active' => ['type' => Schema::TYPE_BOOLEAN],
+                        'type' => AbstractController::getDropdownTypeSchema(class: PluginCreditType::class, full_schema: 'PluginCreditType'),
+                        'date_begin' => [
+                            'type' => Schema::TYPE_STRING,
+                            'format' => Schema::FORMAT_STRING_DATE,
+                            'x-field' => 'begin_date'
+                        ],
+                        'date_end' => [
+                            'type' => Schema::TYPE_STRING,
+                            'format' => Schema::FORMAT_STRING_DATE,
+                            'x-field' => 'end_date'
+                        ],
+                        'quantity' => ['type' => Schema::TYPE_INTEGER],
+                        'over_consumption_allowed' => [
+                            'type' => Schema::TYPE_BOOLEAN,
+                            'x-field' => 'overconsumption_allowed'
+                        ],
+                    ]
+                ]
+            ];
+            $schema['properties']['credits_config'] = [
+                'type' => Schema::TYPE_OBJECT,
+                'x-itemtype' => PluginCreditEntityConfig::class,
+                'x-full-schema' => 'CreditEntityConfig',
+                'x-join' => [
+                    'table' => PluginCreditEntityConfig::getTable(),
+                    'fkey' => 'id',
+                    'field' => 'entities_id',
+                    'primary-property' => 'id'
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Schema::TYPE_INTEGER,
+                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'x-readonly' => true,
+                    ],
+                    'consume_for_followups' => ['type' => Schema::TYPE_BOOLEAN, 'x-field' => 'consume_voucher_for_followups'],
+                    'consume_for_tasks' => ['type' => Schema::TYPE_BOOLEAN, 'x-field' => 'consume_voucher_for_tasks'],
+                    'consume_for_solutions' => ['type' => Schema::TYPE_BOOLEAN, 'x-field' => 'consume_voucher_for_solutions'],
+                    'followups_credit' => AbstractController::getDropdownTypeSchema(
+                        class: PluginCreditEntity::class,
+                        field: 'plugin_credit_entities_id_followups',
+                        full_schema: 'Credit'
+                    ),
+                    'tasks_credit' => AbstractController::getDropdownTypeSchema(
+                        class: PluginCreditEntity::class,
+                        field: 'plugin_credit_entities_id_tasks',
+                        full_schema: 'Credit'
+                    ),
+                    'solutions_credit' => AbstractController::getDropdownTypeSchema(
+                        class: PluginCreditEntity::class,
+                        field: 'plugin_credit_entities_id_solutions',
+                        full_schema: 'Credit'
+                    ),
+                ]
+            ];
+        } else if ($schema['x-itemtype'] === Ticket::class) {
+            $schema['properties']['credits_consumed'] = [
+                'type' => Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Schema::TYPE_OBJECT,
+                    'x-itemtype' => PluginCreditTicket::class,
+                    'x-full-schema' => 'CreditConsumption',
+                    'x-join' => [
+                        'table' => PluginCreditTicket::getTable(),
+                        'fkey' => 'id',
+                        'field' => 'tickets_id',
+                        'primary-property' => 'id'
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Schema::TYPE_INTEGER,
+                            'format' => Schema::FORMAT_INTEGER_INT64,
+                            'x-readonly' => true,
+                        ],
+                        'credit' => [
+                            'type' => Schema::TYPE_OBJECT,
+                            'x-itemtype' => PluginCreditTicket::class,
+                            'x-full-schema' => 'Credit',
+                            'properties' => [
+                                'id' => [
+                                    'type' => Schema::TYPE_INTEGER,
+                                    'format' => Schema::FORMAT_INTEGER_INT64,
+                                    'x-readonly' => true,
+                                ],
+                                'name' => ['type' => Schema::TYPE_STRING],
+                            ]
+                        ],
+                        'date_creation' => [
+                            'type' => Schema::TYPE_STRING,
+                            'format' => Schema::FORMAT_STRING_DATE_TIME,
+                            'x-readonly' => true,
+                        ],
+                        'consumed' => ['type' => Schema::TYPE_INTEGER],
+                        'user' => AbstractController::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    ]
+                ]
+            ];
+            $schema['properties']['credits_config'] = [
+                'type' => Schema::TYPE_OBJECT,
+                'x-itemtype' => PluginCreditTicketConfig::class,
+                'x-full-schema' => 'CreditTicketConfig',
+                'x-join' => [
+                    'table' => PluginCreditTicketConfig::getTable(),
+                    'fkey' => 'id',
+                    'field' => 'tickets_id',
+                    'primary-property' => 'id'
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Schema::TYPE_INTEGER,
+                        'format' => Schema::FORMAT_INTEGER_INT64,
+                        'x-readonly' => true,
+                    ],
+                    'followups_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, field: 'plugin_credit_entities_id_followups', full_schema: 'Credit'),
+                    'tasks_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, field: 'plugin_credit_entities_id_tasks', full_schema: 'Credit'),
+                    'solutions_credit' => AbstractController::getDropdownTypeSchema(class: PluginCreditEntity::class, field: 'plugin_credit_entities_id_solutions', full_schema: 'Credit'),
+                ]
+            ];
+        }
+    }
+
+    return $data;
 }
