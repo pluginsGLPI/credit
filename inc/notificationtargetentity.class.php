@@ -73,18 +73,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       $data = $req->current();
       $this->data['##credit.entity##'] = $data['name'];
 
-      $req = $DB->request(
-         [
-            'SELECT' => 'name',
-            'FROM'   => 'glpi_plugin_credit_types',
-            'WHERE'  => [
-               'id' => $this->obj->getField('plugin_credit_types_id'),
-            ]
-         ]
-      );
-      $data = $req->current();
-      $this->data['##credit.type##'] = $data['name'];
-
+      $this->data['##credit.type##'] = Dropdown::getDropdownName('glpi_plugin_credit_types', $this->obj->getField('plugin_credit_types_id'));
       $this->data['##lang.credit.enddate##'] = __('End date', 'credit');
       $this->data['##lang.credit.quantity_remaining##'] = __('Quantity remaining', 'credit');
       $this->data['##lang.credit.quantity_sold##'] = __('Quantity sold', 'credit');
