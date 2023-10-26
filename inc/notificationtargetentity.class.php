@@ -100,7 +100,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
          'credit.quantity_remaining' => __('Quantity remaining', 'credit'),
          'credit.quantity_consumed'  => __('Quantity consumed', 'credit'),
          'credit.child_entities'       => __('Child entities'),
-         'credit.entity'             => Entity::getTypeName(1);,
+         'credit.entity'             => Entity::getTypeName(1),
          'credit.overconsumption_allowed' => __('Allow overconsumption', 'credit'),
          'credit.type'               => __('Type'),
       ];
