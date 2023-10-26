@@ -43,8 +43,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       $this->data['##credit.name##'] = $this->obj->getField('name');
       $this->data['##credit.quantity_sold##'] = $this->obj->getField('quantity');
       $this->data['##credit.enddate##'] = $this->obj->getField('end_date');
-      $this->data['##credit.overconsumption_allowed##'] = $this->obj->getField('overconsumption_allowed') ? __('Yes') : __('No');
-      $this->data['##credit.child_entities##'] = $this->obj->getField('is_recursive') ? __('Yes') : __('No');
+      $this->data['##credit.overconsumption_allowed##'] = Dropdown::getYesNo($this->obj->getField('overconsumption_allowed'));
+      $this->data['##credit.child_entities##'] = Dropdown::getYesNo($this->obj->getField('is_recursive'));
 
       $req = $DB->request(
          [
