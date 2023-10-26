@@ -72,8 +72,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       );
       $data = $req->current();
       $this->data['##credit.entity##'] = $data['name'];
-
       $this->data['##credit.type##'] = Dropdown::getDropdownName('glpi_plugin_credit_types', $this->obj->getField('plugin_credit_types_id'));
+
       $this->data['##lang.credit.enddate##'] = __('End date', 'credit');
       $this->data['##lang.credit.quantity_remaining##'] = __('Quantity remaining', 'credit');
       $this->data['##lang.credit.quantity_sold##'] = __('Quantity sold', 'credit');
@@ -81,7 +81,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget {
       $this->data['##lang.credit.overconsumption_allowed##'] = __('Allow overconsumption', 'credit');
       $this->data['##lang.credit.child_entities##'] = __('Child entities');
       $this->data['##lang.credit.quantity_consumed##'] = __('Quantity consumed', 'credit');
-      $this->data['##lang.credit.entity##'] = __('Entity');
+      $this->data['##lang.credit.entity##'] = Entity::getTypeName(1);
       $this->data['##lang.credit.type##'] = __('Type');
 
       $this->getTags();
