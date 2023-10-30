@@ -561,6 +561,8 @@ class PluginCreditEntity extends CommonDBTM
            // 1.10.0
             $migration->dropField($table, 'is_default'); // Was created during dev phase of 1.10.0, then removed
         }
+
+        return true;
     }
 
    /**
@@ -572,6 +574,8 @@ class PluginCreditEntity extends CommonDBTM
     {
         $table = self::getTable();
         $migration->dropTable($table);
+
+        return true;
     }
 
 

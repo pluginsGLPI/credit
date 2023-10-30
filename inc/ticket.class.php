@@ -563,7 +563,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @param CommonDBTM $item Created item
     *
-    * @return boolean
+    * @return void
     */
     public static function consumeVoucher(CommonDBTM $item)
     {
@@ -746,6 +746,8 @@ class PluginCreditTicket extends CommonDBTM
            //execute the whole migration
             $migration->executeMigration();
         }
+
+        return true;
     }
 
    /**
@@ -758,5 +760,7 @@ class PluginCreditTicket extends CommonDBTM
 
         $table = self::getTable();
         $migration->dropTable($table);
+
+        return true;
     }
 }

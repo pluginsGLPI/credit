@@ -68,5 +68,7 @@ class PluginCreditProfile extends Profile
         echo "</div>\n";
         Html::closeForm();
         echo "</div>";
+
+        return true;
     }
 }

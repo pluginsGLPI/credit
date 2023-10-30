@@ -83,6 +83,8 @@ class PluginCreditType extends CommonTreeDropdown
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->query($query) or die($DB->error());
         }
+
+        return true;
     }
 
    /**
@@ -95,5 +97,7 @@ class PluginCreditType extends CommonTreeDropdown
 
         $table = self::getTable();
         $migration->dropTable($table);
+
+        return true;
     }
 }
