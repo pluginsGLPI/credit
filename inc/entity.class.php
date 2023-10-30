@@ -42,7 +42,7 @@ class PluginCreditEntity extends CommonDBTM
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         $nb = self::countForItem($item);
         switch ($item->getType()) {
@@ -57,7 +57,7 @@ class PluginCreditEntity extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         switch ($item->getType()) {
             case 'Entity':
