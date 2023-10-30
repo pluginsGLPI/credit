@@ -223,9 +223,10 @@ class PluginCreditEntity extends CommonDBTM
 
         $out    .= "<div class='spaced'>";
         $number  = self::countForItem($entity);
+        $rand = mt_rand();
+
         if ($number) {
             if ($canedit) {
-                $rand = mt_rand();
                 $out .= Html::getOpenMassiveActionsForm('mass' . __CLASS__ . $rand);
 
                 $specific_actions = [
