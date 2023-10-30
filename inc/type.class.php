@@ -30,35 +30,37 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
-class PluginCreditType extends CommonTreeDropdown {
-
+class PluginCreditType extends CommonTreeDropdown
+{
    // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    public $dohistory          = true;
+    public $can_be_translated  = true;
 
-   static function getTypeName($nb = 0) {
-      return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
-   }
+    static function getTypeName($nb = 0)
+    {
+        return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
+    }
 
    /**
     * Install all necessary tables for the plugin
     *
     * @return boolean True if success
     */
-   static function install(Migration $migration) {
-      global $DB;
+    static function install(Migration $migration)
+    {
+        global $DB;
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $table = self::getTable();
+        $table = self::getTable();
 
-      if (!$DB->tableExists($table)) {
-         $query = "CREATE TABLE IF NOT EXISTS `$table` (
+        if (!$DB->tableExists($table)) {
+            $query = "CREATE TABLE IF NOT EXISTS `$table` (
                      `id` int {$default_key_sign} NOT NULL auto_increment,
                      `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                      `is_recursive` tinyint NOT NULL DEFAULT '0',
@@ -79,19 +81,19 @@ class PluginCreditType extends CommonTreeDropdown {
                      KEY `date_mod` (`date_mod`),
                      KEY `date_creation` (`date_creation`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die($DB->error());
-      }
-   }
+            $DB->query($query) or die($DB->error());
+        }
+    }
 
    /**
     * Uninstall previously installed table of the plugin
     *
     * @return boolean True if success
     */
-   static function uninstall(Migration $migration) {
+    static function uninstall(Migration $migration)
+    {
 
-      $table = self::getTable();
-      $migration->dropTable($table);
-   }
-
+        $table = self::getTable();
+        $migration->dropTable($table);
+    }
 }

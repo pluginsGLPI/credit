@@ -35,7 +35,7 @@
 
 use Glpi\Event;
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 Session::haveRight("entity", UPDATE);
 
@@ -44,12 +44,17 @@ $PluginCreditEntity  = new PluginCreditEntity();
 $PluginCreditType    = new PluginCreditType();
 
 if (isset($_POST["add"])) {
-   $PluginCreditEntity->check(-1, CREATE, $_POST);
-   if ($PluginCreditEntity->add($_POST)) {
-      Event::log($_POST["plugin_credit_types_id"], "entity", 4, "setup",
-                 sprintf(__('%s adds a vouchers to an entity'), $_SESSION["glpiname"]));
-   }
-   Html::back();
+    $PluginCreditEntity->check(-1, CREATE, $_POST);
+    if ($PluginCreditEntity->add($_POST)) {
+        Event::log(
+            $_POST["plugin_credit_types_id"],
+            "entity",
+            4,
+            "setup",
+            sprintf(__('%s adds a vouchers to an entity'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

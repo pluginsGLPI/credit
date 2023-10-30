@@ -29,18 +29,18 @@
  * -------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $entity_config = new PluginCreditEntityConfig();
 
 if (isset($_POST["add"])) {
-   $entity_config->check(-1, UPDATE, $_POST);
-   $entity_config->add($_POST);
-   Html::back();
+    $entity_config->check(-1, UPDATE, $_POST);
+    $entity_config->add($_POST);
+    Html::back();
 } elseif (isset($_POST["update"])) {
-   $entity_config->check(-1, UPDATE, $_POST);
-   $entity_config->update($_POST);
-   Html::back();
+    $entity_config->check(-1, UPDATE, $_POST);
+    $entity_config->update($_POST);
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

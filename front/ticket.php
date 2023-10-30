@@ -33,14 +33,14 @@
  * @brief
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
 
 if (!isset($_GET["plugcreditentity"])) {
-   throw new \RuntimeException('Invalid params provided!', 'credit');
+    throw new \RuntimeException('Invalid params provided!', 'credit');
 } else {
-   $_GET['plugcreditentity'] = (int) $_GET['plugcreditentity'];
+    $_GET['plugcreditentity'] = (int) $_GET['plugcreditentity'];
 }
 
 Session::checkLoginUser();
