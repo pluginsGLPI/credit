@@ -40,7 +40,7 @@ class PluginCreditTicketConfig extends CommonDBTM
     const TICKET_TAB  = 1024;
     const TICKET_FORM = 2048;
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Default voucher option', 'Default voucher options', $nb, 'credit');
     }
@@ -53,7 +53,7 @@ class PluginCreditTicketConfig extends CommonDBTM
     *
     * @return null|int
     */
-    static function getDefaultForTicket($ticket_id, $itemtype)
+    public static function getDefaultForTicket($ticket_id, $itemtype)
     {
         $ticket_config = new self();
         $ticket_config->getFromDBByCrit(['tickets_id' => $ticket_id]);
@@ -91,7 +91,7 @@ class PluginCreditTicketConfig extends CommonDBTM
     * @param Ticket $ticket
     * @param bool $embed_in_ticket_form
    **/
-    static function showForTicket(Ticket $ticket, bool $embed_in_ticket_form = false)
+    public static function showForTicket(Ticket $ticket, bool $embed_in_ticket_form = false)
     {
 
         if ($embed_in_ticket_form && !Session::haveRight(self::$rightname, self::TICKET_FORM)) {
@@ -256,7 +256,7 @@ class PluginCreditTicketConfig extends CommonDBTM
         return $out;
     }
 
-    static function updateConfig(Ticket $ticket)
+    public static function updateConfig(Ticket $ticket)
     {
         if (!Session::haveRight(self::$rightname, self::TICKET_FORM)) {
             return;
@@ -288,7 +288,7 @@ class PluginCreditTicketConfig extends CommonDBTM
         }
     }
 
-    static function install(Migration $migration)
+    public static function install(Migration $migration)
     {
         global $DB;
 
@@ -329,7 +329,7 @@ class PluginCreditTicketConfig extends CommonDBTM
         $migration->addKey($table, 'tickets_id');
     }
 
-    static function uninstall(Migration $migration)
+    public static function uninstall(Migration $migration)
     {
 
         $table = self::getTable();

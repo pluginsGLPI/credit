@@ -37,12 +37,12 @@ class PluginCreditTicket extends CommonDBTM
 {
     public static $rightname = 'ticket';
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = self::countForItem($item);
         switch ($item->getType()) {
@@ -58,7 +58,7 @@ class PluginCreditTicket extends CommonDBTM
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Ticket':
@@ -82,7 +82,7 @@ class PluginCreditTicket extends CommonDBTM
     * @param $ID           integer     tickets ID
     * @return array of vouchers
     */
-    static function getAllForTicket($ID): array
+    public static function getAllForTicket($ID): array
     {
         global $DB;
 
@@ -110,7 +110,7 @@ class PluginCreditTicket extends CommonDBTM
     * @param $ID           integer     plugin_credit_entities_id ID
     * @return array of vouchers
    **/
-    static function getAllForCreditEntity($ID): array
+    public static function getAllForCreditEntity($ID): array
     {
         global $DB;
 
@@ -136,7 +136,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @param $ID integer PluginCreditEntity id
    **/
-    static function getConsumedForCreditEntity($ID)
+    public static function getConsumedForCreditEntity($ID)
     {
         global $DB;
 
@@ -164,7 +164,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @param $ticket Ticket object
    **/
-    static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket)
     {
         global $DB, $CFG_GLPI;
 
@@ -477,7 +477,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @param $ID plugin_credit_entities_id
    **/
-    static function displayConsumed($ID)
+    public static function displayConsumed($ID)
     {
 
         $out = "";
@@ -565,7 +565,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @return boolean
     */
-    static function consumeVoucher(CommonDBTM $item)
+    public static function consumeVoucher(CommonDBTM $item)
     {
 
         if (!is_array($item->input) || !count($item->input)) {
@@ -664,7 +664,7 @@ class PluginCreditTicket extends CommonDBTM
     }
 
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -704,7 +704,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @return boolean True if success
     */
-    static function install(Migration $migration)
+    public static function install(Migration $migration)
     {
         global $DB;
 
@@ -753,7 +753,7 @@ class PluginCreditTicket extends CommonDBTM
     *
     * @return boolean True if success
     */
-    static function uninstall(Migration $migration)
+    public static function uninstall(Migration $migration)
     {
 
         $table = self::getTable();

@@ -37,12 +37,12 @@ class PluginCreditEntity extends CommonDBTM
 {
     public static $rightname = 'entity';
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = self::countForItem($item);
         switch ($item->getType()) {
@@ -50,13 +50,14 @@ class PluginCreditEntity extends CommonDBTM
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     return self::createTabEntry(self::getTypeName($nb), $nb);
                 }
+                return '';
             default:
                 return self::getTypeName($nb);
         }
         return '';
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Entity':
@@ -120,7 +121,7 @@ class PluginCreditEntity extends CommonDBTM
     * @param $sqlfilter    array       to add a SQL filter (default [])
     * @return array of vouchers
     */
-    static function getAllForEntity($ID, $sqlfilter = []): array
+    public static function getAllForEntity($ID, $sqlfilter = []): array
     {
         global $DB;
 
@@ -145,7 +146,7 @@ class PluginCreditEntity extends CommonDBTM
     * @param $entity object Entity
     * @param $itemtype string Entity or Ticket
    **/
-    static function showForItemtype(Entity $entity, $itemtype = 'Entity')
+    public static function showForItemtype(Entity $entity, $itemtype = 'Entity')
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -367,7 +368,7 @@ class PluginCreditEntity extends CommonDBTM
         echo $out;
     }
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
 
         $tab = parent::rawSearchOptions();
@@ -427,7 +428,7 @@ class PluginCreditEntity extends CommonDBTM
         return $tab;
     }
 
-    static function cronInfo($name)
+    public static function cronInfo($name)
     {
         switch ($name) {
             case 'creditexpired':
@@ -439,7 +440,7 @@ class PluginCreditEntity extends CommonDBTM
         return [];
     }
 
-    static function cronCreditExpired($task)
+    public static function cronCreditExpired($task)
     {
         global $CFG_GLPI, $DB;
 
@@ -517,7 +518,7 @@ class PluginCreditEntity extends CommonDBTM
     *
     * @return boolean True if success
     */
-    static function install(Migration $migration)
+    public static function install(Migration $migration)
     {
         global $DB;
 
@@ -567,7 +568,7 @@ class PluginCreditEntity extends CommonDBTM
     *
     * @return boolean True if success
     */
-    static function uninstall(Migration $migration)
+    public static function uninstall(Migration $migration)
     {
         $table = self::getTable();
         $migration->dropTable($table);

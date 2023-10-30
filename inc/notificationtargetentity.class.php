@@ -31,7 +31,7 @@
 
 class PluginCreditNotificationTargetEntity extends NotificationTarget
 {
-    function getEvents()
+    public function getEvents()
     {
         return [
             'expired' => __('Expiration date', 'credit')

@@ -31,19 +31,19 @@
 
 class PluginCreditProfile extends Profile
 {
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return self::createTabEntry(PluginCreditTicket::getTypeName(Session::getPluralNumber()));
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $profile = new self();
         $profile->showForm($item->getID());
         return true;
     }
 
-    function showForm($ID, $options = [])
+    public function showForm($ID, $options = [])
     {
         if (!self::canView()) {
             return false;

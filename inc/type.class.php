@@ -39,7 +39,7 @@ class PluginCreditType extends CommonTreeDropdown
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0)
     {
         return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
     }
@@ -49,7 +49,7 @@ class PluginCreditType extends CommonTreeDropdown
     *
     * @return boolean True if success
     */
-    static function install(Migration $migration)
+    public static function install(Migration $migration)
     {
         global $DB;
 
@@ -90,7 +90,7 @@ class PluginCreditType extends CommonTreeDropdown
     *
     * @return boolean True if success
     */
-    static function uninstall(Migration $migration)
+    public static function uninstall(Migration $migration)
     {
 
         $table = self::getTable();
