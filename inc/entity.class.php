@@ -79,6 +79,10 @@ class PluginCreditEntity extends CommonDBTM {
          return false;
       }
 
+      if (isset($input['end_date']) && $input['end_date'] != '') {
+         $input['end_date'] .= ' 23:59:59';
+      }
+
       return $input;
    }
 
@@ -86,6 +90,10 @@ class PluginCreditEntity extends CommonDBTM {
       if (isset($input['name']) && strlen($input['name']) == '') {
          Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
          return false;
+      }
+
+      if (isset($input['end_date']) && $input['end_date'] != '') {
+         $input['end_date'] .= ' 23:59:59';
       }
 
       return $input;
