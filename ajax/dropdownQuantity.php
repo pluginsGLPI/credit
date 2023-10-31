@@ -35,6 +35,9 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+/** @var DBmysql */
+global $DB;
+
 if (isset($_POST["entity"])) {
     $entity_query = [
         'SELECT' => ['overconsumption_allowed', 'quantity'],
