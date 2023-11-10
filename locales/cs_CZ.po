@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-05 15:00+0000\n"
+"POT-Creation-Date: 2023-11-10 14:42+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>, 2018\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/pluginsGLPI/teams/73419/cs_CZ/)\n"
@@ -22,44 +22,46 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: inc/ticket.class.php:322
+#: inc/ticket.class.php:329
 msgid "Active credit vouchers for ticket entity"
 msgstr "Aktivní kupony s kreditem pro entitu požadavku"
 
-#: inc/entity.class.php:153
+#: inc/entity.class.php:168
 msgid "Add a credit voucher"
 msgstr "Přidat kupon s kreditem"
 
-#: inc/entity.class.php:185 inc/entity.class.php:252 inc/entity.class.php:400
+#: inc/entity.class.php:202 inc/entity.class.php:269 inc/entity.class.php:419
+#: inc/notificationtargetentity.class.php:78
+#: inc/notificationtargetentity.class.php:103
 msgid "Allow overconsumption"
 msgstr "Umožnit čerpat více, než je předplaceno"
 
-#: inc/entityconfig.class.php:61
+#: inc/entityconfig.class.php:58
 msgid "By default consume a voucher for followups"
 msgstr ""
 
-#: inc/entityconfig.class.php:71
+#: inc/entityconfig.class.php:68
 msgid "By default consume a voucher for solutions"
 msgstr ""
 
-#: inc/entityconfig.class.php:66
+#: inc/entityconfig.class.php:63
 msgid "By default consume a voucher for tasks"
 msgstr ""
 
-#: inc/ticket.class.php:404
+#: inc/ticket.class.php:417
 msgid "Consume a voucher ?"
 msgstr "Využít kupon?"
 
-#: inc/ticket.class.php:226
+#: inc/ticket.class.php:233
 msgid "Consumed credits for this ticket"
 msgstr "Kredit spotřebovaný na tento požadavek"
 
-#: inc/entity.class.php:305 inc/entity.class.php:310 inc/entity.class.php:311
+#: inc/entity.class.php:322 inc/entity.class.php:329 inc/entity.class.php:330
 msgid "Consumed details"
 msgstr "Podrobnosti o spotřebovaných"
 
-#: inc/entity.class.php:41 inc/ticket.class.php:41
-#: inc/entityconfig.class.php:41 setup.php:99
+#: inc/entity.class.php:38 inc/ticket.class.php:38
+#: inc/entityconfig.class.php:38 setup.php:101
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Kupon s kreditem"
@@ -67,19 +69,19 @@ msgstr[1] "Kupony s kreditem"
 msgstr[2] "Kuponů s kreditem"
 msgstr[3] "Kupony s kreditem"
 
-#: inc/notificationtargetentity.class.php:93
+#: inc/notificationtargetentity.class.php:118
 msgid "Credit voucher expiration"
 msgstr ""
 
-#: inc/entity.class.php:78 inc/entity.class.php:87
+#: inc/entity.class.php:80 inc/entity.class.php:94
 msgid "Credit voucher name is mandatory."
 msgstr ""
 
-#: inc/ticket.class.php:632 front/ticket.form.php:52
+#: inc/ticket.class.php:653 front/ticket.form.php:46
 msgid "Credit voucher successfully added."
 msgstr "Kupon s kreditem úspěšně přidán."
 
-#: inc/type.class.php:43
+#: inc/type.class.php:40
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "Typ kuponu s kreditem"
@@ -87,22 +89,22 @@ msgstr[1] "Typy kuponů s kreditem"
 msgstr[2] "Typů kuponů s kreditem"
 msgstr[3] "Typy kuponů s kreditem"
 
-#: inc/ticket.class.php:263 inc/ticket.class.php:486 inc/ticket.class.php:647
+#: inc/ticket.class.php:270 inc/ticket.class.php:500 inc/ticket.class.php:668
 msgid "Date consumed"
 msgstr "Datum spotřebování"
 
 #: inc/ticketconfig.class.php:190 inc/ticketconfig.class.php:230
-#: inc/entityconfig.class.php:78
+#: inc/entityconfig.class.php:75
 msgid "Default for followups"
 msgstr ""
 
 #: inc/ticketconfig.class.php:208 inc/ticketconfig.class.php:238
-#: inc/entityconfig.class.php:108
+#: inc/entityconfig.class.php:105
 msgid "Default for solutions"
 msgstr ""
 
 #: inc/ticketconfig.class.php:199 inc/ticketconfig.class.php:234
-#: inc/entityconfig.class.php:93
+#: inc/entityconfig.class.php:90
 msgid "Default for tasks"
 msgstr ""
 
@@ -110,11 +112,11 @@ msgstr ""
 msgid "Default for ticket"
 msgstr ""
 
-#: inc/entityconfig.class.php:57
+#: inc/entityconfig.class.php:54
 msgid "Default options for entity"
 msgstr ""
 
-#: inc/ticketconfig.class.php:44
+#: inc/ticketconfig.class.php:41
 msgid "Default voucher option"
 msgid_plural "Default voucher options"
 msgstr[0] ""
@@ -122,79 +124,80 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: inc/ticket.class.php:468
+#: inc/ticket.class.php:482
 msgid "Detail of tickets on which consumption is declared"
 msgstr "Podrobnosti požadavků na které je spotřebováváno"
 
-#: inc/notificationtargetentity.class.php:61
-#: inc/notificationtargetentity.class.php:78
+#: inc/notificationtargetentity.class.php:74
+#: inc/notificationtargetentity.class.php:98
 msgid "End date"
 msgstr ""
 
-#: inc/entity.class.php:411 inc/notificationtargetentity.class.php:36
+#: inc/entity.class.php:431 inc/notificationtargetentity.class.php:37
 msgid "Expiration date"
 msgstr ""
 
-#: inc/entity.class.php:342
+#: inc/entity.class.php:361
 msgid "No credit voucher"
 msgstr "Žádný kupon s kreditem"
 
-#: inc/ticket.class.php:315 inc/ticket.class.php:474
+#: inc/ticket.class.php:322 inc/ticket.class.php:488
 msgid "No credit was recorded"
 msgstr "Nebyl nahrán žádný kredit"
 
-#: inc/entity.class.php:412
+#: inc/entity.class.php:432
 msgid "Notice (in days)"
 msgstr ""
 
-#: hook.php:114 inc/entity.class.php:250 inc/ticket.class.php:201
-#: inc/ticket.class.php:265 inc/ticket.class.php:431 inc/ticket.class.php:488
-#: inc/ticket.class.php:655
+#: hook.php:116 inc/entity.class.php:267 inc/ticket.class.php:209
+#: inc/ticket.class.php:272 inc/ticket.class.php:445 inc/ticket.class.php:502
+#: inc/ticket.class.php:676 inc/notificationtargetentity.class.php:80
+#: inc/notificationtargetentity.class.php:100
 msgid "Quantity consumed"
 msgstr "Spotřebované množství"
 
-#: inc/ticket.class.php:605 inc/ticket.class.php:614
+#: inc/ticket.class.php:626 inc/ticket.class.php:635
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
 msgstr "Spotřebované množství překračuje zbývající předplacené: %d"
 
-#: hook.php:115 inc/entity.class.php:251
-#: inc/notificationtargetentity.class.php:62
-#: inc/notificationtargetentity.class.php:79
+#: hook.php:117 inc/entity.class.php:268
+#: inc/notificationtargetentity.class.php:75
+#: inc/notificationtargetentity.class.php:99
 msgid "Quantity remaining"
 msgstr "Zbývající množství"
 
-#: inc/entity.class.php:177 inc/entity.class.php:249 inc/entity.class.php:380
-#: inc/notificationtargetentity.class.php:63
-#: inc/notificationtargetentity.class.php:77
+#: inc/entity.class.php:193 inc/entity.class.php:266 inc/entity.class.php:399
+#: inc/notificationtargetentity.class.php:76
+#: inc/notificationtargetentity.class.php:96
 msgid "Quantity sold"
 msgstr "Prodané množství"
 
-#: inc/notificationtargetentity.class.php:94
+#: inc/notificationtargetentity.class.php:119
 msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr ""
 
-#: inc/ticketconfig.class.php:336
+#: inc/ticketconfig.class.php:341
 msgid "Update in ticket form"
 msgstr ""
 
-#: inc/ticketconfig.class.php:335
+#: inc/ticketconfig.class.php:340
 msgid "Update in ticket tab"
 msgstr ""
 
-#: inc/ticket.class.php:264 inc/ticket.class.php:487
+#: inc/ticket.class.php:271 inc/ticket.class.php:501
 msgid "User consumed"
 msgstr "Uživatel který spotřeboval"
 
-#: inc/ticket.class.php:186 inc/ticket.class.php:261 inc/ticket.class.php:411
+#: inc/ticket.class.php:194 inc/ticket.class.php:268 inc/ticket.class.php:424
 msgid "Voucher name"
 msgstr "Název kuponu"
 
-#: inc/ticket.class.php:262
+#: inc/ticket.class.php:269
 msgid "Voucher type"
 msgstr "Typ kuponu"
 
-#: inc/ticket.class.php:585
+#: inc/ticket.class.php:606
 msgid "You must provide a credit voucher"
 msgstr "Je třeba zadat kupon s kreditem"
