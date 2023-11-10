@@ -3,7 +3,7 @@
    <name>Credit</name>
    <key>credit</key>
    <state>stable</state>
-   <logo>https://raw.githubusercontent.com/pluginsGLPI/credit/master/plugin-icon2.png</logo>
+   <logo>https://raw.githubusercontent.com/pluginsGLPI/credit/main/plugin-icon2.png</logo>
    <description>
       <short>
          <fr><![CDATA[Ce plugin vous permet de déclarer et suivre (par entité) les consommations de différents coupons de crédits directement à partir du formulaire Ticket.]]></fr>
@@ -176,9 +176,9 @@
          </cs>
    </tags>
    <screenshots>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_ticket-tab.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_entity-tab.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/screenshots/fr_detail-consumed.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/master/credit.gif</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/main/screenshots/fr_ticket-tab.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/main/screenshots/fr_entity-tab.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/main/screenshots/fr_detail-consumed.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/credit/main/credit.gif</screenshot>
    </screenshots>
 </root>
