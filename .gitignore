@@ -1,5 +1,4 @@
 dist/
+node_modules/
 vendor/
 .gh_token
-*.min.*
-.DS_Store

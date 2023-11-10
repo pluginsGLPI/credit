@@ -29,69 +29,73 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+class PluginCreditType extends CommonTreeDropdown
+{
+    // From CommonDBTM
+    public $dohistory          = true;
+    public $can_be_translated  = true;
 
-class PluginCreditType extends CommonTreeDropdown {
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
+    }
 
-   // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    /**
+     * Install all necessary tables for the plugin
+     *
+     * @return boolean True if success
+     */
+    public static function install(Migration $migration)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
 
-   static function getTypeName($nb = 0) {
-      return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
-   }
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-   /**
-    * Install all necessary tables for the plugin
-    *
-    * @return boolean True if success
-    */
-   static function install(Migration $migration) {
-      global $DB;
+        $table = self::getTable();
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+        if (!$DB->tableExists($table)) {
+            $query = <<<SQL
+                CREATE TABLE IF NOT EXISTS `$table` (
+                    `id` int {$default_key_sign} NOT NULL auto_increment,
+                    `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `is_recursive` tinyint NOT NULL DEFAULT '0',
+                    `name` varchar(255) NOT NULL DEFAULT '',
+                    `comment` text,
+                    `completename` VARCHAR(255) NULL DEFAULT NULL,
+                    `plugin_credit_types_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
+                    `level` INT NOT NULL DEFAULT '1',
+                    `sons_cache` LONGTEXT NULL,
+                    `ancestors_cache` LONGTEXT NULL,
+                    `date_mod` timestamp NULL DEFAULT NULL,
+                    `date_creation` timestamp NULL DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    UNIQUE KEY `unicity` (`entities_id`,`plugin_credit_types_id`,`name`),
+                    KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
+                    KEY `name` (`name`),
+                    KEY `is_recursive` (`is_recursive`),
+                    KEY `date_mod` (`date_mod`),
+                    KEY `date_creation` (`date_creation`)
+                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
+            $DB->query($query) or die($DB->error());
+        }
 
-      $table = self::getTable();
+        return true;
+    }
 
-      if (!$DB->tableExists($table)) {
-         $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int {$default_key_sign} NOT NULL auto_increment,
-                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `is_recursive` tinyint NOT NULL DEFAULT '0',
-                     `name` varchar(255) NOT NULL DEFAULT '',
-                     `comment` text,
-                     `completename` VARCHAR(255) NULL DEFAULT NULL,
-                     `plugin_credit_types_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
-                     `level` INT NOT NULL DEFAULT '1',
-                     `sons_cache` LONGTEXT NULL,
-                     `ancestors_cache` LONGTEXT NULL,
-                     `date_mod` timestamp NULL DEFAULT NULL,
-                     `date_creation` timestamp NULL DEFAULT NULL,
-                     PRIMARY KEY (`id`),
-                     UNIQUE KEY `unicity` (`entities_id`,`plugin_credit_types_id`,`name`),
-                     KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
-                     KEY `name` (`name`),
-                     KEY `is_recursive` (`is_recursive`),
-                     KEY `date_mod` (`date_mod`),
-                     KEY `date_creation` (`date_creation`)
-                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die($DB->error());
-      }
-   }
+    /**
+     * Uninstall previously installed table of the plugin
+     *
+     * @return boolean True if success
+     */
+    public static function uninstall(Migration $migration)
+    {
+        $table = self::getTable();
+        $migration->dropTable($table);
 
-   /**
-    * Uninstall previously installed table of the plugin
-    *
-    * @return boolean True if success
-    */
-   static function uninstall(Migration $migration) {
-
-      $table = self::getTable();
-      $migration->dropTable($table);
-   }
-
+        return true;
+    }
 }

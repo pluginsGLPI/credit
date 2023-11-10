@@ -29,9 +29,9 @@
  * -------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 Plugin::load('credit', true);
 
 $dropdown = new PluginCreditType();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+include(GLPI_ROOT . "/front/dropdown.common.php");

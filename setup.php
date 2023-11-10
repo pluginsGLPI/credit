@@ -42,49 +42,50 @@ define("PLUGIN_CREDIT_MAX_GLPI", "10.0.99");
  *
  * @return void
  */
-function plugin_init_credit() {
-   global $PLUGIN_HOOKS, $CFG_GLPI;
+function plugin_init_credit()
+{
+    /** @var array $PLUGIN_HOOKS */
+    global $PLUGIN_HOOKS;
 
-   $plugin = new Plugin();
+    $plugin = new Plugin();
 
-   $PLUGIN_HOOKS['csrf_compliant']['credit'] = true;
+    $PLUGIN_HOOKS['csrf_compliant']['credit'] = true;
 
-   if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
+    if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
+        Plugin::registerClass(
+            'PluginCreditEntity',
+            [
+                'notificationtemplates_types' => true,
+                'addtabon'                    => 'Entity'
+            ]
+        );
 
-      Plugin::registerClass(
-         'PluginCreditEntity',
-         [
-            'notificationtemplates_types' => true,
-            'addtabon'                    => 'Entity'
-         ]
-      );
+        if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
+            Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
-      if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
-         Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
+            $PLUGIN_HOOKS['post_item_form']['credit'] = [
+                'PluginCreditTicket',
+                'displayVoucherInTicketProcessingForm'
+            ];
 
-         $PLUGIN_HOOKS['post_item_form']['credit'] = [
-            'PluginCreditTicket',
-            'displayVoucherInTicketProcessingForm'
-         ];
+            $PLUGIN_HOOKS['item_add']['credit'] = [
+                'ITILFollowup'   => ['PluginCreditTicket', 'consumeVoucher'],
+                'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
+                'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
+                'Ticket'         => ['PluginCreditTicketConfig', 'updateConfig'],
+            ];
+            // Update config on 'pre_item_update' as only changing these fields in ticket form will not trigger 'item_update'.
+            $PLUGIN_HOOKS['pre_item_update']['credit'] = [
+                'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
+            ];
+        }
+        $PLUGIN_HOOKS['add_javascript']['credit'] = [
+            'js/credit.js'
+        ];
+        $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
+    }
 
-         $PLUGIN_HOOKS['item_add']['credit'] = [
-            'ITILFollowup'   => ['PluginCreditTicket', 'consumeVoucher'],
-            'ITILSolution'   => ['PluginCreditTicket', 'consumeVoucher'],
-            'TicketTask'     => ['PluginCreditTicket', 'consumeVoucher'],
-            'Ticket'         => ['PluginCreditTicketConfig', 'updateConfig'],
-         ];
-         // Update config on 'pre_item_update' as only changing these fields in ticket form will not trigger 'item_update'.
-         $PLUGIN_HOOKS['pre_item_update']['credit'] = [
-            'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
-         ];
-      }
-      $PLUGIN_HOOKS['add_javascript']['credit'] = [
-         'js/credit.js'
-      ];
-      $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
-   }
-
-   Plugin::registerClass(PluginCreditProfile::class, ['addtabon' => Profile::class]);
+    Plugin::registerClass(PluginCreditProfile::class, ['addtabon' => Profile::class]);
 }
 
 
@@ -94,18 +95,19 @@ function plugin_init_credit() {
  *
  * @return array
  */
-function plugin_version_credit() {
-   return [
-      'name'           => _n('Credit voucher', 'Credit vouchers', 2, 'credit'),
-      'version'        => PLUGIN_CREDIT_VERSION,
-      'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
-      'license'        => 'GPLv3',
-      'homepage'       => 'https://github.com/pluginsGLPI/credit',
-      'requirements'   => [
-         'glpi' => [
-            'min' => PLUGIN_CREDIT_MIN_GLPI,
-            'max' => PLUGIN_CREDIT_MAX_GLPI,
-         ]
-      ]
-   ];
+function plugin_version_credit()
+{
+    return [
+        'name'           => _n('Credit voucher', 'Credit vouchers', 2, 'credit'),
+        'version'        => PLUGIN_CREDIT_VERSION,
+        'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
+        'license'        => 'GPLv3',
+        'homepage'       => 'https://github.com/pluginsGLPI/credit',
+        'requirements'   => [
+            'glpi' => [
+                'min' => PLUGIN_CREDIT_MIN_GLPI,
+                'max' => PLUGIN_CREDIT_MAX_GLPI,
+            ]
+        ]
+    ];
 }

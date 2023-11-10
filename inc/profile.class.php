@@ -31,19 +31,23 @@
 
 class PluginCreditProfile extends Profile
 {
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
         return self::createTabEntry(PluginCreditTicket::getTypeName(Session::getPluralNumber()));
     }
 
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
         $profile = new self();
+        /** @phpstan-ignore-next-line  */
         $profile->showForm($item->getID());
         return true;
     }
 
-    function showForm($ID, $options = []) {
+    public function showForm($ID, $options = [])
+    {
         if (!self::canView()) {
-           return false;
+            return false;
         }
 
         echo "<div class='spaced'>";
@@ -52,8 +56,10 @@ class PluginCreditProfile extends Profile
         echo "<form method='post' action='" . $profile->getFormURL() . "'>";
 
         $rights = [['itemtype'  => PluginCreditTicketConfig::getType(),
-                    'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
-                    'field'     => PluginCreditTicketConfig::$rightname]];
+            'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
+            'field'     => PluginCreditTicketConfig::$rightname
+        ]
+        ];
         $matrix_options['title'] = PluginCreditTicketConfig::getTypeName(Session::getPluralNumber());
         $profile->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -63,5 +69,7 @@ class PluginCreditProfile extends Profile
         echo "</div>\n";
         Html::closeForm();
         echo "</div>";
+
+        return true;
     }
 }
