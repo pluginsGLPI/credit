@@ -44,7 +44,8 @@ define("PLUGIN_CREDIT_MAX_GLPI", "10.0.99");
  */
 function plugin_init_credit()
 {
-    global $PLUGIN_HOOKS, $CFG_GLPI;
+    /** @var array $PLUGIN_HOOKS */
+    global $PLUGIN_HOOKS;
 
     $plugin = new Plugin();
 

@@ -40,6 +40,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $this->data['##credit.name##'] = $this->obj->getField('name');
@@ -116,6 +117,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
 
     public static function install(Migration $migration)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $template     = new NotificationTemplate();
@@ -209,6 +211,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
 
     public static function uninstall()
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $notification = new Notification();

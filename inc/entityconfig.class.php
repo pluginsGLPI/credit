@@ -178,6 +178,7 @@ class PluginCreditEntityConfig extends CommonDBTM
 
     public static function install(Migration $migration)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();

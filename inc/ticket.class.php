@@ -42,7 +42,7 @@ class PluginCreditTicket extends CommonDBTM
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = self::countForItem($item);
         switch ($item->getType()) {
@@ -58,7 +58,7 @@ class PluginCreditTicket extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Ticket':
@@ -84,6 +84,7 @@ class PluginCreditTicket extends CommonDBTM
     */
     public static function getAllForTicket($ID): array
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $request = [
@@ -112,6 +113,7 @@ class PluginCreditTicket extends CommonDBTM
    **/
     public static function getAllForCreditEntity($ID): array
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $request = [
@@ -138,6 +140,7 @@ class PluginCreditTicket extends CommonDBTM
    **/
     public static function getConsumedForCreditEntity($ID)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $tot   = 0;
@@ -166,7 +169,8 @@ class PluginCreditTicket extends CommonDBTM
    **/
     public static function showForTicket(Ticket $ticket)
     {
-        global $DB, $CFG_GLPI;
+        /** @var DBmysql $DB */
+        global $DB;
 
         $ID = $ticket->getField('id');
         if (!$ticket->can($ID, READ)) {
@@ -346,8 +350,6 @@ class PluginCreditTicket extends CommonDBTM
     */
     public static function displayVoucherInTicketProcessingForm($params)
     {
-
-        global $CFG_GLPI;
 
         $item = $params['item'];
 
@@ -706,6 +708,7 @@ class PluginCreditTicket extends CommonDBTM
     */
     public static function install(Migration $migration)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();

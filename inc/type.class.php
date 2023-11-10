@@ -51,6 +51,7 @@ class PluginCreditType extends CommonTreeDropdown
     */
     public static function install(Migration $migration)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();

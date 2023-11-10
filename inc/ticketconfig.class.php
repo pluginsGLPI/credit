@@ -290,6 +290,7 @@ class PluginCreditTicketConfig extends CommonDBTM
 
     public static function install(Migration $migration)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();

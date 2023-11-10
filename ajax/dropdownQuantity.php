@@ -35,7 +35,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-/** @var DBmysql */
+/** @var DBmysql $DB */
 global $DB;
 
 if (isset($_POST["entity"])) {

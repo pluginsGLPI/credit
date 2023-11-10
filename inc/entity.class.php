@@ -42,7 +42,7 @@ class PluginCreditEntity extends CommonDBTM
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = self::countForItem($item);
         switch ($item->getType()) {
@@ -57,7 +57,7 @@ class PluginCreditEntity extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Entity':
@@ -123,6 +123,7 @@ class PluginCreditEntity extends CommonDBTM
     */
     public static function getAllForEntity($ID, $sqlfilter = []): array
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $request = [
@@ -443,6 +444,10 @@ class PluginCreditEntity extends CommonDBTM
 
     public static function cronCreditExpired($task)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI['use_notifications']) {
@@ -521,6 +526,7 @@ class PluginCreditEntity extends CommonDBTM
     */
     public static function install(Migration $migration)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -582,6 +588,7 @@ class PluginCreditEntity extends CommonDBTM
 
     public static function getActiveFilter()
     {
+        /** @var DBmysql $DB */
         global $DB;
         return [
             'glpi_plugin_credit_entities.is_active' => 1,

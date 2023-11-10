@@ -31,12 +31,12 @@
 
 class PluginCreditProfile extends Profile
 {
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return self::createTabEntry(PluginCreditTicket::getTypeName(Session::getPluralNumber()));
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $profile = new self();
         /** @phpstan-ignore-next-line  */

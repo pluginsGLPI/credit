@@ -111,7 +111,7 @@ function plugin_credit_getDropdown()
 
 function plugin_credit_get_datas(NotificationTargetTicket $target)
 {
-
+    /** @var DBmysql $DB */
     global $DB;
 
     $target->data['##lang.credit.voucher##'] = PluginCreditEntity::getTypeName();
