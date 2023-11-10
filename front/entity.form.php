@@ -29,19 +29,13 @@
  * -------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 use Glpi\Event;
 
 include('../../../inc/includes.php');
 
 Session::haveRight("entity", UPDATE);
 
-$Entity              = new Entity();
 $PluginCreditEntity  = new PluginCreditEntity();
-$PluginCreditType    = new PluginCreditType();
 
 if (isset($_POST["add"])) {
     $PluginCreditEntity->check(-1, CREATE, $_POST);

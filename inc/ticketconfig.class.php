@@ -29,10 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
-
 class PluginCreditTicketConfig extends CommonDBTM
 {
     public static $rightname = 'plugin_credit_ticketconfig';
@@ -45,14 +41,14 @@ class PluginCreditTicketConfig extends CommonDBTM
         return _n('Default voucher option', 'Default voucher options', $nb, 'credit');
     }
 
-   /**
-    * Get default credit for ticket and itemtype
-    *
-    * @param int     $ticket_id
-    * @param string  $itemtype
-    *
-    * @return null|int
-    */
+    /**
+     * Get default credit for ticket and itemtype
+     *
+     * @param int     $ticket_id
+     * @param string  $itemtype
+     *
+     * @return null|int
+     */
     public static function getDefaultForTicket($ticket_id, $itemtype)
     {
         $ticket_config = new self();
@@ -85,12 +81,12 @@ class PluginCreditTicketConfig extends CommonDBTM
     }
 
 
-   /**
-    * Show default credit option ticket
-    *
-    * @param Ticket $ticket
-    * @param bool $embed_in_ticket_form
-   **/
+    /**
+     * Show default credit option ticket
+     *
+     * @param Ticket $ticket
+     * @param bool $embed_in_ticket_form
+     */
     public static function showForTicket(Ticket $ticket, bool $embed_in_ticket_form = false)
     {
 
@@ -101,7 +97,7 @@ class PluginCreditTicketConfig extends CommonDBTM
             return;
         }
 
-       //load ticket configuration
+        //load ticket configuration
         $ticket_config = new PluginCreditTicketConfig();
         if (!$ticket->isNewItem()) {
             $ticket_config->getFromDBByCrit(["tickets_id" => $ticket->getID()]);
@@ -216,9 +212,9 @@ class PluginCreditTicketConfig extends CommonDBTM
             $out .= '</div>';
             $out .= '</div>';
 
-           // $out .= '</div>'; // class="accordion-body"
-           // $out .= '</div>'; // class="accordion-collapse"
-           // $out .= '</div>'; // class="accordion-item"
+            // $out .= '</div>'; // class="accordion-body"
+            // $out .= '</div>'; // class="accordion-collapse"
+            // $out .= '</div>'; // class="accordion-item"
         } else {
             $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
             $out .= "<input type='hidden' name='tickets_id' value='{$ticket->getID()}' />";
@@ -300,23 +296,25 @@ class PluginCreditTicketConfig extends CommonDBTM
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
         if (!$DB->tableExists($table)) {
-            $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int {$default_key_sign} NOT NULL auto_increment,
-                     `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `credit_default` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_followups` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_tasks` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_solutions` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     PRIMARY KEY (`id`),
-                     KEY `tickets_id` (`tickets_id`),
-                     KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
-                     KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
-                     KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
-                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+            $query = <<<SQL
+                CREATE TABLE IF NOT EXISTS `$table` (
+                    `id` int {$default_key_sign} NOT NULL auto_increment,
+                    `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `credit_default` tinyint NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id_followups` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id_tasks` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id_solutions` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    PRIMARY KEY (`id`),
+                    KEY `tickets_id` (`tickets_id`),
+                    KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
+                    KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
+                    KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
+                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
             $DB->query($query) or die($DB->error());
         }
 
-       // During 1.10.0 dev phase, fields were named differently and had no keys
+        // During 1.10.0 dev phase, fields were named differently and had no keys
         $migration->changeField($table, 'credit_default_followup', 'plugin_credit_entities_id_followups', "int {$default_key_sign} NOT NULL DEFAULT '0'");
         $migration->changeField($table, 'credit_default_task', 'plugin_credit_entities_id_tasks', "int {$default_key_sign} NOT NULL DEFAULT '0'");
         $migration->changeField($table, 'credit_default_solution', 'plugin_credit_entities_id_solutions', "int {$default_key_sign} NOT NULL DEFAULT '0'");
@@ -332,7 +330,6 @@ class PluginCreditTicketConfig extends CommonDBTM
 
     public static function uninstall(Migration $migration)
     {
-
         $table = self::getTable();
         $migration->dropTable($table);
     }

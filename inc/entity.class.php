@@ -29,10 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
-
 class PluginCreditEntity extends CommonDBTM
 {
     public static $rightname = 'entity';
@@ -67,9 +63,9 @@ class PluginCreditEntity extends CommonDBTM
         return true;
     }
 
-   /**
-    * @param $item    CommonDBTM object
-   **/
+    /**
+     * @param $item    CommonDBTM object
+     */
     public static function countForItem(CommonDBTM $item)
     {
         return countElementsInTable(
@@ -114,13 +110,13 @@ class PluginCreditEntity extends CommonDBTM
         ]);
     }
 
-   /**
-    * Get all credit vouchers for entity.
-    *
-    * @param $ID           integer     entities ID
-    * @param $sqlfilter    array       to add a SQL filter (default [])
-    * @return array of vouchers
-    */
+    /**
+     * Get all credit vouchers for entity.
+     *
+     * @param $ID           integer     entities ID
+     * @param $sqlfilter    array       to add a SQL filter (default [])
+     * @return array of vouchers
+     */
     public static function getAllForEntity($ID, $sqlfilter = []): array
     {
         /** @var DBmysql $DB */
@@ -141,12 +137,12 @@ class PluginCreditEntity extends CommonDBTM
         return $vouchers;
     }
 
-   /**
-    * Show credit vouchers of an entity
-    *
-    * @param $entity object Entity
-    * @param $itemtype string Entity or Ticket
-   **/
+    /**
+     * Show credit vouchers of an entity
+     *
+     * @param $entity object Entity
+     * @param $itemtype string Entity or Ticket
+     */
     public static function showForItemtype(Entity $entity, $itemtype = 'Entity')
     {
         $ID = $entity->getField('id');
@@ -236,7 +232,7 @@ class PluginCreditEntity extends CommonDBTM
                 ];
                 MassiveAction::getAddTransferList($specific_actions);
 
-               // Remove icons
+                // Remove icons
                 $specific_actions = array_map(function ($action) {
                     return strip_tags($action);
                 }, $specific_actions);
@@ -322,9 +318,7 @@ class PluginCreditEntity extends CommonDBTM
                 $out .= "<td class='center'>";
                 $out .= Ajax::createIframeModalWindow(
                     'displaycreditconsumed_' . $data["id"],
-                    Plugin::getWebDir('credit') .
-                                                  "/front/ticket.php?plugcreditentity=" .
-                                                  $data["id"],
+                    Plugin::getWebDir('credit') . "/front/ticket.php?plugcreditentity=" . $data["id"],
                     ['title'         => __('Consumed details', 'credit'),
                         'reloadonclose' => false,
                         'display'       => false
@@ -372,7 +366,6 @@ class PluginCreditEntity extends CommonDBTM
 
     public function rawSearchOptions()
     {
-
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
@@ -519,11 +512,11 @@ class PluginCreditEntity extends CommonDBTM
         return 1;
     }
 
-   /**
-    * Install all necessary tables for the plugin
-    *
-    * @return boolean True if success
-    */
+    /**
+     * Install all necessary tables for the plugin
+     *
+     * @return boolean True if success
+     */
     public static function install(Migration $migration)
     {
         /** @var DBmysql $DB */
@@ -536,47 +529,49 @@ class PluginCreditEntity extends CommonDBTM
         $table = self::getTable();
 
         if (!$DB->tableExists($table)) {
-            $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int {$default_key_sign} NOT NULL auto_increment,
-                     `name` varchar(255) DEFAULT NULL,
-                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `is_recursive` tinyint NOT NULL DEFAULT '0',
-                     `is_active` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_types_id` tinyint {$default_key_sign} NOT NULL DEFAULT '0',
-                     `begin_date` timestamp NULL DEFAULT NULL,
-                     `end_date` timestamp NULL DEFAULT NULL,
-                     `quantity` int NOT NULL DEFAULT '0',
-                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
-                     PRIMARY KEY (`id`),
-                     KEY `name` (`name`),
-                     KEY `entities_id` (`entities_id`),
-                     KEY `is_recursive` (`is_recursive`),
-                     KEY `is_active` (`is_active`),
-                     KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
-                     KEY `begin_date` (`begin_date`),
-                     KEY `end_date` (`end_date`)
-                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+            $query = <<<SQL
+                CREATE TABLE IF NOT EXISTS `$table` (
+                    `id` int {$default_key_sign} NOT NULL auto_increment,
+                    `name` varchar(255) DEFAULT NULL,
+                    `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `is_recursive` tinyint NOT NULL DEFAULT '0',
+                    `is_active` tinyint NOT NULL DEFAULT '0',
+                    `plugin_credit_types_id` tinyint {$default_key_sign} NOT NULL DEFAULT '0',
+                    `begin_date` timestamp NULL DEFAULT NULL,
+                    `end_date` timestamp NULL DEFAULT NULL,
+                    `quantity` int NOT NULL DEFAULT '0',
+                    `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
+                    PRIMARY KEY (`id`),
+                    KEY `name` (`name`),
+                    KEY `entities_id` (`entities_id`),
+                    KEY `is_recursive` (`is_recursive`),
+                    KEY `is_active` (`is_active`),
+                    KEY `plugin_credit_types_id` (`plugin_credit_types_id`),
+                    KEY `begin_date` (`begin_date`),
+                    KEY `end_date` (`end_date`)
+                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
             $DB->query($query) or die($DB->error());
         } else {
-           // 1.5.0
+            // 1.5.0
             $migration->addField($table, 'overconsumption_allowed', 'bool', ['update' => "1"]);
 
-           // 1.9.0
+            // 1.9.0
             $migration->addField($table, 'is_recursive', 'bool');
             $migration->addKey($table, 'is_recursive');
 
-           // 1.10.0
+            // 1.10.0
             $migration->dropField($table, 'is_default'); // Was created during dev phase of 1.10.0, then removed
         }
 
         return true;
     }
 
-   /**
-    * Uninstall previously installed table of the plugin
-    *
-    * @return boolean True if success
-    */
+    /**
+     * Uninstall previously installed table of the plugin
+     *
+     * @return boolean True if success
+     */
     public static function uninstall(Migration $migration)
     {
         $table = self::getTable();
@@ -584,7 +579,6 @@ class PluginCreditEntity extends CommonDBTM
 
         return true;
     }
-
 
     public static function getActiveFilter()
     {

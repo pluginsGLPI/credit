@@ -208,7 +208,6 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
         }
     }
 
-
     public static function uninstall()
     {
         /** @var DBmysql $DB */

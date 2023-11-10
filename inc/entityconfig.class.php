@@ -29,10 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
-
 class PluginCreditEntityConfig extends CommonDBTM
 {
     public static $rightname = 'entity';
@@ -44,7 +40,6 @@ class PluginCreditEntityConfig extends CommonDBTM
 
     public static function showEntityConfigForm($entity_id)
     {
-
         $config = new self();
         $config->getFromDBByCrit(['entities_id' => $entity_id]);
 
@@ -136,17 +131,16 @@ class PluginCreditEntityConfig extends CommonDBTM
         return $out;
     }
 
-   /**
-    * Get default credit for entity and itemtype
-    *
-    * @param int     $entity_id
-    * @param string  $itemtype
-    *
-    * @return null|int
-    */
+    /**
+     * Get default credit for entity and itemtype
+     *
+     * @param int     $entity_id
+     * @param string  $itemtype
+     *
+     * @return null|int
+     */
     public static function getDefaultForEntityAndType($entity_id, $itemtype)
     {
-
         $config = new self();
         $config->getFromDBByCrit(['entities_id' => $entity_id]);
 
@@ -188,25 +182,27 @@ class PluginCreditEntityConfig extends CommonDBTM
         $table = self::getTable();
 
         if (!$DB->tableExists($table)) {
-            $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int {$default_key_sign} NOT NULL auto_increment,
-                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `consume_voucher_for_followups` tinyint NOT NULL DEFAULT '0',
-                     `consume_voucher_for_tasks` tinyint NOT NULL DEFAULT '0',
-                     `consume_voucher_for_solutions` tinyint NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_followups` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_tasks` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id_solutions` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     PRIMARY KEY (`id`),
-                     KEY `entities_id` (`entities_id`),
-                     KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
-                     KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
-                     KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
-                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+            $query = <<<SQL
+                CREATE TABLE IF NOT EXISTS `$table` (
+                    `id` int {$default_key_sign} NOT NULL auto_increment,
+                    `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `consume_voucher_for_followups` tinyint NOT NULL DEFAULT '0',
+                    `consume_voucher_for_tasks` tinyint NOT NULL DEFAULT '0',
+                    `consume_voucher_for_solutions` tinyint NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id_followups` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id_tasks` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id_solutions` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    PRIMARY KEY (`id`),
+                    KEY `entities_id` (`entities_id`),
+                    KEY `plugin_credit_entities_id_followups` (`plugin_credit_entities_id_followups`),
+                    KEY `plugin_credit_entities_id_tasks` (`plugin_credit_entities_id_tasks`),
+                    KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
+                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
             $DB->query($query) or die($DB->error());
         }
 
-       // During 1.10.0 dev phase, entity config were stored in GLPI config table
+        // During 1.10.0 dev phase, entity config were stored in GLPI config table
         $configs = Config::getConfigurationValues('plugin:credit');
         foreach ($configs as $key => $config) {
             $entity_match = [];
@@ -231,7 +227,7 @@ class PluginCreditEntityConfig extends CommonDBTM
             Config::deleteConfigurationValues('plugin:credit', [$key]);
         }
 
-       // During 1.10.0 dev phase, defaults were defined by a boulean on glpi_plugin_credit_entities.
+        // During 1.10.0 dev phase, defaults were defined by a boulean on glpi_plugin_credit_entities.
         $vouchers_table = PluginCreditEntity::getTable();
         if (
             $DB->fieldExists($vouchers_table, 'is_default_followup')
@@ -275,7 +271,6 @@ class PluginCreditEntityConfig extends CommonDBTM
 
     public static function uninstall(Migration $migration)
     {
-
         $table = self::getTable();
         $migration->dropTable($table);
     }

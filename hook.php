@@ -36,16 +36,15 @@
  */
 function plugin_credit_install()
 {
-
     $migration = new Migration(PLUGIN_CREDIT_VERSION);
 
-   // Parse inc directory
+    // Parse inc directory
     foreach (glob(dirname(__FILE__) . '/inc/*') as $filepath) {
-       // Load *.class.php files and get the class name
+        // Load *.class.php files and get the class name
         if (preg_match("/inc.(.+)\.class.php/", $filepath, $matches)) {
             $classname = 'PluginCredit' . ucfirst($matches[1]);
             include_once($filepath);
-           // If the install method exists, load it
+            // If the install method exists, load it
             if (method_exists($classname, 'install')) {
                 $classname::install($migration);
             }
@@ -80,16 +79,15 @@ function plugin_credit_install()
  */
 function plugin_credit_uninstall()
 {
-
     $migration = new Migration(PLUGIN_CREDIT_VERSION);
 
-   // Parse inc directory
+    // Parse inc directory
     foreach (glob(dirname(__FILE__) . '/inc/*') as $filepath) {
-       // Load *.class.php files and get the class name
+        // Load *.class.php files and get the class name
         if (preg_match("/inc.(.+)\.class.php/", $filepath, $matches)) {
             $classname = 'PluginCredit' . ucfirst($matches[1]);
             include_once($filepath);
-           // If the install method exists, load it
+            // If the install method exists, load it
             if (method_exists($classname, 'uninstall')) {
                 $classname::uninstall($migration);
             }
@@ -123,13 +121,15 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
     $ticket->getFromDB($id);
     $entity_id = $ticket->fields['entities_id'];
 
-    $query = "SELECT
-         `glpi_plugin_credit_entities`.`name`,
-         `glpi_plugin_credit_entities`.`quantity`,
-         (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id` AND `glpi_plugin_credit_tickets`.`tickets_id` = {$id}) AS `consumed_on_ticket`,
-         (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id`) AS  `consumed_total`
-      FROM `glpi_plugin_credit_entities`
-      WHERE `is_active`=1 and `entities_id`={$entity_id}";
+    $query = <<<SQL
+        SELECT
+            `glpi_plugin_credit_entities`.`name`,
+            `glpi_plugin_credit_entities`.`quantity`,
+            (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id` AND `glpi_plugin_credit_tickets`.`tickets_id` = {$id}) AS `consumed_on_ticket`,
+            (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id`) AS  `consumed_total`
+        FROM `glpi_plugin_credit_entities`
+        WHERE `is_active`=1 and `entities_id`={$entity_id}
+SQL;
 
     foreach ($DB->request($query) as $credit) {
         $target->data["credit.ticket"][] = [

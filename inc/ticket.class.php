@@ -29,10 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
-
 class PluginCreditTicket extends CommonDBTM
 {
     public static $rightname = 'ticket';
@@ -68,20 +64,20 @@ class PluginCreditTicket extends CommonDBTM
         return true;
     }
 
-   /**
-    * @param $item    CommonDBTM object
-   **/
+    /**
+     * @param $item    CommonDBTM object
+     */
     public static function countForItem(CommonDBTM $item)
     {
         return countElementsInTable(self::getTable(), ['tickets_id' => $item->getID()]);
     }
 
-   /**
-    * Get all credit vouchers for a ticket.
-    *
-    * @param $ID           integer     tickets ID
-    * @return array of vouchers
-    */
+    /**
+     * Get all credit vouchers for a ticket.
+     *
+     * @param $ID           integer     tickets ID
+     * @return array of vouchers
+     */
     public static function getAllForTicket($ID): array
     {
         /** @var DBmysql $DB */
@@ -105,12 +101,12 @@ class PluginCreditTicket extends CommonDBTM
     }
 
 
-   /**
-    * Get all tickets for a credit vouchers.
-    *
-    * @param $ID           integer     plugin_credit_entities_id ID
-    * @return array of vouchers
-   **/
+    /**
+     * Get all tickets for a credit vouchers.
+     *
+     * @param $ID           integer     plugin_credit_entities_id ID
+     * @return array of vouchers
+     */
     public static function getAllForCreditEntity($ID): array
     {
         /** @var DBmysql $DB */
@@ -133,11 +129,11 @@ class PluginCreditTicket extends CommonDBTM
         return $tickets;
     }
 
-   /**
-    * Get consumed tickets for credit entity entry
-    *
-    * @param $ID integer PluginCreditEntity id
-   **/
+    /**
+     * Get consumed tickets for credit entity entry
+     *
+     * @param $ID integer PluginCreditEntity id
+     */
     public static function getConsumedForCreditEntity($ID)
     {
         /** @var DBmysql $DB */
@@ -162,11 +158,11 @@ class PluginCreditTicket extends CommonDBTM
         return $tot;
     }
 
-   /**
-    * Show credit vouchers consumed for a ticket
-    *
-    * @param $ticket Ticket object
-   **/
+    /**
+     * Show credit vouchers consumed for a ticket
+     *
+     * @param $ticket Ticket object
+     */
     public static function showForTicket(Ticket $ticket)
     {
         /** @var DBmysql $DB */
@@ -230,7 +226,6 @@ class PluginCreditTicket extends CommonDBTM
 
             $out .= PluginCreditTicketConfig::showForTicket($ticket);
         }
-
 
         $out .= "<div class='spaced'>";
         $out .= "<table class='tab_cadre_fixe'>";
@@ -341,16 +336,15 @@ class PluginCreditTicket extends CommonDBTM
         PluginCreditEntity::showForItemtype($Entity, 'Ticket');
     }
 
-   /**
-    * Display voucher consumption fields at the end of a ticket processing form.
-    *
-    * @param array $params Array with "item" and "options" keys
-    *
-    * @return void
-    */
+    /**
+     * Display voucher consumption fields at the end of a ticket processing form.
+     *
+     * @param array $params Array with "item" and "options" keys
+     *
+     * @return void
+     */
     public static function displayVoucherInTicketProcessingForm($params)
     {
-
         $item = $params['item'];
 
         if ($item instanceof Ticket) {
@@ -376,18 +370,18 @@ class PluginCreditTicket extends CommonDBTM
             array_key_exists('parent', $params['options'])
             && $params['options']['parent'] instanceof Ticket
         ) {
-           // Ticket can be found in `parent` option for TicketTask.
+            // Ticket can be found in `parent` option for TicketTask.
             $ticket = $params['options']['parent'];
         } else if (
             array_key_exists('item', $params['options'])
             && $params['options']['item'] instanceof Ticket
         ) {
-           // Ticket can be found in `'item'` option for ITILFollowup and ITILSolution.
+            // Ticket can be found in `'item'` option for ITILFollowup and ITILSolution.
             $ticket = $params['options']['item'];
         }
 
-       // No parent of type Ticket found, parent might we might be an another
-       // type of CommonITILObject so we should exit here
+        // No parent of type Ticket found, parent might we might be an another
+        // type of CommonITILObject so we should exit here
         if ($ticket === null) {
             return;
         }
@@ -431,10 +425,10 @@ class PluginCreditTicket extends CommonDBTM
             $out .= "</label>";
             $out .= "</td><td>";
 
-           //get default value for ticket
+            //get default value for ticket
             $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
             if ($default_credit == 0) {
-               //get default value for entity
+                //get default value for entity
                 $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
             }
 
@@ -461,27 +455,26 @@ class PluginCreditTicket extends CommonDBTM
             );
             $out .= "</td><td colspan='2'></td></tr>";
 
-           //trigger change to force load quantity select
+            //trigger change to force load quantity select
             if ($default_credit > 0) {
                 $out .= Html::scriptBlock("
-               $('.timeline-buttons').on('click', function() {
-                  $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
-               });
-            ");
+                    $('.timeline-buttons').on('click', function() {
+                        $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
+                    });
+                ");
             }
         }
 
         echo $out;
     }
 
-   /**
-    * Display the detailled list of tickets on which consumption is declared.
-    *
-    * @param $ID plugin_credit_entities_id
-   **/
+    /**
+     * Display the detailled list of tickets on which consumption is declared.
+     *
+     * @param int $ID plugin_credit_entities_id
+     */
     public static function displayConsumed($ID)
     {
-
         $out = "";
         $out .= "<div class='spaced'>";
         $out .= "<table class='tab_cadre_fixe'>";
@@ -560,30 +553,29 @@ class PluginCreditTicket extends CommonDBTM
         echo $out;
     }
 
-   /**
-    * Test if consumed voucher is selected and add them.
-    *
-    * @param CommonDBTM $item Created item
-    *
-    * @return void
-    */
+    /**
+     * Test if consumed voucher is selected and add them.
+     *
+     * @param CommonDBTM $item Created item
+     *
+     * @return void
+     */
     public static function consumeVoucher(CommonDBTM $item)
     {
-
         if (!is_array($item->input) || !count($item->input)) {
             return;
         }
 
         $ticketId = null;
         if (array_key_exists('tickets_id', $item->fields)) {
-           // Ticket ID can be found in `tickets_id` field for TicketTask.
+            // Ticket ID can be found in `tickets_id` field for TicketTask.
             $ticketId = $item->fields['tickets_id'];
         } else if (
             array_key_exists('itemtype', $item->fields)
                  && array_key_exists('items_id', $item->fields)
                  && 'Ticket' == $item->fields['itemtype']
         ) {
-           // Ticket ID can be found in `items_id` field for ITILFollowup and ITILSolution.
+            // Ticket ID can be found in `items_id` field for ITILFollowup and ITILSolution.
             $ticketId = $item->fields['items_id'];
         }
 
@@ -665,7 +657,6 @@ class PluginCreditTicket extends CommonDBTM
         }
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -701,11 +692,11 @@ class PluginCreditTicket extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * Install all necessary table for the plugin
-    *
-    * @return boolean True if success
-    */
+    /**
+     * Install all necessary table for the plugin
+     *
+     * @return boolean True if success
+     */
     public static function install(Migration $migration)
     {
         /** @var DBmysql $DB */
@@ -718,26 +709,28 @@ class PluginCreditTicket extends CommonDBTM
         $table = self::getTable();
 
         if (!$DB->tableExists($table)) {
-            $query = "CREATE TABLE IF NOT EXISTS `$table` (
-                     `id` int {$default_key_sign} NOT NULL auto_increment,
-                     `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `plugin_credit_entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     `date_creation` timestamp NULL DEFAULT NULL,
-                     `consumed` int NOT NULL DEFAULT '0',
-                     `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-                     PRIMARY KEY (`id`),
-                     KEY `tickets_id` (`tickets_id`),
-                     KEY `plugin_credit_entities_id` (`plugin_credit_entities_id`),
-                     KEY `date_creation` (`date_creation`),
-                     KEY `consumed` (`consumed`),
-                     KEY `users_id` (`users_id`)
-                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+            $query = <<<SQL
+                CREATE TABLE IF NOT EXISTS `$table` (
+                    `id` int {$default_key_sign} NOT NULL auto_increment,
+                    `tickets_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_credit_entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `date_creation` timestamp NULL DEFAULT NULL,
+                    `consumed` int NOT NULL DEFAULT '0',
+                    `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    PRIMARY KEY (`id`),
+                    KEY `tickets_id` (`tickets_id`),
+                    KEY `plugin_credit_entities_id` (`plugin_credit_entities_id`),
+                    KEY `date_creation` (`date_creation`),
+                    KEY `consumed` (`consumed`),
+                    KEY `users_id` (`users_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
             $DB->query($query) or die($DB->error());
         } else {
-           // Fix #1 in 1.0.1 : change tinyint to int for tickets_id
+            // Fix #1 in 1.0.1 : change tinyint to int for tickets_id
             $migration->changeField($table, 'tickets_id', 'tickets_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 
-           // Change tinyint to int
+            // Change tinyint to int
             $migration->changeField(
                 $table,
                 'plugin_credit_entities_id',
@@ -746,21 +739,20 @@ class PluginCreditTicket extends CommonDBTM
             );
             $migration->changeField($table, 'users_id', 'users_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 
-           //execute the whole migration
+            //execute the whole migration
             $migration->executeMigration();
         }
 
         return true;
     }
 
-   /**
-    * Uninstall previously installed table of the plugin
-    *
-    * @return boolean True if success
-    */
+    /**
+     * Uninstall previously installed table of the plugin
+     *
+     * @return boolean True if success
+     */
     public static function uninstall(Migration $migration)
     {
-
         $table = self::getTable();
         $migration->dropTable($table);
 

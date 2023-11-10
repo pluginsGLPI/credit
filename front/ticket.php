@@ -29,10 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
- /** @file
- * @brief
- */
-
 include('../../../inc/includes.php');
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
