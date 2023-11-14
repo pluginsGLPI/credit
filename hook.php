@@ -125,12 +125,29 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
         'SELECT' => [
             'name',
             'quantity',
-            'consumed_on_ticket' => new QueryExpression(
-                "(SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id` AND `glpi_plugin_credit_tickets`.`tickets_id` = {(int)$id}) AS `consumed_on_ticket`"
-            ),
-            'consumed_total' => new QueryExpression(
-                "(SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id`) AS  `consumed_total`"
-            ),
+            'consumed_on_ticket' => new QuerySubQuery([
+                'SELECT' => [
+                    'SUM' => 'consumed AS consumed_on_ticket',
+                ],
+                'FROM' => [
+                    'glpi_plugin_credit_tickets',
+                ],
+                'WHERE' => [
+                    'plugin_credit_entities_id' => new QueryExpression('`glpi_plugin_credit_entities`.`id`'),
+                    'tickets_id' => $id,
+                ],
+            ]),
+            'consumed_total' => new QuerySubQuery([
+                'SELECT' => [
+                    'SUM' => 'consumed AS consumed_total',
+                ],
+                'FROM' => [
+                    'glpi_plugin_credit_tickets',
+                ],
+                'WHERE' => [
+                    'plugin_credit_entities_id' => new QueryExpression('`glpi_plugin_credit_entities`.`id`'),
+                ],
+            ]),
         ],
         'FROM' => [
             'glpi_plugin_credit_entities',
