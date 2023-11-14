@@ -121,17 +121,59 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
     $ticket->getFromDB($id);
     $entity_id = $ticket->fields['entities_id'];
 
-    $query = <<<SQL
-        SELECT
-            `glpi_plugin_credit_entities`.`name`,
-            `glpi_plugin_credit_entities`.`quantity`,
-            (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id` AND `glpi_plugin_credit_tickets`.`tickets_id` = {(int)$id}) AS `consumed_on_ticket`,
-            (SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id`) AS  `consumed_total`
-        FROM `glpi_plugin_credit_entities`
-        WHERE `is_active`=1 and `entities_id`={(int)$entity_id}
-SQL;
+    $it = new \DBmysqlIterator(null);
+    $query = [
+        'SELECT' => [
+            'name',
+            'quantity',
+            'consumed_on_ticket' => new QueryExpression(
+                sprintf(
+                    '(%s)',
+                    $it->buildQuery([
+                        'SELECT' => [
+                            'SUM' => [
+                                'consumed',
+                            ],
+                        ],
+                        'FROM' => [
+                            'glpi_plugin_credit_tickets',
+                        ],
+                        'WHERE' => [
+                            'plugin_credit_entities_id' => 'glpi_plugin_credit_entities.id',
+                            'tickets_id' => $id,
+                        ],
+                    ])
+                )
+            ),
+            'consumed_total' => new QueryExpression(
+                sprintf(
+                    '(%s)',
+                    $it->buildQuery([
+                        'SELECT' => [
+                            'SUM' => [
+                                'consumed',
+                            ],
+                        ],
+                        'FROM' => [
+                            'glpi_plugin_credit_tickets',
+                        ],
+                        'WHERE' => [
+                            'plugin_credit_entities_id' => 'glpi_plugin_credit_entities.id',
+                        ],
+                    ])
+                )
+            ),
+        ],
+        'FROM' => [
+            'glpi_plugin_credit_entities',
+        ],
+        'WHERE' => [
+            'is_active' => 1,
+            'entities_id' => $entity_id,
+        ],
+    ];
 
-    foreach ($DB->query($query) as $credit) {
+    foreach ($DB->request($query) as $credit) {
         $target->data["credit.ticket"][] = [
             '##credit.voucher##' => $credit['name'],
             '##credit.used##'    => (int)$credit['consumed_on_ticket'],
