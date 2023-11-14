@@ -121,7 +121,6 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
     $ticket->getFromDB($id);
     $entity_id = $ticket->fields['entities_id'];
 
-    $it = new \DBmysqlIterator(null);
     $query = [
         'SELECT' => [
             'name',
