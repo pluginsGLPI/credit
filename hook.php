@@ -133,7 +133,7 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
                     'glpi_plugin_credit_tickets',
                 ],
                 'WHERE' => [
-                    'plugin_credit_entities_id' => new QueryExpression('`glpi_plugin_credit_entities`.`id`'),
+                    'plugin_credit_entities_id' => new QueryExpression($DB->quoteName('glpi_plugin_credit_entities.id')),
                     'tickets_id' => $id,
                 ],
             ]),
@@ -145,7 +145,7 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
                     'glpi_plugin_credit_tickets',
                 ],
                 'WHERE' => [
-                    'plugin_credit_entities_id' => new QueryExpression('`glpi_plugin_credit_entities`.`id`'),
+                    'plugin_credit_entities_id' => new QueryExpression($DB->quoteName('glpi_plugin_credit_entities.id')),
                 ],
             ]),
         ],
