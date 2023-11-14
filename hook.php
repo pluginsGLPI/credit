@@ -127,41 +127,10 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
             'name',
             'quantity',
             'consumed_on_ticket' => new QueryExpression(
-                sprintf(
-                    '(%s)',
-                    $it->buildQuery([
-                        'SELECT' => [
-                            'SUM' => [
-                                'consumed',
-                            ],
-                        ],
-                        'FROM' => [
-                            'glpi_plugin_credit_tickets',
-                        ],
-                        'WHERE' => [
-                            'plugin_credit_entities_id' => 'glpi_plugin_credit_entities.id',
-                            'tickets_id' => $id,
-                        ],
-                    ])
-                )
+                "(SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id` AND `glpi_plugin_credit_tickets`.`tickets_id` = {(int)$id}) AS `consumed_on_ticket`"
             ),
             'consumed_total' => new QueryExpression(
-                sprintf(
-                    '(%s)',
-                    $it->buildQuery([
-                        'SELECT' => [
-                            'SUM' => [
-                                'consumed',
-                            ],
-                        ],
-                        'FROM' => [
-                            'glpi_plugin_credit_tickets',
-                        ],
-                        'WHERE' => [
-                            'plugin_credit_entities_id' => 'glpi_plugin_credit_entities.id',
-                        ],
-                    ])
-                )
+                "(SELECT SUM(`glpi_plugin_credit_tickets`.`consumed`) FROM `glpi_plugin_credit_tickets` WHERE `glpi_plugin_credit_tickets`.`plugin_credit_entities_id` = `glpi_plugin_credit_entities`.`id`) AS  `consumed_total`"
             ),
         ],
         'FROM' => [
