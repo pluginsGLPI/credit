@@ -125,7 +125,7 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
         'SELECT' => [
             'name',
             'quantity',
-            'consumed_on_ticket' => new QuerySubQuery([
+            new QuerySubQuery([
                 'SELECT' => [
                     'SUM' => 'consumed AS consumed_on_ticket',
                 ],
@@ -136,8 +136,8 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
                     'plugin_credit_entities_id' => new QueryExpression($DB->quoteName('glpi_plugin_credit_entities.id')),
                     'tickets_id' => $id,
                 ],
-            ]),
-            'consumed_total' => new QuerySubQuery([
+            ], 'consumed_on_ticket'),
+            new QuerySubQuery([
                 'SELECT' => [
                     'SUM' => 'consumed AS consumed_total',
                 ],
@@ -147,7 +147,7 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
                 'WHERE' => [
                     'plugin_credit_entities_id' => new QueryExpression($DB->quoteName('glpi_plugin_credit_entities.id')),
                 ],
-            ]),
+            ], 'consumed_total'),
         ],
         'FROM' => [
             'glpi_plugin_credit_entities',
