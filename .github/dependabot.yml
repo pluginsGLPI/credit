@@ -17,8 +17,7 @@ updates:
     versioning-strategy: "increase"
     groups:
       dev-dependencies:
-        patterns:
-          - "*"
+        dependency-type: "development"
 
   # Strategy for npm dependencies
   - package-ecosystem: "npm"
@@ -26,10 +25,9 @@ updates:
     schedule:
       interval: "monthly"
     allow:
-      - dependency-type: "development"
+      - dependency-type: "direct"
     open-pull-requests-limit: 100
     versioning-strategy: "increase"
     groups:
       dev-dependencies:
-        patterns:
-          - "*"
+        dependency-type: "development"
