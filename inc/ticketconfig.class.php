@@ -112,7 +112,7 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'entity'      => $ticket->getEntityID(),
                 'entity_sons' => true,
                 'display'     => false,
-                'value'       => 0,
+                'value'       => $ticket->input['plugin_credit_entities_id_default'] ?? 0,
                 'condition'   => PluginCreditEntity::getActiveFilter(),
                 'comments'    => false,
                 'rand'        => $rand,
@@ -126,7 +126,8 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'entity'      => $ticket->getEntityID(),
                 'entity_sons' => true,
                 'display'     => false,
-                'value'       => $ticket_config->fields['plugin_credit_entities_id_followups'] ?? 0,
+                'value'       => $ticket->input['plugin_credit_entities_id_followups'] ??
+                                 $ticket_config->fields['plugin_credit_entities_id_followups'] ?? 0,
                 'condition'   => PluginCreditEntity::getActiveFilter(),
                 'comments'    => false,
                 'rand'        => $rand,
@@ -139,7 +140,8 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'entity'      => $ticket->getEntityID(),
                 'entity_sons' => true,
                 'display'     => false,
-                'value'       => $ticket_config->fields['plugin_credit_entities_id_tasks'] ?? 0,
+                'value'       => $ticket->input['plugin_credit_entities_id_tasks'] ??
+                                 $ticket_config->fields['plugin_credit_entities_id_tasks'] ?? 0,
                 'condition'   => PluginCreditEntity::getActiveFilter(),
                 'comments'    => false,
                 'rand'        => $rand,
@@ -152,7 +154,8 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'entity'      => $ticket->getEntityID(),
                 'entity_sons' => true,
                 'display'     => false,
-                'value'       => $ticket_config->fields['plugin_credit_entities_id_solutions'] ?? 0,
+                'value'       => $ticket->input['plugin_credit_entities_id_solutions'] ??
+                                 $ticket_config->fields['plugin_credit_entities_id_solutions'] ?? 0,
                 'condition'   => PluginCreditEntity::getActiveFilter(),
                 'comments'    => false,
                 'rand'        => $rand,
