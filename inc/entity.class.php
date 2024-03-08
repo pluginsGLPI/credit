@@ -591,7 +591,7 @@ class PluginCreditEntity extends CommonDBTM
          $credit = new PluginCreditEntity();
          $credit->getFromDB($credit_data['id']);
 
-         NotificationEvent::raiseEvent('consumed', $credit);
+         NotificationEvent::raiseEvent('fewquantityremaining', $credit);
 
          $input = [
             'type' => Alert::END,
