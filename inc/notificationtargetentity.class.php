@@ -309,7 +309,6 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'items_id' => Notification::ENTITY_ADMINISTRATOR,
                     ]
                 );
-
             }
         }
     }

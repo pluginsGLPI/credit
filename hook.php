@@ -74,10 +74,10 @@ function plugin_credit_install()
         'lowcredits',
         DAY_TIMESTAMP,
         [
-           'comment' => '',
-           'mode' => CronTask::MODE_INTERNAL,
+             'comment' => '',
+             'mode' => CronTask::MODE_INTERNAL,
         ]
-     );
+    );
 
     return true;
 }

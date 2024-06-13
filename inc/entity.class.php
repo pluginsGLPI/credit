@@ -280,7 +280,7 @@ class PluginCreditEntity extends CommonDBTM
             $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
             $header_end .= "<th>" . __('Quantity remaining', 'credit') . "</th>";
             $header_end .= "<th>" . __('Allow overconsumption', 'credit') . "</th>";
-            $header_end .= "<th>" .__('Low credits alert') . "</th>";
+            $header_end .= "<th>" . __('Low credits alert') . "</th>";
             $header_end .= "<th>" . __('Entity') . "</th>";
             $header_end .= "<th>" . __('Child entities') . "</th>";
             $header_end .= "</tr>";
@@ -547,63 +547,63 @@ class PluginCreditEntity extends CommonDBTM
         return 1;
     }
 
-    static function cronLowCredits($task)
-   {
-      global $CFG_GLPI, $DB;
+    public static function cronLowCredits($task)
+    {
+        global $CFG_GLPI, $DB;
 
-      if (!$CFG_GLPI['use_notifications']) {
-         return 0;
-      }
+        if (!$CFG_GLPI['use_notifications']) {
+            return 0;
+        }
 
-      $alert = new Alert();
-      $credits_iterator = $DB->request(
-        [
-           'SELECT' => [
-              'glpi_plugin_credit_entities.*',
-              new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed')
-           ],
-           'FROM' => 'glpi_plugin_credit_entities',
-           'LEFT JOIN' => [
-              'glpi_plugin_credit_tickets' => [
-                 'ON' => [
-                    'glpi_plugin_credit_tickets' => 'plugin_credit_entities_id',
-                    'glpi_plugin_credit_entities' => 'id',
-                 ]
-              ]
-           ],
-           'WHERE' => [
-              'glpi_plugin_credit_entities.is_active' => 1,
-           ],
-           'GROUPBY' => 'glpi_plugin_credit_entities.id',
-           'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
-        ]
-     );
+        $alert = new Alert();
+        $credits_iterator = $DB->request(
+            [
+                'SELECT' => [
+                    'glpi_plugin_credit_entities.*',
+                    new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed')
+                ],
+                'FROM' => 'glpi_plugin_credit_entities',
+                'LEFT JOIN' => [
+                    'glpi_plugin_credit_tickets' => [
+                        'ON' => [
+                            'glpi_plugin_credit_tickets' => 'plugin_credit_entities_id',
+                            'glpi_plugin_credit_entities' => 'id',
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'glpi_plugin_credit_entities.is_active' => 1,
+                ],
+                'GROUPBY' => 'glpi_plugin_credit_entities.id',
+                'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
+            ]
+        );
 
-      foreach ($credits_iterator as $credit_data) {
-         $task->addVolume(1);
-         $task->log(
-            sprintf(
-               'Credit %s has been consumed',
-               $credit_data['name'],
-            )
-         );
+        foreach ($credits_iterator as $credit_data) {
+            $task->addVolume(1);
+            $task->log(
+                sprintf(
+                    'Credit %s has been consumed',
+                    $credit_data['name'],
+                )
+            );
 
-         $credit = new PluginCreditEntity();
-         $credit->getFromDB($credit_data['id']);
+            $credit = new PluginCreditEntity();
+            $credit->getFromDB($credit_data['id']);
 
-         NotificationEvent::raiseEvent('lowcredits', $credit);
+            NotificationEvent::raiseEvent('lowcredits', $credit);
 
-         $input = [
-            'type' => Alert::END,
-            'itemtype' => self::getType(),
-            'items_id' => $credit_data['id'],
-         ];
-         $alert->add($input);
-         unset($alert->fields['id']);
-      }
+            $input = [
+                'type' => Alert::END,
+                'itemtype' => self::getType(),
+                'items_id' => $credit_data['id'],
+            ];
+            $alert->add($input);
+            unset($alert->fields['id']);
+        }
 
-      return 1;
-   }
+        return 1;
+    }
 
     /**
      * Install all necessary tables for the plugin
