@@ -71,7 +71,7 @@ function plugin_credit_install()
 
     CronTask::register(
         'PluginCreditEntity',
-        'fewquantityremaining',
+        'lowcredits',
         DAY_TIMESTAMP,
         [
            'comment' => '',

@@ -35,7 +35,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
     {
         return [
             'expired' => __('Expiration date', 'credit'),
-            'fewquantityremaining' => __('Few quantity remaining', 'credit')
+            'lowcredits' => __('Low credits', 'credit')
         ];
     }
 
@@ -118,8 +118,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
         $lang = [
             'credit.expired'             => __('Credit voucher expiration', 'credit'),
             'credit.expired.information' => __('This credit voucher will expire soon. Please, consider buying a new one.', 'credit'),
-            'credit.fewquantityremaining' => __('Amount of credit remaining close to or at 0', 'credit'),
-            'credit.fewquantityremaining.information' => __('The remaining quantity has reached 0 or almost.', 'credit'),
+            'credit.lowcredits' => __('Amount of credit remaining close to or at 0', 'credit'),
+            'credit.lowcredits.information' => __('The remaining quantity has reached 0 or almost.', 'credit'),
         ];
 
         foreach ($lang as $tag => $label) {
@@ -238,7 +238,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 'FROM' => 'glpi_notificationtemplates',
                 'WHERE' => [
                     'itemtype' => 'PluginCreditEntity',
-                    'name' => 'Few quantity remaining',
+                    'name' => 'Low credits',
                 ]
             ]
         );
@@ -249,7 +249,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
         } else {
             $templates_id_quantity = $template->add(
                 [
-                    'name' => 'Few quantity remaining',
+                    'name' => 'Low credits',
                     'itemtype' => 'PluginCreditEntity',
                     'date_mod' => $_SESSION['glpi_currenttime'],
                     'comment' => '',
@@ -268,25 +268,25 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     [
                         'notificationtemplates_id' => $templates_id_quantity,
                         'language' => '',
-                        'subject' => '##lang.credit.fewquantityremaining## : ##credit.name##',
-                        'content_text' => '##lang.credit.fewquantityremaining.information##',
-                        'content_html' => '##lang.credit.fewquantityremaining.information##',
+                        'subject' => '##lang.credit.lowcredits## : ##credit.name##',
+                        'content_text' => '##lang.credit.lowcredits.information##',
+                        'content_html' => '##lang.credit.lowcredits.information##',
                     ]
                 );
             }
 
             $notifications_count_quantity = countElementsInTable(
                 $notification->getTable(),
-                ['itemtype' => 'PluginCreditEntity', 'event' => 'fewquantityremaining']
+                ['itemtype' => 'PluginCreditEntity', 'event' => 'lowcredits']
             );
 
             if ($notifications_count_quantity == 0) {
                 $notification_id_quantity = $notification->add(
                     [
-                        'name' => 'Few quantity remaining',
+                        'name' => 'Low credits',
                         'entities_id' => 0,
                         'itemtype' => 'PluginCreditEntity',
-                        'event' => 'fewquantityremaining',
+                        'event' => 'lowcredits',
                         'comment' => '',
                         'is_recursive' => 1,
                         'is_active' => 1,
@@ -368,7 +368,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 'FROM' => $notification->getTable(),
                 'WHERE' => [
                     'itemtype' => 'PluginCreditEntity',
-                    'event' => 'fewquantityremaining',
+                    'event' => 'lowcredits',
                 ],
             ]
         );
@@ -382,7 +382,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 'FROM' => $template->getTable(),
                 'WHERE' => [
                     'itemtype' => 'PluginCreditEntity',
-                    'name' => 'Few quantity remaining',
+                    'name' => 'lowcredits',
                 ],
             ]
         );

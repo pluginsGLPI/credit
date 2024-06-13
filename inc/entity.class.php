@@ -210,8 +210,8 @@ class PluginCreditEntity extends CommonDBTM
             $out .= "</tr>";
             $out .= "<tr class='tab_bg_1'>";
             $out .= "<td colspan='3'>";
-            $out .= __('Alert threshold on quantity remaining') . "</td><td>";
-            $out .= Dropdown::showNumber("quantity_alert_rate", ['value'   => -1,
+            $out .= __('Low credit alert threshold') . "</td><td>";
+            $out .= Dropdown::showNumber("low_credit_alert", ['value'   => -1,
                 'min'     => 0,
                 'max'     => 50,
                 'step'    => 10,
@@ -280,7 +280,7 @@ class PluginCreditEntity extends CommonDBTM
             $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
             $header_end .= "<th>" . __('Quantity remaining', 'credit') . "</th>";
             $header_end .= "<th>" . __('Allow overconsumption', 'credit') . "</th>";
-            $header_end .= "<th>" .__('Quantity alert rate') . "</th>";
+            $header_end .= "<th>" .__('Low credits alert') . "</th>";
             $header_end .= "<th>" . __('Entity') . "</th>";
             $header_end .= "<th>" . __('Child entities') . "</th>";
             $header_end .= "</tr>";
@@ -355,7 +355,7 @@ class PluginCreditEntity extends CommonDBTM
                 $out .= "</td>";
 
                 $out .= "<td>";
-                $out .= $data["quantity_alert_rate"] == -1 ? __('Disabled') : $data["quantity_alert_rate"] . '%';
+                $out .= $data["low_credit_alert"] == -1 ? __('Disabled') : $data["low_credit_alert"] . '%';
                 $out .= "</td>";
 
                 $out .= "<td>";
@@ -441,8 +441,8 @@ class PluginCreditEntity extends CommonDBTM
         $tab[] = [
             'id'      => 997,
             'table'   => self::getTable(),
-            'field'   => 'quantity_alert_rate',
-            'name'    => __('Quantity alert rate', 'credit'),
+            'field'   => 'low_credit_alert',
+            'name'    => __('Low credit alert', 'credit'),
             'datatype' => 'number',
             'min'     => 0,
             'max'     => 50,
@@ -462,9 +462,9 @@ class PluginCreditEntity extends CommonDBTM
                     'description' => __('Expiration date', 'credit'),
                     'parameter'   => __('Notice (in days)', 'credit')
                 ];
-            case 'fewquantityremaining':
+            case 'lowcredits':
                 return [
-                    'description' => __('Few quantity remaining', 'credit'),
+                    'description' => __('Low credits', 'credit'),
                 ];
         }
         return [];
@@ -547,7 +547,7 @@ class PluginCreditEntity extends CommonDBTM
         return 1;
     }
 
-    static function cronFewQuantityRemaining($task)
+    static function cronLowCredits($task)
    {
       global $CFG_GLPI, $DB;
 
@@ -575,7 +575,7 @@ class PluginCreditEntity extends CommonDBTM
               'glpi_plugin_credit_entities.is_active' => 1,
            ],
            'GROUPBY' => 'glpi_plugin_credit_entities.id',
-           'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.quantity_alert_rate) / 100')
+           'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
         ]
      );
 
@@ -591,7 +591,7 @@ class PluginCreditEntity extends CommonDBTM
          $credit = new PluginCreditEntity();
          $credit->getFromDB($credit_data['id']);
 
-         NotificationEvent::raiseEvent('fewquantityremaining', $credit);
+         NotificationEvent::raiseEvent('lowcredits', $credit);
 
          $input = [
             'type' => Alert::END,
@@ -634,7 +634,7 @@ class PluginCreditEntity extends CommonDBTM
                     `end_date` timestamp NULL DEFAULT NULL,
                     `quantity` int NOT NULL DEFAULT '0',
                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
-                    `quantity_alert_rate` int DEFAULT NULL,
+                    `low_credit_alert` int DEFAULT NULL,
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`),
                     KEY `entities_id` (`entities_id`),
