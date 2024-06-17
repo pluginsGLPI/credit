@@ -656,6 +656,9 @@ SQL;
 
             // 1.10.0
             $migration->dropField($table, 'is_default'); // Was created during dev phase of 1.10.0, then removed
+
+            // 1.13.2
+            $migration->addField($table, 'low_credit_alert', 'int', ['update' => "NULL"]);
         }
 
         return true;
