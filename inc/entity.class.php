@@ -559,8 +559,8 @@ class PluginCreditEntity extends CommonDBTM
         $credits_iterator = $DB->request(
             [
                 'SELECT' => [
-                    'glpi_plugin_credit_entities.*',
-                    new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed')
+                    'glpi_plugin_credit_entities.id',
+                    'glpi_plugin_credit_entities.name',
                 ],
                 'FROM' => 'glpi_plugin_credit_entities',
                 'LEFT JOIN' => [
