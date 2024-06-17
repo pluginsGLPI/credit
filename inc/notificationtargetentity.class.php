@@ -386,6 +386,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
             ]
         );
         foreach ($templates_iterator_quantity as $template_data_quantity) {
+            $translation = new NotificationTemplateTranslation();
             $translations_iterator_quantity = $DB->request(
                 [
                     'SELECT' => 'id',
@@ -396,6 +397,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 ]
             );
             foreach ($translations_iterator_quantity as $translation_data_quantity) {
+                $translation = new NotificationTemplateTranslation();
                 $translation->delete($translation_data_quantity);
             }
 
