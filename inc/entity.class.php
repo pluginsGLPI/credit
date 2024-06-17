@@ -549,6 +549,10 @@ class PluginCreditEntity extends CommonDBTM
 
     public static function cronLowCredits($task)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI['use_notifications']) {
