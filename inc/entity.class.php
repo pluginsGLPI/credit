@@ -587,7 +587,7 @@ class PluginCreditEntity extends CommonDBTM
             $task->addVolume(1);
             $task->log(
                 sprintf(
-                    'Credit %s has been consumed',
+                    'Low credit for %s',
                     $credit_data['name'],
                 )
             );
