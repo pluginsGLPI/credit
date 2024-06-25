@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Add credit consumed notification (#131)
+- Add low credit notification (#131)
 
 ## [1.13.2] - 2024-02-20
 
