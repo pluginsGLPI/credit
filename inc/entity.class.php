@@ -562,26 +562,29 @@ class PluginCreditEntity extends CommonDBTM
         $alert = new Alert();
         $credits_iterator = $DB->request(
             [
-                'SELECT' => [
-                    'glpi_plugin_credit_entities.id',
-                    'glpi_plugin_credit_entities.name',
-                ],
-                'FROM' => 'glpi_plugin_credit_entities',
-                'LEFT JOIN' => [
-                    'glpi_plugin_credit_tickets' => [
-                        'ON' => [
-                            'glpi_plugin_credit_tickets' => 'plugin_credit_entities_id',
-                            'glpi_plugin_credit_entities' => 'id',
-                        ]
+            'SELECT' => [
+                'glpi_plugin_credit_entities.id',
+                'glpi_plugin_credit_entities.name',
+                'glpi_plugin_credit_entities.quantity',
+                'glpi_plugin_credit_entities.low_credit_alert',
+                new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed')
+            ],
+            'FROM' => 'glpi_plugin_credit_entities',
+            'LEFT JOIN' => [
+                'glpi_plugin_credit_tickets' => [
+                    'ON' => [
+                        'glpi_plugin_credit_tickets' => 'plugin_credit_entities_id',
+                        'glpi_plugin_credit_entities' => 'id',
                     ]
-                ],
-                'WHERE' => [
-                    'glpi_plugin_credit_entities.is_active' => 1,
-                ],
-                'GROUPBY' => 'glpi_plugin_credit_entities.id',
-                'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
-            ]
-        );
+                ]
+            ],
+            'WHERE' => [
+                'glpi_plugin_credit_entities.is_active' => 1,
+            ],
+            'GROUPBY' => 'glpi_plugin_credit_entities.id',
+            'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
+        ]
+    );
 
         foreach ($credits_iterator as $credit_data) {
             $task->addVolume(1);
