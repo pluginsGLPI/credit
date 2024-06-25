@@ -69,6 +69,16 @@ function plugin_credit_install()
         ]
     );
 
+    CronTask::register(
+        'PluginCreditEntity',
+        'lowcredits',
+        DAY_TIMESTAMP,
+        [
+            'comment' => '',
+            'mode' => CronTask::MODE_INTERNAL,
+        ]
+    );
+
     return true;
 }
 

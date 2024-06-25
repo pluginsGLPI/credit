@@ -209,6 +209,19 @@ class PluginCreditEntity extends CommonDBTM
             $out .= "</td>";
             $out .= "</tr>";
             $out .= "<tr class='tab_bg_1'>";
+            $out .= "<td colspan='3'>";
+            $out .= __('Low credit alert threshold') . "</td><td>";
+            $out .= Dropdown::showNumber("low_credit_alert", ['value'   => -1,
+                'min'     => 0,
+                'max'     => 50,
+                'step'    => 10,
+                'toadd'   => [-1 => __('Disabled')],
+                'display' => false,
+                'unit'    => '%'
+            ]);
+            $out .= "</td>";
+            $out .= "</tr>";
+            $out .= "<tr class='tab_bg_1'>";
             $out .= "<td class='tab_bg_2 center' colspan='8'>";
             $out .= "<input type='submit' name='add' value='" . _sx('button', 'Add') . "' class='submit'>";
             $out .= "</td>";
@@ -267,6 +280,7 @@ class PluginCreditEntity extends CommonDBTM
             $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
             $header_end .= "<th>" . __('Quantity remaining', 'credit') . "</th>";
             $header_end .= "<th>" . __('Allow overconsumption', 'credit') . "</th>";
+            $header_end .= "<th>" . __('Low credits alert') . "</th>";
             $header_end .= "<th>" . __('Entity') . "</th>";
             $header_end .= "<th>" . __('Child entities') . "</th>";
             $header_end .= "</tr>";
@@ -338,6 +352,10 @@ class PluginCreditEntity extends CommonDBTM
 
                 $out .= "</td><td>";
                 $out .= ($data["overconsumption_allowed"]) ? __('Yes') : __('No');
+                $out .= "</td>";
+
+                $out .= "<td>";
+                $out .= $data["low_credit_alert"] == -1 ? __('Disabled') : $data["low_credit_alert"] . '%';
                 $out .= "</td>";
 
                 $out .= "<td>";
@@ -420,6 +438,19 @@ class PluginCreditEntity extends CommonDBTM
             'datatype' => 'bool',
         ];
 
+        $tab[] = [
+            'id'      => 997,
+            'table'   => self::getTable(),
+            'field'   => 'low_credit_alert',
+            'name'    => __('Low credit alert', 'credit'),
+            'datatype' => 'number',
+            'min'     => 0,
+            'max'     => 50,
+            'step'    => 10,
+            'toadd'   => [-1 => __('Disabled')],
+            'unit'    => '%'
+        ];
+
         return $tab;
     }
 
@@ -430,6 +461,10 @@ class PluginCreditEntity extends CommonDBTM
                 return [
                     'description' => __('Expiration date', 'credit'),
                     'parameter'   => __('Notice (in days)', 'credit')
+                ];
+            case 'lowcredits':
+                return [
+                    'description' => __('Low credits', 'credit'),
                 ];
         }
         return [];
@@ -512,6 +547,68 @@ class PluginCreditEntity extends CommonDBTM
         return 1;
     }
 
+    public static function cronLowCredits($task)
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        if (!$CFG_GLPI['use_notifications']) {
+            return 0;
+        }
+
+        $alert = new Alert();
+        $credits_iterator = $DB->request(
+            [
+                'SELECT' => [
+                    'glpi_plugin_credit_entities.id',
+                    'glpi_plugin_credit_entities.name',
+                ],
+                'FROM' => 'glpi_plugin_credit_entities',
+                'LEFT JOIN' => [
+                    'glpi_plugin_credit_tickets' => [
+                        'ON' => [
+                            'glpi_plugin_credit_tickets' => 'plugin_credit_entities_id',
+                            'glpi_plugin_credit_entities' => 'id',
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'glpi_plugin_credit_entities.is_active' => 1,
+                ],
+                'GROUPBY' => 'glpi_plugin_credit_entities.id',
+                'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
+            ]
+        );
+
+        foreach ($credits_iterator as $credit_data) {
+            $task->addVolume(1);
+            $task->log(
+                sprintf(
+                    'Low credit for %s',
+                    $credit_data['name'],
+                )
+            );
+
+            $credit = new PluginCreditEntity();
+            $credit->getFromDB($credit_data['id']);
+
+            NotificationEvent::raiseEvent('lowcredits', $credit);
+
+            $input = [
+                'type' => Alert::END,
+                'itemtype' => self::getType(),
+                'items_id' => $credit_data['id'],
+            ];
+            $alert->add($input);
+            unset($alert->fields['id']);
+        }
+
+        return 1;
+    }
+
     /**
      * Install all necessary tables for the plugin
      *
@@ -541,6 +638,7 @@ class PluginCreditEntity extends CommonDBTM
                     `end_date` timestamp NULL DEFAULT NULL,
                     `quantity` int NOT NULL DEFAULT '0',
                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
+                    `low_credit_alert` int DEFAULT NULL,
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`),
                     KEY `entities_id` (`entities_id`),
@@ -562,6 +660,9 @@ SQL;
 
             // 1.10.0
             $migration->dropField($table, 'is_default'); // Was created during dev phase of 1.10.0, then removed
+
+            // 1.13.2
+            $migration->addField($table, 'low_credit_alert', 'int', ['update' => "NULL"]);
         }
 
         return true;

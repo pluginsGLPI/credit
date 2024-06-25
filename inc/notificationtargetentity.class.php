@@ -34,7 +34,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
     public function getEvents()
     {
         return [
-            'expired' => __('Expiration date', 'credit')
+            'expired' => __('Expiration date', 'credit'),
+            'lowcredits' => __('Low credits', 'credit')
         ];
     }
 
@@ -116,7 +117,9 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
 
         $lang = [
             'credit.expired'             => __('Credit voucher expiration', 'credit'),
-            'credit.expired.information' => __('This credit voucher will expire soon. Please, consider buying a new one.', 'credit')
+            'credit.expired.information' => __('This credit voucher will expire soon. Please, consider buying a new one.', 'credit'),
+            'credit.lowcredits' => __('Amount of credit remaining close to or at 0', 'credit'),
+            'credit.lowcredits.information' => __('The remaining quantity has reached 0 or almost.', 'credit'),
         ];
 
         foreach ($lang as $tag => $label) {
@@ -227,6 +230,87 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                  );
             }
         }
+
+        $templates_id_quantity = false;
+        $result_quantity = $DB->request(
+            [
+                'SELECT' => 'id',
+                'FROM' => 'glpi_notificationtemplates',
+                'WHERE' => [
+                    'itemtype' => 'PluginCreditEntity',
+                    'name' => 'Low credits',
+                ]
+            ]
+        );
+
+        if (count($result_quantity) > 0) {
+            $data_quantity = $result_quantity->current();
+            $templates_id_quantity = $data_quantity['id'];
+        } else {
+            $templates_id_quantity = $template->add(
+                [
+                    'name' => 'Low credits',
+                    'itemtype' => 'PluginCreditEntity',
+                    'date_mod' => $_SESSION['glpi_currenttime'],
+                    'comment' => '',
+                    'css' => '',
+                ]
+            );
+        }
+
+        if ($templates_id_quantity) {
+            $translation_count_quantity = countElementsInTable(
+                $translation->getTable(),
+                ['notificationtemplates_id' => $templates_id_quantity]
+            );
+            if ($translation_count_quantity == 0) {
+                $translation->add(
+                    [
+                        'notificationtemplates_id' => $templates_id_quantity,
+                        'language' => '',
+                        'subject' => '##lang.credit.lowcredits## : ##credit.name##',
+                        'content_text' => '##lang.credit.lowcredits.information##',
+                        'content_html' => '##lang.credit.lowcredits.information##',
+                    ]
+                );
+            }
+
+            $notifications_count_quantity = countElementsInTable(
+                $notification->getTable(),
+                ['itemtype' => 'PluginCreditEntity', 'event' => 'lowcredits']
+            );
+
+            if ($notifications_count_quantity == 0) {
+                $notification_id_quantity = $notification->add(
+                    [
+                        'name' => 'Low credits',
+                        'entities_id' => 0,
+                        'itemtype' => 'PluginCreditEntity',
+                        'event' => 'lowcredits',
+                        'comment' => '',
+                        'is_recursive' => 1,
+                        'is_active' => 1,
+                        'date_mod' => $_SESSION['glpi_currenttime'],
+                    ]
+                );
+
+                $n_n_template->add(
+                    [
+                        'notifications_id' => $notification_id_quantity,
+                        'mode' => Notification_NotificationTemplate::MODE_MAIL,
+                        'notificationtemplates_id' => $templates_id_quantity,
+                    ]
+                );
+
+                $target->add(
+                    [
+                        'notifications_id' => $notification_id_quantity,
+                        'type' => Notification::USER_TYPE,
+                        'items_id' => Notification::ENTITY_ADMINISTRATOR,
+                    ]
+                );
+            }
+        }
     }
 
     public static function uninstall()
@@ -275,6 +359,49 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
             }
 
             $template->delete($template_data);
+        }
+
+        $notifications_iterator_quantity = $DB->request(
+            [
+                'SELECT' => 'id',
+                'FROM' => $notification->getTable(),
+                'WHERE' => [
+                    'itemtype' => 'PluginCreditEntity',
+                    'event' => 'lowcredits',
+                ],
+            ]
+        );
+        foreach ($notifications_iterator_quantity as $notification_data_quantity) {
+            $notification->delete($notification_data_quantity);
+        }
+
+        $templates_iterator_quantity = $DB->request(
+            [
+                'SELECT' => 'id',
+                'FROM' => $template->getTable(),
+                'WHERE' => [
+                    'itemtype' => 'PluginCreditEntity',
+                    'name' => 'lowcredits',
+                ],
+            ]
+        );
+        foreach ($templates_iterator_quantity as $template_data_quantity) {
+            $translation = new NotificationTemplateTranslation();
+            $translations_iterator_quantity = $DB->request(
+                [
+                    'SELECT' => 'id',
+                    'FROM' => $translation->getTable(),
+                    'WHERE' => [
+                        'notificationtemplates_id' => $template_data_quantity['id'],
+                    ],
+                ]
+            );
+            foreach ($translations_iterator_quantity as $translation_data_quantity) {
+                $translation = new NotificationTemplateTranslation();
+                $translation->delete($translation_data_quantity);
+            }
+
+            $template->delete($template_data_quantity);
         }
     }
 }
