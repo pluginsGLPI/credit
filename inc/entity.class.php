@@ -565,6 +565,9 @@ class PluginCreditEntity extends CommonDBTM
                 'SELECT' => [
                     'glpi_plugin_credit_entities.id',
                     'glpi_plugin_credit_entities.name',
+                    'glpi_plugin_credit_entities.quantity',
+                    'glpi_plugin_credit_entities.low_credit_alert',
+                    new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed')
                 ],
                 'FROM' => 'glpi_plugin_credit_entities',
                 'LEFT JOIN' => [
