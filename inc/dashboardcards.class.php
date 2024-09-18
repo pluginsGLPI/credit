@@ -115,6 +115,7 @@ class PluginCreditDashboardCards extends CommonDBTM
      */
     public static function nbCredits(array $params = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $active_entity = Session::getActiveEntity();
@@ -169,6 +170,7 @@ class PluginCreditDashboardCards extends CommonDBTM
      */
     public static function getDateEndingCredit(array $params = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $active_entity = Session::getActiveEntity();
@@ -356,6 +358,7 @@ class PluginCreditDashboardCards extends CommonDBTM
      */
     public static function getCreditsConsumption(array $params = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $active_entity = Session::getActiveEntity();
@@ -442,6 +445,7 @@ class PluginCreditDashboardCards extends CommonDBTM
      */
     public static function getCreditsEvolution(array $params = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $active_entity = Session::getActiveEntity();
@@ -540,6 +544,7 @@ class PluginCreditDashboardCards extends CommonDBTM
 
     public static function getCredits(array $params = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $active_entity = Session::getActiveEntity();
