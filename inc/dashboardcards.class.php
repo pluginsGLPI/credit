@@ -601,7 +601,7 @@ class PluginCreditDashboardCards extends CommonDBTM
         ];
     }
 
-    static function getIconWallet(): string
+    private static function getIconWallet(): string
     {
         return "fas fa-wallet";
     }
