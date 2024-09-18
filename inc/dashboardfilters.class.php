@@ -3,10 +3,8 @@
 use Glpi\Dashboard\Filters\AbstractFilter;
 use PluginCreditEntity;
 
-
 class PluginCreditDashboardFilters extends AbstractFilter
 {
-
     const FIELD = "id";
 
     public static function getName(): string
@@ -68,6 +66,4 @@ class PluginCreditDashboardFilters extends AbstractFilter
 
         return [];
     }
-
-   
 }

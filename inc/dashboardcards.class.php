@@ -123,7 +123,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => self::getIconWallet(),
             'apply_filters' => [],
-            'alt' =>'initial quantity of credit'
+            'alt' => 'initial quantity of credit'
         ];
         $params = array_merge($default_params, $params);
 
@@ -140,14 +140,13 @@ class PluginCreditDashboardCards extends CommonDBTM
                 ]
 
             ],
-
             Provider::getFiltersCriteria($t_table, $params['apply_filters'])
         );
 
-        $nb_items=0;
+        $nb_items = 0;
         foreach ($DB->request($criteria) as $id => $row) {
-            $nb_items+=$row['quantity'];
-         }
+            $nb_items += $row['quantity'];
+        }
 
         return [
             'number' => $nb_items,
@@ -179,7 +178,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => self::getIconWallet(),
             'apply_filters' => [],
-            'alt' =>'End date of the contract',
+            'alt' => 'End date of the contract',
         ];
         $params = array_merge($default_params, $params);
 
@@ -203,7 +202,7 @@ class PluginCreditDashboardCards extends CommonDBTM
 
         $result = $iterator->current();
 
-        if(isset($result['end_date'])){
+        if (isset($result['end_date'])) {
             $date = date_create($result['end_date']);
             $date = date_format($date, 'm/y');
             return [
@@ -213,9 +212,7 @@ class PluginCreditDashboardCards extends CommonDBTM
                 'icon' => $default_params['icon'],
                 'alt' => $default_params['alt']
             ];
-
-        }else{
-
+        } else {
             return [
                 'number' => 0,
                 'url' => '',
@@ -224,8 +221,6 @@ class PluginCreditDashboardCards extends CommonDBTM
                 'alt' => $default_params['alt']
             ];
         }
-
-        
     }
 
     /**
@@ -243,7 +238,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => self::getIconWallet(),
             'apply_filters' => [],
-            'alt' =>'Quantity of credit used',
+            'alt' => 'Quantity of credit used',
         ];
         $params = array_merge($default_params, $params);
 
@@ -273,7 +268,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => self::getIconWallet(),
             'apply_filters' => [],
-            'alt' =>'Quantity of credit remaining',
+            'alt' => 'Quantity of credit remaining',
         ];
         $params = array_merge($default_params, $params);
 
@@ -302,16 +297,16 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => self::getIconWallet(),
             'apply_filters' => [],
-            'alt' =>'Proportion of credit used',
+            'alt' => 'Proportion of credit used',
         ];
         $params = array_merge($default_params, $params);
 
         $tab = self::getCredits($params);
 
-        $result = $tab['quantity']!=0 ? (($tab['sum']) / $tab['quantity']) * 100 : 0;
+        $result = $tab['quantity'] != 0 ? (($tab['sum']) / $tab['quantity']) * 100 : 0;
 
         return [
-            'number' => round($result,0,PHP_ROUND_HALF_DOWN) . '%',
+            'number' => round($result, 0, PHP_ROUND_HALF_DOWN) . '%',
             'url' => '',
             'label' => 'Proportion of credit used',
             'icon' => $default_params['icon'],
@@ -329,20 +324,20 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => self::getIconWallet(),
             'apply_filters' => [],
-            'alt' =>'Proportion of credits remaining',
+            'alt' => 'Proportion of credits remaining',
         ];
         $params = array_merge($default_params, $params);
 
         $tab = self::getCredits($params);
 
-        $result = $tab['quantity']!=0 ? (($tab['quantity'] - $tab['sum']) / $tab['quantity']) * 100 : 0;
+        $result = $tab['quantity'] != 0 ? (($tab['quantity'] - $tab['sum']) / $tab['quantity']) * 100 : 0;
 
         $result = $result < 0 ? 0 : $result;
 
-        
+
 
         return [
-            'number' => round($result,0,PHP_ROUND_HALF_DOWN) . '%',
+            'number' => round($result, 0, PHP_ROUND_HALF_DOWN) . '%',
             'url' => '',
             'label' => 'Proportion of credits remaining',
             'icon' => $default_params['icon'],
@@ -370,7 +365,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => "",
             'apply_filters' => [],
-            'alt' =>'Quantity of credit consumed',
+            'alt' => 'Quantity of credit consumed',
         ];
         $params = array_merge($default_params, $params);
 
@@ -381,8 +376,9 @@ class PluginCreditDashboardCards extends CommonDBTM
             [
                 'SELECT' => [
                     new QueryExpression(
-                    "SUM(IFNULL({$s_table}.consumed, 0))
-                    as consumed"),
+                        "SUM(IFNULL({$s_table}.consumed, 0))
+                    as consumed"
+                    ),
                     "$s_table.tickets_id"
                 ],
                 'FROM' => $t_table,
@@ -397,11 +393,11 @@ class PluginCreditDashboardCards extends CommonDBTM
                 'WHERE' => [
                     "$t_table.entities_id" => $active_entity
                 ],
-                'GROUP'=> [
+                'GROUP' => [
                     "$s_table.tickets_id"
                 ]
-            ], Provider::getFiltersCriteria($t_table, $params['apply_filters'])
-
+            ],
+            Provider::getFiltersCriteria($t_table, $params['apply_filters'])
         );
 
         $series = [];
@@ -411,11 +407,10 @@ class PluginCreditDashboardCards extends CommonDBTM
 
         foreach ($DB->request($criteria) as $id => $row) {
             $tab += [$row['tickets_id'] => $row['consumed']];
-         }
-         
+        }
+
 
         foreach ($tab as $ticket => $value) {
-
             $tickets[$i] = 'Ticket n°' . $ticket;
             $series['credit']['name'] = 'Crédit';
             $series['credit']['data'][$i] = [
@@ -455,7 +450,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             'label' => "",
             'icon' => "",
             'apply_filters' => [],
-            'alt' =>'Evolution of credit consumption',
+            'alt' => 'Evolution of credit consumption',
         ];
 
         $params = array_merge($default_params, $params);
@@ -470,7 +465,7 @@ class PluginCreditDashboardCards extends CommonDBTM
                 ),
                 new QueryExpression(
                     "SUM(IFNULL({$t_table}.consumed, 0))
-                    as ". $DB->quoteValue(_x('status', 'consumed'))
+                    as " . $DB->quoteValue(_x('status', 'consumed'))
                 ),
             ],
             'FROM'  => $t_table,
@@ -487,7 +482,7 @@ class PluginCreditDashboardCards extends CommonDBTM
             ],
             'ORDER' => 'period ASC',
             'GROUP' => ['period'],
-        ],Provider::getFiltersCriteria($e_table, $params['apply_filters']));
+        ], Provider::getFiltersCriteria($e_table, $params['apply_filters']));
 
         $monthYears = [];
         $series = [];
@@ -496,15 +491,12 @@ class PluginCreditDashboardCards extends CommonDBTM
         $iterator = $DB->request($criteria);
 
         foreach ($iterator as $result) {
-
             $monthYears[] = $result['period'];
             $tmp = $result;
 
             unset($tmp['period']);
 
             foreach ($tmp as $value) {
-
-
                 $series['parmois']['name'] = "Consumption per month";
                 $series['parmois']['data'][] = [
                     'value' => (int)$value,
@@ -512,14 +504,12 @@ class PluginCreditDashboardCards extends CommonDBTM
                 ];
 
                 $series['total']['name'] = "Total consumption";
-                if ($i > 0)
-                {
+                if ($i > 0) {
                     $series['total']['data'][] = [
-                        'value' => (int)$value + $series['total']['data'][$i-1]['value'],
+                        'value' => (int)$value + $series['total']['data'][$i - 1]['value'],
                         'url' => '',
                     ];
-                }
-                else {
+                } else {
                     $series['total']['data'][] = [
                         'value' => (int)$value,
                         'url' => '',
@@ -530,11 +520,11 @@ class PluginCreditDashboardCards extends CommonDBTM
         }
 
         array_unshift($monthYears, '');
-        if (isset($series['total']['data'])){
+        if (isset($series['total']['data'])) {
             array_unshift($series['total']['data'], ['value' => 0, 'url' => '']);
             array_unshift($series['parmois']['data'], ['value' => 0, 'url' => '']);
         }
-        
+
         return [
             'data'  => [
                 'labels' => $monthYears,
@@ -569,7 +559,6 @@ class PluginCreditDashboardCards extends CommonDBTM
                 ]
 
             ],
-
             Provider::getFiltersCriteria($t_table, $params['apply_filters'])
         );
 
@@ -578,7 +567,7 @@ class PluginCreditDashboardCards extends CommonDBTM
 
         foreach ($DB->request($criteria_quantity) as $id => $row) {
             $result_quantity += $row['quantity'];
-         }
+        }
 
         $criteria_sum = array_merge_recursive(
             [
@@ -601,10 +590,10 @@ class PluginCreditDashboardCards extends CommonDBTM
             Provider::getFiltersCriteria($t_table, $params['apply_filters'])
         );
 
-        $result_sum=0;
+        $result_sum = 0;
         foreach ($DB->request($criteria_sum) as $id => $row) {
             $result_sum += $row['sum'];
-         }
+        }
 
         return [
             'quantity' => $result_quantity,
