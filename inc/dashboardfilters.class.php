@@ -30,11 +30,10 @@
  */
 
 use Glpi\Dashboard\Filters\AbstractFilter;
-use PluginCreditEntity;
 
 class PluginCreditDashboardFilters extends AbstractFilter
 {
-    const FIELD = "id";
+    const FIELD = "plugin_credit_types_id";
 
     public static function getName(): string
     {

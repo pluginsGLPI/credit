@@ -29,12 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-use CommonDBTM;
-use PluginCreditEntity;
-use PluginCreditTicket;
-use QueryExpression;
-use Ticket;
-use Session;
 use Glpi\Dashboard\Provider;
 
 class PluginCreditDashboardCards extends CommonDBTM
