@@ -724,7 +724,7 @@ class PluginCreditTicket extends CommonDBTM
                     KEY `users_id` (`users_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             // Fix #1 in 1.0.1 : change tinyint to int for tickets_id
             $migration->changeField($table, 'tickets_id', 'tickets_id', "int {$default_key_sign} NOT NULL DEFAULT 0");

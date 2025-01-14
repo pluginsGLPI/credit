@@ -653,7 +653,7 @@ class PluginCreditEntity extends CommonDBTM
                     KEY `end_date` (`end_date`)
                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             // 1.5.0
             $migration->addField($table, 'overconsumption_allowed', 'bool', ['update' => "1"]);
