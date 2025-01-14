@@ -40,7 +40,11 @@ class PluginCreditEntity extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = self::countForItem($item);
+        if ($item instanceof CommonDBTM) {
+            $nb = self::countForItem($item);
+        } else {
+            $nb = 0;
+        }
         switch ($item->getType()) {
             case 'Entity':
                 if ($_SESSION['glpishow_count_on_tabs']) {
@@ -50,15 +54,12 @@ class PluginCreditEntity extends CommonDBTM
             default:
                 return self::getTypeName($nb);
         }
-        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'Entity':
-                self::showForItemtype($item);
-                break;
+        if ($item instanceof Entity) {
+            self::showForItemtype($item);
         }
         return true;
     }
@@ -90,7 +91,7 @@ class PluginCreditEntity extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (isset($input['name']) && strlen($input['name']) == '') {
+        if (isset($input['name']) && strlen($input['name']) === 0) {
             Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
