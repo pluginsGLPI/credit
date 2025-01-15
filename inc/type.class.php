@@ -80,7 +80,7 @@ class PluginCreditType extends CommonTreeDropdown
                     KEY `date_creation` (`date_creation`)
                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
 
         return true;

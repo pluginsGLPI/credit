@@ -40,26 +40,26 @@ class PluginCreditTicket extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = self::countForItem($item);
-        switch ($item->getType()) {
-            case 'Ticket':
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(self::getTypeName($nb), $nb);
-                } else {
-                    return self::getTypeName($nb);
-                }
-            default:
-                return self::getTypeName($nb);
+        if ($item instanceof CommonDBTM) {
+            $nb = self::countForItem($item);
+        } else {
+            $nb = 0;
         }
-        return '';
+        if ($item instanceof Ticket) {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                return self::createTabEntry(self::getTypeName($nb), $nb);
+            } else {
+                return self::getTypeName($nb);
+            }
+        } else {
+            return self::getTypeName($nb);
+        }
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'Ticket':
-                self::showForTicket($item);
-                break;
+        if ($item instanceof Ticket) {
+            self::showForTicket($item);
         }
         return true;
     }
@@ -149,10 +149,9 @@ class PluginCreditTicket extends CommonDBTM
             ],
         ];
 
-        if ($result = $DB->request($request)) {
-            if ($row = $result->current()) {
-                $tot = $row['sum'];
-            }
+        $result = $DB->request($request);
+        if ($row = $result->current()) {
+            $tot = $row['sum'];
         }
 
         return $tot;
@@ -403,7 +402,7 @@ class PluginCreditTicket extends CommonDBTM
             $consume = $entity_config->fields['consume_voucher_for_solutions'] ?? 0;
         } else if ($item instanceof TicketTask) {
             $consume = $entity_config->fields['consume_voucher_for_tasks'] ?? 0;
-        } else if ($item instanceof ITILFollowup) {
+        } else {
             $consume = $entity_config->fields['consume_voucher_for_followups'] ?? 0;
         }
 
@@ -562,7 +561,7 @@ class PluginCreditTicket extends CommonDBTM
      */
     public static function consumeVoucher(CommonDBTM $item)
     {
-        if (!is_array($item->input) || !count($item->input)) {
+        if (!count($item->input)) {
             return;
         }
 
@@ -572,8 +571,8 @@ class PluginCreditTicket extends CommonDBTM
             $ticketId = $item->fields['tickets_id'];
         } else if (
             array_key_exists('itemtype', $item->fields)
-                 && array_key_exists('items_id', $item->fields)
-                 && 'Ticket' == $item->fields['itemtype']
+             && array_key_exists('items_id', $item->fields)
+             && 'Ticket' == $item->fields['itemtype']
         ) {
             // Ticket ID can be found in `items_id` field for ITILFollowup and ITILSolution.
             $ticketId = $item->fields['items_id'];
@@ -725,7 +724,7 @@ class PluginCreditTicket extends CommonDBTM
                     KEY `users_id` (`users_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             // Fix #1 in 1.0.1 : change tinyint to int for tickets_id
             $migration->changeField($table, 'tickets_id', 'tickets_id', "int {$default_key_sign} NOT NULL DEFAULT 0");

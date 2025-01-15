@@ -199,7 +199,7 @@ class PluginCreditEntityConfig extends CommonDBTM
                     KEY `plugin_credit_entities_id_solutions` (`plugin_credit_entities_id_solutions`)
                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
 
         // During 1.10.0 dev phase, entity config were stored in GLPI config table
