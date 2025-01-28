@@ -83,6 +83,8 @@ function plugin_init_credit()
             'js/credit.js'
         ];
         $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
+        $PLUGIN_HOOKS['dashboard_cards']['credit'] = 'plugin_credit_dashboardcards';
+        $PLUGIN_HOOKS['dashboard_filters']['credit'] = [PluginCreditDashboardFilters::class];
     }
 
     Plugin::registerClass(PluginCreditProfile::class, ['addtabon' => Profile::class]);
