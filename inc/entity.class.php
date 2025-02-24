@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * -------------------------------------------------------------------------
  * Credit plugin for GLPI
@@ -36,6 +38,11 @@ class PluginCreditEntity extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -327,7 +334,7 @@ class PluginCreditEntity extends CommonDBTM
                 $out .= "<td class='center'>";
                 $out .= Ajax::createIframeModalWindow(
                     'displaycreditconsumed_' . $data["id"],
-                    Plugin::getWebDir('credit') . "/front/ticket.php?plugcreditentity=" . $data["id"],
+                    plugin_credit_geturl() . "/front/ticket.php?plugcreditentity=" . $data["id"],
                     ['title'         => __('Consumed details', 'credit'),
                         'reloadonclose' => false,
                         'display'       => false
