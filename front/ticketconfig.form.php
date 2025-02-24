@@ -29,14 +29,12 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 Session::checkLoginUser();
 
 $ticket_config = new PluginCreditTicketConfig();
 
 if (!Session::haveRight($ticket_config::$rightname, PluginCreditTicketConfig::TICKET_TAB)) {
-    Html::displayRightError();
+    throw new Glpi\Exception\Http\BadRequestHttpException();
 }
 
 if (isset($_POST["update"])) {
@@ -50,4 +48,4 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new Glpi\Exception\Http\BadRequestHttpException();
