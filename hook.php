@@ -29,6 +29,9 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * Plugin install process
  *
@@ -59,6 +62,7 @@ function plugin_credit_install()
 
     $migration->executeMigration();
 
+    // @phpstan-ignore-next-line
     CronTask::register(
         'PluginCreditEntity',
         'creditexpired',
@@ -69,6 +73,7 @@ function plugin_credit_install()
         ]
     );
 
+    // @phpstan-ignore-next-line
     CronTask::register(
         'PluginCreditEntity',
         'lowcredits',
