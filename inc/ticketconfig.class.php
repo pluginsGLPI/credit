@@ -41,6 +41,11 @@ class PluginCreditTicketConfig extends CommonDBTM
         return _n('Default voucher option', 'Default voucher options', $nb, 'credit');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
+    }
+
     /**
      * Get default credit for ticket and itemtype
      *
