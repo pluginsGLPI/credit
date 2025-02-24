@@ -50,4 +50,4 @@ if ($PluginCreditTicket->add($input)) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new Glpi\Exception\Http\BadRequestHttpException();
