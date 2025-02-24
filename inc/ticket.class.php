@@ -38,6 +38,11 @@ class PluginCreditTicket extends CommonDBTM
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof CommonDBTM) {
@@ -214,7 +219,7 @@ class PluginCreditTicket extends CommonDBTM
             $out .= Ajax::updateItemOnSelectEvent(
                 "dropdown_plugin_credit_entities_id$rand",
                 "plugin_credit_quantity_container$rand",
-                Plugin::getWebDir('credit') . "/ajax/dropdownQuantity.php",
+                plugin_credit_geturl() . "ajax/dropdownQuantity.php",
                 ['entity' => '__VALUE__'],
                 false
             );
@@ -448,7 +453,7 @@ class PluginCreditTicket extends CommonDBTM
             $out .= Ajax::updateItemOnSelectEvent(
                 "dropdown_plugin_credit_entities_id$rand",
                 "plugin_credit_quantity_container$rand",
-                Plugin::getWebDir('credit') . "/ajax/dropdownQuantity.php",
+                plugin_credit_geturl() . "/ajax/dropdownQuantity.php",
                 ['entity' => '__VALUE__'],
                 false
             );

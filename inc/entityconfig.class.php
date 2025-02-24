@@ -38,6 +38,11 @@ class PluginCreditEntityConfig extends CommonDBTM
         return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
+    }
+
     public static function showEntityConfigForm($entity_id)
     {
         $config = new self();
