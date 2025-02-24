@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * -------------------------------------------------------------------------
  * Credit plugin for GLPI
@@ -48,92 +50,14 @@ class PluginCreditEntityConfig extends CommonDBTM
         $config = new self();
         $config->getFromDBByCrit(['entities_id' => $entity_id]);
 
-        $out = "";
-        $rand = mt_rand();
-        $out .= "<div class='firstbloc'>";
-        $out .= "<form name='creditentityconfig_form$rand' id='creditentityconfig_form$rand' method='post' action='";
-        $out .= self::getFormUrl() . "'>";
-        $out .= "<input type='hidden' name='entities_id' value='$entity_id'>";
-        $out .= "<table class='tab_cadre_fixe'>";
-        $out .= "<tr class='tab_bg_1'>";
-        $out .= "<th colspan='8'>" . __('Default options for entity', 'credit') . "</th>";
-        $out .= "</tr>";
-
-        $out .= "<tr>";
-        $out .= "<td>" . __('By default consume a voucher for followups', 'credit') . "</td>";
-        $out .= "<td>";
-        $out .= Dropdown::showYesNo("consume_voucher_for_followups", $config->fields['consume_voucher_for_followups'] ?? 0, -1, ['display' => false]);
-        $out .= "</td>";
-
-        $out .= "<td>" . __('By default consume a voucher for tasks', 'credit') . "</td>";
-        $out .= "<td>";
-        $out .= Dropdown::showYesNo("consume_voucher_for_tasks", $config->fields['consume_voucher_for_tasks'] ?? 0, -1, ['display' => false]);
-        $out .= "</td>";
-
-        $out .= "<td>" . __('By default consume a voucher for solutions', 'credit') . "</td>";
-        $out .= "<td>";
-        $out .= Dropdown::showYesNo("consume_voucher_for_solutions", $config->fields['consume_voucher_for_solutions'] ?? 0, -1, ['display' => false]);
-        $out .= "</td>";
-        $out .= "</tr>";
-
-        $out .= "<tr>";
-        $out .= "<td>" . __('Default for followups', 'credit') . "</td>";
-        $out .= "<td>";
-        $out .= PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_followups',
-                'entity'      => $entity_id,
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $config->fields['plugin_credit_entities_id_followups'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-            ]
-        );
-        $out .= "</td>";
-        $out .= "<td>" . __('Default for tasks', 'credit') . "</td>";
-        $out .= "<td>";
-        $out .= PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_tasks',
-                'entity'      => $entity_id,
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $config->fields['plugin_credit_entities_id_tasks'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-            ]
-        );
-        $out .= "</td>";
-        $out .= "<td>" . __('Default for solutions', 'credit') . "</td>";
-        $out .= "<td>";
-        $out .= PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_solutions',
-                'entity'      => $entity_id,
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $config->fields['plugin_credit_entities_id_solutions'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-            ]
-        );
-        $out .= "</td>";
-        $out .= "</tr>";
-
-        $out .= "</table>";
-        if ($config->isNewItem()) {
-            $out .= "<input type='submit' name='add' value='" . _sx('button', 'Update') . "' class='submit'>";
-        } else {
-            $out .= "<input type='hidden' name='id' value='{$config->getID()}'>";
-            $out .= "<input type='submit' name='update' value='" . _sx('button', 'Update') . "' class='submit'>";
-        }
-        $out .= Html::closeForm(false);
-        $out .= "</div>";
-        return $out;
+        TemplateRenderer::getInstance()->display('@credit/creditentity_config.hmtl.twig', [
+            'config'            => $config->fields,
+            'entity_id'         => $entity_id,
+            'form_url'          => self::getFormUrl(),
+            'active_filter'     => PluginCreditEntity::getActiveFilter(),
+            'is_new_item'       => $config->isNewItem(),
+            'creditentityclass' => PluginCreditEntity::class
+        ]);
     }
 
     /**
