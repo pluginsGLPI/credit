@@ -31,11 +31,9 @@
 
 use Glpi\Event;
 
-include('../../../inc/includes.php');
-
 Session::haveRight("entity", UPDATE);
 
-$PluginCreditEntity  = new PluginCreditEntity();
+$PluginCreditEntity = new PluginCreditEntity();
 
 if (isset($_POST["add"])) {
     $PluginCreditEntity->check(-1, CREATE, $_POST);

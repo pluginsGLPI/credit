@@ -4,114 +4,117 @@
 <div class="firstbloc">
     <form name="creditentityconfig_form{{ rand }}" id="creditentityconfig_form{{ rand }}" method="post" action="{{ form_url }}">
         <input type="hidden" name="entities_id" value="{{ entity_id }}">
-        <table class="tab_cadre_fixe">
+        <div class="row">
             <div class="hr-text mt-2">
                 <i class="fa-2x ti ti-adjustments-alt"></i>
                 <span>{{ __('Default options for entity', 'credit') }}</span>
             </div>
 
-            <tr>
-                <td colspan="2">
-                {{ fields.dropdownYesNo(
-                    'consume_voucher_for_followups',
-                    config.consume_voucher_for_followups ?? 0,
-                    __('By default consume a voucher for followups', 'credit'),
-                    {
-                        'label_class': 'col-9',
-                        'input_class': 'col-3',
-                        'field_class': 'col-12',
-                    }
-                ) }}
-                </td>
-
-                <td colspan="2">
-                {{ fields.dropdownYesNo(
-                    'consume_voucher_for_tasks',
-                    config.consume_voucher_for_tasks ?? 0,
-                    __('By default consume a voucher for tasks', 'credit'),
-                    {
-                        'label_class': 'col-9',
-                        'input_class': 'col-3',
-                        'field_class': 'col-12',
-                    }
-                ) }}
-                </td>
-
-                <td colspan="2">
-                {{ fields.dropdownYesNo(
-                    'consume_voucher_for_solutions',
-                    config.consume_voucher_for_solutions ?? 0,
-                    __('By default consume a voucher for solutions', 'credit'),
-                    {
-                        'label_class': 'col-9',
-                        'input_class': 'col-3',
-                        'field_class': 'col-12',
-                    }
-                ) }}
-                </td>
-            </tr>
-
-            <tr>
-                <td colspan="2">
-                    {{ fields.dropdownField(
-                        creditentityclass,
-                        'plugin_credit_entities_id_followups',
-                        config.plugin_credit_entities_id_followups ?? 0,
-                        __('Default for followups', 'credit'),
-                        {
-                            'entity': entity_id,
-                            'entity_sons': true,
-                            'display': false,
-                            'condition': active_filter,
-                            'comments': false,
-                            'rand': rand,
-                            'label_class': 'col-9',
-                            'input_class': 'col-3',
-                            'field_class': 'col-12',
-                        }
-                    ) }}
-                </td>
-                <td colspan="2">
-                    {{ fields.dropdownField(
-                        creditentityclass,
-                        'plugin_credit_entities_id_tasks',
-                        config.plugin_credit_entities_id_tasks ?? 0,
-                        __('Default for tasks', 'credit'),
-                        {
-                            'entity': entity_id,
-                            'entity_sons': true,
-                            'display': false,
-                            'condition': active_filter,
-                            'comments': false,
-                            'rand': rand,
-                            'label_class': 'col-9',
-                            'input_class': 'col-3',
-                            'field_class': 'col-12',
-                        }
-                    ) }}
-                </td>
-                <td colspan="2">
-                    {{ fields.dropdownField(
-                        creditentityclass,
-                        'plugin_credit_entities_id_solutions',
-                        config.plugin_credit_entities_id_solutions ?? 0,
-                        __('Default for solutions', 'credit'),
-                        {
-                            'entity': entity_id,
-                            'entity_sons': true,
-                            'display': false,
-                            'condition': active_filter,
-                            'comments': false,
-                            'rand': rand,
-                            'label_class': 'col-9',
-                            'input_class': 'col-3',
-                            'field_class': 'col-12',
-                        }
-                    ) }}
-                </td>
-            </tr>
-        </table>
-
+            <div class="col-1"></div>
+            <div class="col-10">
+                {% set table_field_options = {no_label: true, field_class: 'm-0 p-0', mb: 'mb-0', use_checkbox: true} %}
+                <table class="table table-bordered text-center rounded">
+                    <tbody>
+                        <tr class="bg-body-tertiary">
+                            <th class="bg-body-secondary"></th>
+                            <th class="mx-auto">{{ __('Followup') }}</th>
+                            <th class="mx-auto">{{ __('Task') }}</th>
+                            <th class="mx-auto">{{ __('Solution') }}</th>
+                        </tr>
+                        <tr>
+                            <th class="bg-body-tertiary">{{ __('By default consume a voucher for : ', 'credit') }}</th>
+                            <td>
+                                {{ fields.dropdownYesNo(
+                                    'consume_voucher_for_followups',
+                                    config.consume_voucher_for_followups ?? 0,
+                                    '',
+                                    table_field_options
+                                ) }}
+                            </td>
+                            <td>
+                                {{ fields.dropdownYesNo(
+                                    'consume_voucher_for_tasks',
+                                    config.consume_voucher_for_tasks ?? 0,
+                                    '',
+                                    table_field_options
+                                ) }}
+                            </td>
+                            <td>
+                                {{ fields.dropdownYesNo(
+                                    'consume_voucher_for_solutions',
+                                    config.consume_voucher_for_solutions ?? 0,
+                                    '',
+                                    table_field_options
+                                ) }}
+                            </td>
+                        </tr>
+                        <tr class="second-part">
+                            <th class="bg-body-tertiary">{{ __('Default voucher for : ', 'credit') }}</th>
+                            <td class="second-part-followups">
+                                {{ fields.dropdownField(
+                                    creditentityclass,
+                                    'plugin_credit_entities_id_followups',
+                                    config.plugin_credit_entities_id_followups ?? 0,
+                                    __('Default for followups', 'credit'),
+                                    {
+                                        'entity': entity_id,
+                                        'entity_sons': true,
+                                        'display': false,
+                                        'condition': active_filter,
+                                        'comments': false,
+                                        'rand': rand,
+                                        'no_label': true,
+                                        'input_class': 'col-12 col-sm-12',
+                                        'field_class': 'col-12 col-sm-12 m-0 p-0',
+                                        mb: 'mb-0'
+                                    }
+                                ) }}
+                            </td>
+                            <td class="second-part-tasks">
+                                {{ fields.dropdownField(
+                                    creditentityclass,
+                                    'plugin_credit_entities_id_tasks',
+                                    config.plugin_credit_entities_id_tasks ?? 0,
+                                    __('Default for tasks', 'credit'),
+                                    {
+                                        'entity': entity_id,
+                                        'entity_sons': true,
+                                        'display': false,
+                                        'condition': active_filter,
+                                        'comments': false,
+                                        'rand': rand,
+                                        'no_label': true,
+                                        'input_class': 'col-12 col-sm-12',
+                                        'field_class': 'col-12 col-sm-12 m-0 p-0',
+                                        mb: 'mb-0'
+                                    }
+                                ) }}
+                            </td>
+                            <td class="second-part-solutions">
+                                {{ fields.dropdownField(
+                                    creditentityclass,
+                                    'plugin_credit_entities_id_solutions',
+                                    config.plugin_credit_entities_id_solutions ?? 0,
+                                    __('Default for solutions', 'credit'),
+                                    {
+                                        'entity': entity_id,
+                                        'entity_sons': true,
+                                        'display': false,
+                                        'condition': active_filter,
+                                        'comments': false,
+                                        'rand': rand,
+                                        'no_label': true,
+                                        'input_class': 'col-12 col-sm-12',
+                                        'field_class': 'col-12 col-sm-12 m-0 p-0',
+                                        mb: 'mb-0'
+                                    }
+                                ) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <div class="hstack gap-1">
             <div class="pe-5 ms-auto mb-2">

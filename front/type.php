@@ -29,8 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 Plugin::load('credit', true);
 
 $dropdown = new PluginCreditType();

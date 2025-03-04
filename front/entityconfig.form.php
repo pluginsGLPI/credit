@@ -29,8 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 $entity_config = new PluginCreditEntityConfig();
 
 if (isset($_POST["add"])) {
