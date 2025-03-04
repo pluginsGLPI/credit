@@ -29,8 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 Session::haveRight("ticket", UPDATE);
 
 $PluginCreditTicket = new PluginCreditTicket();
