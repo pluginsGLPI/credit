@@ -29,9 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-Session::checkLoginUser();
-
 Plugin::load('credit', true);
 
 $dropdown = new PluginCreditType();

@@ -46,6 +46,16 @@ class PluginCreditEntity extends CommonDBTM
         return 'ti ti-coins';
     }
 
+    public static function canCreate(): bool
+    {
+        return true;
+    }
+
+    public function canCreateItem(): bool
+    {
+        return true;
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof CommonDBTM) {
@@ -159,18 +169,67 @@ class PluginCreditEntity extends CommonDBTM
             return;
         }
 
-        $out     = "";
         $canedit = $itemtype === 'Entity' && $entity->canEdit($ID);
 
         if ($itemtype === 'Entity') {
             PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
         }
 
+        $columns = [
+            'name'                      => __('Name'),
+            'plugin_credit_types_id'    => __('Type'),
+            'is_active'                 => __('Active'),
+            'begin_date'                => __('Start date'),
+            'end_date'                  => __('End date'),
+            'quantity'                  => __('Quantity sold', 'credit'),
+            'quantity_consumed'         => __('Quantity consumed', 'credit'),
+            'quantity_remaining'        => __('Quantity remaining', 'credit'),
+            'overconsumption_allowed'   => __('Allow overconsumption', 'credit'),
+            'low_credit_alert'          => __('Low credits alert', 'credit'),
+            'entities_id'               => __('Entity'),
+            'is_recursive'              => __('Child entities')
+        ];
+
+        $sqlfilter = [];
+        if ($itemtype == 'Ticket') {
+            $sqlfilter = [
+                'is_active' => '1'
+            ];
+        }
+
+        $entries = [];
+        foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
+            $quantity_sold = (int)$data['quantity'];
+            if (0 === $quantity_sold) {
+                $quantity_sold = __('Unlimited');
+            }
+
+            $entries[] = array_merge($data, [
+                'quantity'                  => $quantity_sold,
+                'itemtype'                  => PluginCreditEntity::class,
+                'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
+                'plugin_credit_types_id'    => $data['plugin_credit_types_id'] > 0 ? PluginCreditType::getFriendlyNameById($data['plugin_credit_types_id']) : '',
+            ]);
+        }
+
+
+        $rand  = mt_rand();
+        $nb = count($entries);
+        $massiveactionparams = [
+            'num_displayed'    => min($nb, $_SESSION['glpilist_limit']),
+            'container'        => 'mass' . __CLASS__ . $rand,
+            'itemtype'         => PluginCreditEntity::class,
+        ];
+
         if ($itemtype === 'Entity' && $canedit) {
             TemplateRenderer::getInstance()->display('@credit/creditentity.hmtl.twig', [
-                'id'            => $ID,
-                'form_url'          => self::getFormUrl(),
-                'credittypeclass' => PluginCreditType::class
+                'form_url'              => self::getFormUrl(),
+                'credittypeclass'       => PluginCreditType::class,
+                'columns'               => $columns,
+                'entity_id'             => $ID,
+                'entries'               => $entries,
+                'canedit'               => $canedit,
+                'massiveactionparams'   => $massiveactionparams
             ]);
         }
 
