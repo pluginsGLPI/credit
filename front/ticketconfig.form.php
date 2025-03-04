@@ -29,8 +29,6 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 Session::checkLoginUser();
 
 $ticket_config = new PluginCreditTicketConfig();

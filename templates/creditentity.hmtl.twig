@@ -3,7 +3,8 @@
 {% set rand = random() %}
 <div class="firstbloc">
     <form name="creditentity_form{{ rand }}" id="creditentity_form{{ rand }}" method="post" action="{{ form_url }}">
-        <input type="hidden" name="entities_id" value="{{ ID }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="entities_id" value="{{ entity_id }}">
         <div class="hr-text mt-2">
             <i class="fa-2x ti ti-coin"></i>
             <span>{{ __('Add a credit voucher', 'credit') }}</span>
@@ -90,4 +91,27 @@
             </div>
         </div>
     </form>
+</div>
+<div class="secondbloc">
+    {% set datatable_params = {
+        'is_tab': true,
+        'nopager': true,
+        'nofilter': true,
+        'nosort': true,
+        'columns': columns,
+        'formatters': {
+            'name': 'raw_html',
+            'begin_date': 'date',
+            'end_date': 'date',
+            'overconsumption_allowed': 'yesno',
+            'is_active': 'yesno',
+        },
+        'entries': entries,
+        'total_number': entries|length,
+        'filtered_number': entries|length,
+        'showmassiveactions': canedit,
+        'massiveactionparams': massiveactionparams
+    } %}
+
+    {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
 </div>
