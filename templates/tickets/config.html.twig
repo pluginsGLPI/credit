@@ -1,0 +1,106 @@
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set fields_options = {
+    entity: entity_id,
+    condition: condition,
+    entity_sons: true
+} %}
+
+{% if embed_in_ticket_form %}
+    </div> <!-- class="accordion-body" -->
+    </div> <!-- class="accordion-collapse" -->
+    </div> <!-- class="accordion-item" -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-plugin-credit-ticket-config">
+            <button class="accordion-button {{ uncollapsed ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#plugin-credit-ticket-config" aria-expanded="true" aria-controls="plugin-credit-ticket-config">
+                <span class="item-title">{{ type_name }}</span>
+            </button>
+        </h2>
+        <div id="plugin-credit-ticket-config" class="accordion-collapse collapse {{ uncollapsed ? 'show' : '' }}" aria-labelledby="heading-plugin-credit-ticket-config">
+            <div class="accordion-body row m-0 mt-n2">
+
+                {{ fields.dropdownField(
+                    creditentitytype,
+                    'plugin_credit_entities_id_default',
+                    ticket.input['plugin_credit_entities_id_default'] ?? 0,
+                    __('Default for ticket', 'credit'),
+                    fields_options
+                ) }}
+
+                {{ fields.dropdownField(
+                    creditentitytype,
+                    'plugin_credit_entities_id_followups',
+                    ticket.input['plugin_credit_entities_id_followups'] ?? ticket_config.fields['plugin_credit_entities_id_followups'] ?? 0,
+                    __('Default for followups', 'credit'),
+                    fields_options
+                ) }}
+
+                {{ fields.dropdownField(
+                    creditentitytype,
+                    'plugin_credit_entities_id_tasks',
+                    ticket.input['plugin_credit_entities_id_tasks'] ?? ticket_config.fields['plugin_credit_entities_id_tasks'] ?? 0,
+                    __('Default for tasks', 'credit'),
+                    fields_options
+                ) }}
+
+                {{ fields.dropdownField(
+                    creditentitytype,
+                    'plugin_credit_entities_id_solutions',
+                    ticket.input['plugin_credit_entities_id_solutions'] ?? ticket_config.fields['plugin_credit_entities_id_solutions'] ?? 0,
+                    __('Default for solutions', 'credit'),
+                    fields_options
+                ) }}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <form method="post" action="{{ form_url }}">
+        <input type="hidden" name="tickets_id" value="{{ ticket.fields['id'] }}" />
+        <div class="hr-text mt-2">
+            <i class="fa-2x ti ti-adjustments-alt"></i>
+            <span>{{ type_name }}</span>
+        </div>
+
+        <div class="row">
+
+            {{ fields.dropdownField(
+                creditentitytype,
+                'plugin_credit_entities_id_followups',
+                ticket.input['plugin_credit_entities_id_followups'] ?? ticket_config.fields['plugin_credit_entities_id_followups'] ?? 0,
+                __('Default for followups', 'credit'),
+                fields_options|merge({
+                    'field_class': 'col-4 col-sm-4',
+                })
+            ) }}
+
+            {{ fields.dropdownField(
+                creditentitytype,
+                'plugin_credit_entities_id_tasks',
+                ticket.input['plugin_credit_entities_id_tasks'] ?? ticket_config.fields['plugin_credit_entities_id_tasks'] ?? 0,
+                __('Default for tasks', 'credit'),
+                fields_options|merge({
+                    'field_class': 'col-4 col-sm-4',
+                })
+            ) }}
+
+            {{ fields.dropdownField(
+                creditentitytype,
+                'plugin_credit_entities_id_solutions',
+                ticket.input['plugin_credit_entities_id_solutions'] ?? ticket_config.fields['plugin_credit_entities_id_solutions'] ?? 0,
+                __('Default for solutions', 'credit'),
+                fields_options|merge({
+                    'field_class': 'col-4 col-sm-4',
+                })
+            ) }}
+        </div>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        <div class="hstack gap-1">
+            <div class="pe-5 ms-auto mb-2">
+                <button class="btn btn-primary" type="submit" name="update" value="1">
+                    <i class="ti ti-device-floppy"></i>
+                    <span>{{ _x('button', 'Save') }}</span>
+                </button>
+            </div>
+        </div>
+    </form>
+{% endif %}

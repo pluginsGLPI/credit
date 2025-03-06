@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * -------------------------------------------------------------------------
  * Credit plugin for GLPI
@@ -108,156 +110,23 @@ class PluginCreditTicketConfig extends CommonDBTM
             $ticket_config->getFromDBByCrit(["tickets_id" => $ticket->getID()]);
         }
 
-        $rand = mt_rand();
-        $out = "";
-
-        $default_ticket_dropdown = PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_default',
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $ticket->input['plugin_credit_entities_id_default'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-                'on_change'   => 'PluginCredit.propagateDefaultVoucherValue(this)',
-                'width'       => $embed_in_ticket_form ? '100%' : '',
-            ]
-        );
-        $default_fup_dropdown = PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_followups',
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $ticket->input['plugin_credit_entities_id_followups'] ??
-                                 $ticket_config->fields['plugin_credit_entities_id_followups'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-                'width'       => $embed_in_ticket_form ? '100%' : '',
-            ]
-        );
-        $default_tasks_dropdown = PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_tasks',
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $ticket->input['plugin_credit_entities_id_tasks'] ??
-                                 $ticket_config->fields['plugin_credit_entities_id_tasks'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-                'width'       => $embed_in_ticket_form ? '100%' : '',
-            ]
-        );
-        $default_sol_dropdown = PluginCreditEntity::dropdown(
-            [
-                'name'        => 'plugin_credit_entities_id_solutions',
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => true,
-                'display'     => false,
-                'value'       => $ticket->input['plugin_credit_entities_id_solutions'] ??
-                                 $ticket_config->fields['plugin_credit_entities_id_solutions'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
-                'comments'    => false,
-                'rand'        => $rand,
-                'width'       => $embed_in_ticket_form ? '100%' : '',
-            ]
-        );
-
         if ($embed_in_ticket_form) {
             $uncollapsed = (importArrayFromDB(Config::getSafeConfig()['itil_layout'])['items']['plugin-credit-ticket-config'] ?? 'true') == 'true';
-            $out .= '</div>'; // class="accordion-body"
-            $out .= '</div>'; // class="accordion-collapse"
-            $out .= '</div>'; // class="accordion-item"
-            $out .= '<div class="accordion-item">';
-            $out .= '<h2 class="accordion-header" id="heading-plugin-credit-ticket-config">';
-            $out .= '<button class="accordion-button ' . ($uncollapsed ? '' : 'collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#plugin-credit-ticket-config" aria-expanded="true" aria-controls="plugin-credit-ticket-config">';
-            $out .= '<span class="item-title">';
-            $out .= self::getTypeName();
-            $out .= '</span>';
-            $out .= '</button>';
-            $out .= '</h2>';
-            $out .= '<div id="plugin-credit-ticket-config" class="accordion-collapse collapse ' . ($uncollapsed ? 'show' : '') . '" aria-labelledby="heading-plugin-credit-ticket-config">';
-            $out .= '<div class="accordion-body row m-0 mt-n2">';
-
-            $out .= '<div class="form-field row col-12  mb-2">';
-            $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
-            $out .= __('Default for ticket', 'credit');
-            $out .= '</label>';
-            $out .= '<div class="col-xxl-8 field-container">';
-            $out .= $default_ticket_dropdown;
-            $out .= '</div>';
-            $out .= '</div>';
-
-            $out .= '<div class="form-field row col-12  mb-2">';
-            $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
-            $out .= __('Default for followups', 'credit');
-            $out .= '</label>';
-            $out .= '<div class="col-xxl-8 field-container">';
-            $out .= $default_fup_dropdown;
-            $out .= '</div>';
-            $out .= '</div>';
-
-            $out .= '<div class="form-field row col-12  mb-2">';
-            $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
-            $out .= __('Default for tasks', 'credit');
-            $out .= '</label>';
-            $out .= '<div class="col-xxl-8 field-container">';
-            $out .= $default_tasks_dropdown;
-            $out .= '</div>';
-            $out .= '</div>';
-
-            $out .= '<div class="form-field row col-12  mb-2">';
-            $out .= '<label class="col-form-label col-xxl-4 text-xxl-end">';
-            $out .= __('Default for solutions', 'credit');
-            $out .= '</label>';
-            $out .= '<div class="col-xxl-8 field-container">';
-            $out .= $default_sol_dropdown;
-            $out .= '</div>';
-            $out .= '</div>';
-
-            // $out .= '</div>'; // class="accordion-body"
-            // $out .= '</div>'; // class="accordion-collapse"
-            // $out .= '</div>'; // class="accordion-item"
         } else {
-            $out .= "<form method='post' action='" . self::getFormUrl() . "'>";
-            $out .= "<input type='hidden' name='tickets_id' value='{$ticket->getID()}' />";
-            $out .= "<table class='tab_cadre_fixe'><tbody>";
-            $out .= "<tr>";
-            $out .= "<th colspan='8'>" . self::getTypeName() . "</th>";
-            $out .= "</tr>";
-            $out .= "<tr>";
-            $out .= "<td>" . __('Default for ticket', 'credit') . "</td>";
-            $out .= "<td>";
-            $out .= $default_ticket_dropdown;
-            $out .= "</td>";
-            $out .= "<td>" . __('Default for followups', 'credit') . "</td>";
-            $out .= "<td>";
-            $out .= $default_fup_dropdown;
-            $out .= "</td>";
-            $out .= "<td>" . __('Default for tasks', 'credit') . "</td>";
-            $out .= "<td>";
-            $out .= $default_tasks_dropdown;
-            $out .= "</td>";
-            $out .= "<td>" . __('Default for solutions', 'credit') . "</td>";
-            $out .= "<td>";
-            $out .= $default_sol_dropdown;
-            $out .= "</td>";
-            $out .= "</tr>";
-            $out .= "<tr>";
-            $out .= "<td colspan='8' class='center'>";
-            $out .= "<input type='submit' name='update' value='" . _sx('button', 'Update') . "' class='submit'>";
-            $out .= "</td>";
-            $out .= "</tr>";
-            $out .= "</tbody></table>";
-            $out .= Html::closeForm(false);
+            $form_url = self::getFormUrl();
         }
 
-        return $out;
+        TemplateRenderer::getInstance()->display('@credit/tickets/config.html.twig', [
+            'embed_in_ticket_form' => $embed_in_ticket_form,
+            'uncollapsed'          => $uncollapsed ?? false,
+            'type_name'            => self::getTypeName(),
+            'creditentitytype'     => PluginCreditEntity::class,
+            'condition'            => PluginCreditEntity::getActiveFilter(),
+            'entity'               => $ticket->getEntityID(),
+            'ticket'               => $ticket,
+            'ticket_config'        => $ticket_config,
+            'form_url'             => $form_url ?? '',
+        ]);
     }
 
     public static function updateConfig(Ticket $ticket)

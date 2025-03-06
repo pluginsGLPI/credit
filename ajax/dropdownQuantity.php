@@ -66,16 +66,10 @@ if (isset($_POST["entity"])) {
         $consumed = (int)$ticket_result['consumed_total'];
         $max      = max(0, $quantity_sold - $consumed);
 
-        Dropdown::showNumber("plugin_credit_quantity", ['value'   => '',
-            'min'     => 0,
-            'max'     => $max,
-            'step'    => 1,
-        ]);
+        echo 'dzd';
+        return $max;
     } else {
-        Dropdown::showNumber("plugin_credit_quantity", ['value'   => '',
-            'min'     => 0,
-            'max'     => 1000000,
-            'step'    => 1,
-        ]);
+        echo 'dzd2';
+        return 100000;
     }
 }

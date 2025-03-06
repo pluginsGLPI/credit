@@ -1,5 +1,8 @@
 <?php
 
+use Com\Tecnick\Color\Model\Template;
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * -------------------------------------------------------------------------
  * Credit plugin for GLPI
@@ -376,7 +379,7 @@ class PluginCreditTicket extends CommonDBTM
         ) {
             // Ticket can be found in `parent` option for TicketTask.
             $ticket = $params['options']['parent'];
-        } else if (
+        } elseif (
             array_key_exists('item', $params['options'])
             && $params['options']['item'] instanceof Ticket
         ) {
@@ -389,8 +392,6 @@ class PluginCreditTicket extends CommonDBTM
         if ($ticket === null) {
             return;
         }
-
-        $out = "";
 
         $canedit = $ticket->canEdit($ticket->getID());
         if (
@@ -405,7 +406,7 @@ class PluginCreditTicket extends CommonDBTM
         $consume = false;
         if ($item instanceof ITILSolution) {
             $consume = $entity_config->fields['consume_voucher_for_solutions'] ?? 0;
-        } else if ($item instanceof TicketTask) {
+        } elseif ($item instanceof TicketTask) {
             $consume = $entity_config->fields['consume_voucher_for_tasks'] ?? 0;
         } else {
             $consume = $entity_config->fields['consume_voucher_for_followups'] ?? 0;
@@ -413,63 +414,24 @@ class PluginCreditTicket extends CommonDBTM
 
         $rand = mt_rand();
         if ($canedit) {
-            $out .= "<tr><th colspan='2'>";
-            $out .= self::getTypeName(2);
-            $out .= "</th><th colspan='2'></th></tr>";
-            $out .= "<tr><td>";
-            $out .= "<label for='plugin_credit_consumed_voucher'>";
-            $out .= __('Consume a voucher ?', 'credit');
-            $out .= "</label>";
-            $out .= "</td><td>";
-            $out .= Dropdown::showYesNo('plugin_credit_consumed_voucher', $consume, -1, ['display' => false]);
-            $out .= "</td><td colspan='2'></td>";
-            $out .= "</tr><tr><td>";
-            $out .= "<label for='voucher'>";
-            $out .= __('Voucher name', 'credit');
-            $out .= "</label>";
-            $out .= "</td><td>";
-
             //get default value for ticket
             $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
             if ($default_credit == 0) {
                 //get default value for entity
                 $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
             }
-
-            $out .= PluginCreditEntity::dropdown(['name'      => 'plugin_credit_entities_id',
-                'entity'    => $ticket->getEntityID(),
-                'display'   => false,
-                'value'     => $default_credit,
-                'condition' => PluginCreditEntity::getActiveFilter(),
-                'rand'      => $rand
-            ]);
-            $out .= "</td><td colspan='2'></td>";
-            $out .= "</tr><tr><td>";
-            $out .= "<label for='plugin_credit_quantity'>";
-            $out .= __('Quantity consumed', 'credit');
-            $out .= "</label>";
-            $out .= "</td><td>";
-            $out .= "<div id='plugin_credit_quantity_container$rand'></div>";
-            $out .= Ajax::updateItemOnSelectEvent(
-                "dropdown_plugin_credit_entities_id$rand",
-                "plugin_credit_quantity_container$rand",
-                plugin_credit_geturl() . "/ajax/dropdownQuantity.php",
-                ['entity' => '__VALUE__'],
-                false
-            );
-            $out .= "</td><td colspan='2'></td></tr>";
-
-            //trigger change to force load quantity select
-            if ($default_credit > 0) {
-                $out .= Html::scriptBlock("
-                    $('.timeline-buttons').on('click', function() {
-                        $('#dropdown_plugin_credit_entities_id$rand').trigger('change');
-                    });
-                ");
-            }
         }
 
-        echo $out;
+        TemplateRenderer::getInstance()->display('@credit/tickets/consume.html.twig', [
+            'rand'                  => $rand,
+            'consume'               => $consume,
+            'default_credit'        => $default_credit,
+            'entity_id'             => $ticket->getEntityID(),
+            'type_name'             => self::getTypeName(2),
+            'condition'             => PluginCreditEntity::getActiveFilter(),
+            'creditentityclass'     => PluginCreditEntity::class,
+            'plugin_credit_geturl'  => plugin_credit_geturl(),
+        ]);
     }
 
     /**
