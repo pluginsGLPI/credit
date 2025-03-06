@@ -204,11 +204,24 @@ class PluginCreditEntity extends CommonDBTM
                 $quantity_sold = __('Unlimited');
             }
 
+            $item = new self();
+            $item = $item->getById($data['id']);
+
+            if (!empty($data['plugin_credit_types_id'])) {
+                $type = new PluginCreditType();
+                $type = $type->getById($data['plugin_credit_types_id']);
+                if ($type) {
+                    $data['plugin_credit_types_id'] = $type->getLink();
+                }
+            } else {
+                $data['plugin_credit_types_id'] = '';
+            }
+
             $entries[] = array_merge($data, [
+                'name'                      => $item->getLink(),
                 'quantity'                  => $quantity_sold,
                 'itemtype'                  => PluginCreditEntity::class,
                 'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
-                'plugin_credit_types_id'    => $data['plugin_credit_types_id'] > 0 ? PluginCreditType::getFriendlyNameById($data['plugin_credit_types_id']) : '',
             ]);
         }
 
@@ -229,7 +242,7 @@ class PluginCreditEntity extends CommonDBTM
                 'entity_id'             => $ID,
                 'entries'               => $entries,
                 'canedit'               => $canedit,
-                'massiveactionparams'   => $massiveactionparams
+                'massiveactionparams'   => $massiveactionparams,
             ]);
         }
 
