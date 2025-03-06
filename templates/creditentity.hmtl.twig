@@ -1,7 +1,7 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
 {% set rand = random() %}
-<div class="firstbloc">
+<div name="firstbloc" id="firstbloc" class="">
     <form name="creditentity_form{{ rand }}" id="creditentity_form{{ rand }}" method="post" action="{{ form_url }}">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <input type="hidden" name="entities_id" value="{{ entity_id }}">
@@ -92,7 +92,7 @@
         </div>
     </form>
 </div>
-<div class="secondbloc">
+<div name="secondbloc" id="secondbloc" class="mb-5">
     {% set datatable_params = {
         'is_tab': true,
         'nopager': true,
@@ -101,16 +101,18 @@
         'columns': columns,
         'formatters': {
             'name': 'raw_html',
+            'plugin_credit_types_id': 'raw_html',
             'begin_date': 'date',
             'end_date': 'date',
             'overconsumption_allowed': 'yesno',
             'is_active': 'yesno',
+            'is_recursive': 'yesno',
         },
         'entries': entries,
         'total_number': entries|length,
         'filtered_number': entries|length,
         'showmassiveactions': canedit,
-        'massiveactionparams': massiveactionparams
+        'massiveactionparams': massiveactionparams,
     } %}
 
     {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
