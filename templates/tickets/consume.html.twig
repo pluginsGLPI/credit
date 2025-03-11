@@ -25,57 +25,39 @@
         }
     ) }}
 
+    <div class="quantity">
+        {{ fields.numberField(
+            'plugin_credit_quantity_container',
+            0,
+            __('Quantity consumed', 'credit'),
+            {
+                'entity': entity_id,
+                'condition': condition,
+                'max': 0,
+                'min': 0,
+            }
+        ) }}
+    </div>
+
     <script>
         function getQuantityRemaining{{ rand }}(val) {
-            console.log(val);
-            $.ajax({
-                type: 'GET',
-                url: "{{ plugin_credit_geturl }}ajax/dropdownQuantity.php",
-                data: {
-                    entity: val,
-                },
-                success: function(data) {
-                    console.log(data); // affiche le résultat de la fonction getQuantityRemaining
-                },
-                error: function(xhr, status, erreur) {
-                    console.log(erreur); // affiche l'erreur si elle se produit
-                }
-            });
+            quantity = document.querySelector('[id*="plugin-credit-quantity-container"]');
+            if (val == 0) {
+                document.querySelector('.quantity').style.display = 'none';
+                quantity.value = 0;
+            } else {
+                document.querySelector('.quantity').style.display = 'block';
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
+                    data: {
+                        entity: val,
+                    }
+                }).done(function (data) {
+                    quantity.max = data;
+                    quantity.value = 0;
+                });
+            }
         }
     </script>
 </div>
-
-{# <div class="quantity">
-    {{ fields.numberField(
-        creditentityclass,
-        'plugin_credit_entities_id',
-        default_credit,
-        __('Voucher name', 'credit'),
-        {
-            'entity': entity_id,
-            'condition': condition,
-            'input_class': 'col-6 col-sm-6',
-            'label_class': 'col-6 col-sm-6',
-            'field_class': 'col-6 col-sm-6',
-            'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
-        }
-    ) }}
-</div> #}
-{# <tr>
-    <td>
-        <label for="plugin_credit_quantity">{{ __('Quantity consumed', 'credit') }}</label>
-    </td>
-    <td>
-        <div id="plugin_credit_quantity_container{{ rand }}"></div>
-        {{ Ajax.updateItemOnSelectEvent("dropdown_plugin_credit_entities_id" ~ rand, "plugin_credit_quantity_container" ~ rand, plugin_credit_geturl() ~ "/ajax/dropdownQuantity.php", {'entity': '__VALUE__'}, false) }}
-    </td>
-    <td colspan="2"></td>
-</tr>
-
-{% if default_credit > 0 %}
-    {{ Html.scriptBlock("
-        $('.timeline-buttons').on('click', function() {
-            $('#dropdown_plugin_credit_entities_id" ~ rand ~ "').trigger('change');
-        });
-    ") }}
-{% endif %} #}
