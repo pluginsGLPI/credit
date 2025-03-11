@@ -231,7 +231,7 @@ class PluginCreditTicket extends CommonDBTM
             $out .= Html::closeForm(false);
             $out .= "</div>";
 
-            $out .= PluginCreditTicketConfig::showForTicket($ticket);
+            PluginCreditTicketConfig::showForTicket($ticket);
         }
 
         $out .= "<div class='spaced'>";
@@ -243,100 +243,100 @@ class PluginCreditTicket extends CommonDBTM
         $number = self::countForItem($ticket);
         $rand   = mt_rand();
 
-        if ($number) {
-            $out .= "<div class='spaced'>";
+        // if ($number) {
+        //     $out .= "<div class='spaced'>";
 
-            if ($canedit) {
-                $out .= Html::getOpenMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams =  [
-                    'num_displayed'    => $number,
-                    'container'        => 'mass' . __CLASS__ . $rand,
-                    'rand'             => $rand,
-                    'display'          => false,
-                    'specific_actions' => [
-                        'update' => _x('button', 'Update'),
-                        'purge'  => _x('button', 'Delete permanently')
-                    ]
-                ];
-                $out .= Html::showMassiveActions($massiveactionparams);
-            }
+        //     if ($canedit) {
+        //         $out .= Html::getOpenMassiveActionsForm('mass' . __CLASS__ . $rand);
+        //         $massiveactionparams =  [
+        //             'num_displayed'    => $number,
+        //             'container'        => 'mass' . __CLASS__ . $rand,
+        //             'rand'             => $rand,
+        //             'display'          => false,
+        //             'specific_actions' => [
+        //                 'update' => _x('button', 'Update'),
+        //                 'purge'  => _x('button', 'Delete permanently')
+        //             ]
+        //         ];
+        //         $out .= Html::showMassiveActions($massiveactionparams);
+        //     }
 
-            $out .= "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_end    .= "</th>";
-            }
-            $header_end .= "<th>" . __('Voucher name', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Voucher type', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Date consumed', 'credit') . "</th>";
-            $header_end .= "<th>" . __('User consumed', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
-            $header_end .= "</tr>";
-            $out .= $header_begin . $header_top . $header_end;
+        //     $out .= "<table class='tab_cadre_fixehov'>";
+        //     $header_begin  = "<tr>";
+        //     $header_top    = '';
+        //     $header_bottom = '';
+        //     $header_end    = '';
+        //     if ($canedit) {
+        //         $header_begin  .= "<th width='10'>";
+        //         $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+        //         $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+        //         $header_end    .= "</th>";
+        //     }
+        //     $header_end .= "<th>" . __('Voucher name', 'credit') . "</th>";
+        //     $header_end .= "<th>" . __('Voucher type', 'credit') . "</th>";
+        //     $header_end .= "<th>" . __('Date consumed', 'credit') . "</th>";
+        //     $header_end .= "<th>" . __('User consumed', 'credit') . "</th>";
+        //     $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
+        //     $header_end .= "</tr>";
+        //     $out .= $header_begin . $header_top . $header_end;
 
-            foreach (self::getAllForTicket($ID) as $data) {
-                $out .= "<tr class='tab_bg_2'>";
-                if ($canedit) {
-                    $out .= "<td width='10'>";
-                    $out .= Html::getMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    $out .= "</td>";
-                }
+        //     foreach (self::getAllForTicket($ID) as $data) {
+        //         $out .= "<tr class='tab_bg_2'>";
+        //         if ($canedit) {
+        //             $out .= "<td width='10'>";
+        //             $out .= Html::getMassiveActionCheckBox(__CLASS__, $data["id"]);
+        //             $out .= "</td>";
+        //         }
 
-                $credit_entity = new PluginCreditEntity();
-                $credit_entity->getFromDB($data['plugin_credit_entities_id']);
+        //         $credit_entity = new PluginCreditEntity();
+        //         $credit_entity->getFromDB($data['plugin_credit_entities_id']);
 
-                $out .= "<td width='40%' class='center'>";
-                $out .= $credit_entity->getName();
-                $out .= "</td>";
-                $out .= "<td class='center'>";
-                $out .= Dropdown::getDropdownName(
-                    PluginCreditType::getTable(),
-                    $credit_entity->getField('plugin_credit_types_id')
-                );
-                $out .= "</td>";
-                $out .= "<td class='center'>";
-                $out .= Html::convDate($data["date_creation"]);
-                $out .= "</td>";
+        //         $out .= "<td width='40%' class='center'>";
+        //         $out .= $credit_entity->getName();
+        //         $out .= "</td>";
+        //         $out .= "<td class='center'>";
+        //         $out .= Dropdown::getDropdownName(
+        //             PluginCreditType::getTable(),
+        //             $credit_entity->getField('plugin_credit_types_id')
+        //         );
+        //         $out .= "</td>";
+        //         $out .= "<td class='center'>";
+        //         $out .= Html::convDate($data["date_creation"]);
+        //         $out .= "</td>";
 
-                $showuserlink = 0;
-                if (Session::haveRight('user', READ)) {
-                     $showuserlink = 1;
-                }
+        //         $showuserlink = 0;
+        //         if (Session::haveRight('user', READ)) {
+        //              $showuserlink = 1;
+        //         }
 
-                $out .= "<td class='center'>";
-                $out .= getUserName($data["users_id"], $showuserlink);
-                $out .= "</td>";
-                $out .= "<td class='center'>";
-                $out .= $data['consumed'];
-                $out .= "</td></tr>";
-            }
+        //         $out .= "<td class='center'>";
+        //         $out .= getUserName($data["users_id"], $showuserlink);
+        //         $out .= "</td>";
+        //         $out .= "<td class='center'>";
+        //         $out .= $data['consumed'];
+        //         $out .= "</td></tr>";
+        //     }
 
-            $out .= $header_begin . $header_bottom . $header_end;
-            $out .= "</table>";
+        //     $out .= $header_begin . $header_bottom . $header_end;
+        //     $out .= "</table>";
 
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                $out .= Html::showMassiveActions($massiveactionparams);
-                $out .= Html::closeForm(false);
-            }
-        } else {
-            $out .= "<p class='center b'>" . __('No credit was recorded', 'credit') . "</p>";
-        }
-        $out .= "</div>";
+        //     if ($canedit) {
+        //         $massiveactionparams['ontop'] = false;
+        //         $out .= Html::showMassiveActions($massiveactionparams);
+        //         $out .= Html::closeForm(false);
+        //     }
+        // }
 
-        $out .= "<div class='spaced'>";
-        $out .= "<table class='tab_cadre_fixe'>";
-        $out .= "<tr class='tab_bg_1'><th colspan='2'>";
-        $out .= __('Active credit vouchers for ticket entity', 'credit');
-        $out .= "</th></tr></table>";
-        $out .= "</div>";
-        echo $out;
+        TemplateRenderer::getInstance()->display('@credit/tickets/form.html.twig', [
+            'rand'                  => $rand,
+            'entity_id'             => $ticket->getEntityID(),
+            'type_name'             => self::getTypeName(2),
+            'creditentityclass'     => PluginCreditEntity::class,
+            'form_url'              => self::getFormUrl(),
+            'conditions'            => PluginCreditEntity::getActiveFilter(),
+            'canedit'               => $canedit,
+            'ID'                    => $ID,
+        ]);
 
         $Entity = new Entity();
         $Entity->getFromDB($ticket->fields['entities_id']);
@@ -430,7 +430,7 @@ class PluginCreditTicket extends CommonDBTM
             'type_name'             => self::getTypeName(2),
             'condition'             => PluginCreditEntity::getActiveFilter(),
             'creditentityclass'     => PluginCreditEntity::class,
-            'plugin_credit_geturl'  => plugin_credit_geturl(),
+            'plugin_credit_geturl'  => plugin_credit_geturl()
         ]);
     }
 
