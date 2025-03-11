@@ -29,11 +29,8 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 /** @var DBmysql $DB */
 global $DB;
@@ -66,10 +63,8 @@ if (isset($_POST["entity"])) {
         $consumed = (int)$ticket_result['consumed_total'];
         $max      = max(0, $quantity_sold - $consumed);
 
-        echo 'dzd';
-        return $max;
+        echo $max;
     } else {
-        echo 'dzd2';
-        return 100000;
+        echo 100000;
     }
 }
