@@ -183,149 +183,56 @@ class PluginCreditTicket extends CommonDBTM
         $canedit = false;
         if (Session::haveRight(Entity::$rightname, UPDATE)) {
             $canedit = true; // Entity admin has always right to update credits
-        } else if (
+        } elseif (
             $ticket->canEdit($ID)
             && !in_array($ticket->fields['status'], array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()))
         ) {
             $canedit = true;
         }
 
-        $out = "";
-        if ($canedit) {
-            $rand = mt_rand();
-            $out .= "<div class='firstbloc'>";
-            $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
-            $out .= self::getFormUrl() . "'>";
-            $out .= "<input type='hidden' name='tickets_id' value='$ID'>";
-            $out .= "<label for='voucher'>";
-            $out .= __('Voucher name', 'credit');
-            $out .= "</label>";
-            $out .= ' ';
-            $out .= PluginCreditEntity::dropdown(
-                [
-                    'name'      => 'plugin_credit_entities_id',
-                    'comments'  => false,
-                    'entity'    => $ticket->getEntityID(),
-                    'display'   => false,
-                    'condition' => PluginCreditEntity::getActiveFilter(),
-                    'rand'      => $rand
-                ]
-            );
-            $out .= ' ';
-            $out .= "<label for='plugin_credit_quantity'>";
-            $out .= __('Quantity consumed', 'credit');
-            $out .= "</label>";
-            $out .= ' ';
-            $out .= "<span id='plugin_credit_quantity_container$rand'>";
-            $out .= Dropdown::showNumber('', ['value' => null, 'min' => 0, 'max' => 0, 'display' => false]); // placeholder
-            $out .= "</span>";
-            $out .= Ajax::updateItemOnSelectEvent(
-                "dropdown_plugin_credit_entities_id$rand",
-                "plugin_credit_quantity_container$rand",
-                plugin_credit_geturl() . "ajax/dropdownQuantity.php",
-                ['entity' => '__VALUE__'],
-                false
-            );
-            $out .= ' ';
-            $out .= "<input type='submit' name='add' value='" . _sx('button', 'Add') . "' class='submit'>";
-            $out .= Html::closeForm(false);
-            $out .= "</div>";
-
-            PluginCreditTicketConfig::showForTicket($ticket);
-        }
-
-        $out .= "<div class='spaced'>";
-        $out .= "<table class='tab_cadre_fixe'>";
-        $out .= "<tr class='tab_bg_1'><th colspan='2'>";
-        $out .= __('Consumed credits for this ticket', 'credit');
-        $out .= "</th></tr></table></div>";
-
         $number = self::countForItem($ticket);
         $rand   = mt_rand();
 
-        // if ($number) {
-        //     $out .= "<div class='spaced'>";
+        $entries = [];
 
-        //     if ($canedit) {
-        //         $out .= Html::getOpenMassiveActionsForm('mass' . __CLASS__ . $rand);
-        //         $massiveactionparams =  [
-        //             'num_displayed'    => $number,
-        //             'container'        => 'mass' . __CLASS__ . $rand,
-        //             'rand'             => $rand,
-        //             'display'          => false,
-        //             'specific_actions' => [
-        //                 'update' => _x('button', 'Update'),
-        //                 'purge'  => _x('button', 'Delete permanently')
-        //             ]
-        //         ];
-        //         $out .= Html::showMassiveActions($massiveactionparams);
-        //     }
+        if ($number) {
+            if ($canedit) {
+                $massiveactionparams = [
+                    'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
+                    'container'        => 'mass' . __CLASS__ . $rand,
+                    'itemtype'         => PluginCreditTicket::class,
+                    'specific_actions' => [
+                        'update'    => _x('button', 'Update'),
+                        'purge'     => _x('button', 'Delete permanently')
+                    ]
+                ];
 
-        //     $out .= "<table class='tab_cadre_fixehov'>";
-        //     $header_begin  = "<tr>";
-        //     $header_top    = '';
-        //     $header_bottom = '';
-        //     $header_end    = '';
-        //     if ($canedit) {
-        //         $header_begin  .= "<th width='10'>";
-        //         $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-        //         $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-        //         $header_end    .= "</th>";
-        //     }
-        //     $header_end .= "<th>" . __('Voucher name', 'credit') . "</th>";
-        //     $header_end .= "<th>" . __('Voucher type', 'credit') . "</th>";
-        //     $header_end .= "<th>" . __('Date consumed', 'credit') . "</th>";
-        //     $header_end .= "<th>" . __('User consumed', 'credit') . "</th>";
-        //     $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
-        //     $header_end .= "</tr>";
-        //     $out .= $header_begin . $header_top . $header_end;
+                foreach (self::getAllForTicket($ID) as $data) {
+                    $credit_entity = new PluginCreditEntity();
+                    $credit_entity->getFromDB($data['plugin_credit_entities_id']);
 
-        //     foreach (self::getAllForTicket($ID) as $data) {
-        //         $out .= "<tr class='tab_bg_2'>";
-        //         if ($canedit) {
-        //             $out .= "<td width='10'>";
-        //             $out .= Html::getMassiveActionCheckBox(__CLASS__, $data["id"]);
-        //             $out .= "</td>";
-        //         }
+                    if (!empty($data['plugin_credit_types_id'])) {
+                        $type = new PluginCreditType();
+                        $type = $type->getById($data['plugin_credit_types_id']);
+                        if ($type) {
+                            $data['plugin_credit_types_id'] = $type->getLink();
+                        }
+                    } else {
+                        $data['plugin_credit_types_id'] = '';
+                    }
 
-        //         $credit_entity = new PluginCreditEntity();
-        //         $credit_entity->getFromDB($data['plugin_credit_entities_id']);
-
-        //         $out .= "<td width='40%' class='center'>";
-        //         $out .= $credit_entity->getName();
-        //         $out .= "</td>";
-        //         $out .= "<td class='center'>";
-        //         $out .= Dropdown::getDropdownName(
-        //             PluginCreditType::getTable(),
-        //             $credit_entity->getField('plugin_credit_types_id')
-        //         );
-        //         $out .= "</td>";
-        //         $out .= "<td class='center'>";
-        //         $out .= Html::convDate($data["date_creation"]);
-        //         $out .= "</td>";
-
-        //         $showuserlink = 0;
-        //         if (Session::haveRight('user', READ)) {
-        //              $showuserlink = 1;
-        //         }
-
-        //         $out .= "<td class='center'>";
-        //         $out .= getUserName($data["users_id"], $showuserlink);
-        //         $out .= "</td>";
-        //         $out .= "<td class='center'>";
-        //         $out .= $data['consumed'];
-        //         $out .= "</td></tr>";
-        //     }
-
-        //     $out .= $header_begin . $header_bottom . $header_end;
-        //     $out .= "</table>";
-
-        //     if ($canedit) {
-        //         $massiveactionparams['ontop'] = false;
-        //         $out .= Html::showMassiveActions($massiveactionparams);
-        //         $out .= Html::closeForm(false);
-        //     }
-        // }
+                    $entries[] = array_merge($data, [
+                        'id'                        => $data['id'],
+                        'name'                      => $credit_entity->getName(),
+                        'plugin_credit_types_id'    => $data['plugin_credit_types_id'],
+                        'date_creation'             => $data['date_creation'],
+                        'users_id'                  => Session::haveRight('user', READ) == true ? getUserLink($data["users_id"]) : getUserName($data["users_id"]),
+                        'consumed'                  => $data['consumed'],
+                        'itemtype'                  => PluginCreditTicket::class,
+                    ]);
+                }
+            }
+        }
 
         TemplateRenderer::getInstance()->display('@credit/tickets/form.html.twig', [
             'rand'                  => $rand,
@@ -336,6 +243,8 @@ class PluginCreditTicket extends CommonDBTM
             'conditions'            => PluginCreditEntity::getActiveFilter(),
             'canedit'               => $canedit,
             'ID'                    => $ID,
+            'entries'               => $entries,
+            'massiveactionparams'   => $massiveactionparams ?? []
         ]);
 
         $Entity = new Entity();
@@ -413,6 +322,7 @@ class PluginCreditTicket extends CommonDBTM
         }
 
         $rand = mt_rand();
+
         if ($canedit) {
             //get default value for ticket
             $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
@@ -420,17 +330,22 @@ class PluginCreditTicket extends CommonDBTM
                 //get default value for entity
                 $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
             }
+
+            if ($default_credit != 0) {
+                $max = PluginCreditEntity::getMaximumConsumptionForCredit($default_credit);
+            }
         }
 
         TemplateRenderer::getInstance()->display('@credit/tickets/consume.html.twig', [
             'rand'                  => $rand,
             'consume'               => $consume,
             'default_credit'        => $default_credit,
+            'default_credit_max'    => $max ?? 0,
             'entity_id'             => $ticket->getEntityID(),
             'type_name'             => self::getTypeName(2),
             'condition'             => PluginCreditEntity::getActiveFilter(),
             'creditentityclass'     => PluginCreditEntity::class,
-            'plugin_credit_geturl'  => plugin_credit_geturl()
+            'plugin_credit_geturl'  => plugin_credit_geturl(),
         ]);
     }
 

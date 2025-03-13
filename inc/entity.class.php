@@ -216,6 +216,9 @@ class PluginCreditEntity extends CommonDBTM
                 'quantity'                  => $quantity_sold,
                 'itemtype'                  => PluginCreditEntity::class,
                 'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
+                'quantity_consumed'         => PluginCreditEntity::getConsumedForCredit($data['id']),
+                'quantity_remaining'        => $data['quantity'] > 0 ? $data['quantity'] - PluginCreditEntity::getConsumedForCredit($data['id']) : 'Unlimited',
+                'entities_id'               => Entity::badgeCompletenameLink($entity),
             ]);
         }
 
@@ -709,5 +712,58 @@ SQL;
                 ),
             ],
         ];
+    }
+
+    public static function getMaximumConsumptionForCredit(int $credit_id)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $entity_query = [
+            'SELECT' => ['overconsumption_allowed', 'quantity'],
+            'FROM'   => 'glpi_plugin_credit_entities',
+            'WHERE'  => [
+                'id' => $credit_id,
+            ],
+        ];
+        $entity_result = $DB->request($entity_query)->current();
+        $overconsumption_allowed = $entity_result['overconsumption_allowed'];
+        $quantity_sold           = (int)$entity_result['quantity'];
+
+        if (0 !== $quantity_sold && !$overconsumption_allowed) {
+            $consumed = self::getConsumedForCredit($credit_id);
+            $max      = max(0, $quantity_sold - $consumed);
+
+            return $max;
+        } else {
+            return 100000;
+        }
+    }
+
+    /**
+     * Get the total consumption for a credit vouchers.
+     *
+     * @param int $credit_id ID of the credit vouchers
+     *
+     * @return int Total consumption
+     */
+    public static function getConsumedForCredit(int $credit_id)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $ticket_query = [
+            'SELECT' => [
+                'SUM' => 'consumed AS consumed_total',
+            ],
+            'FROM'   => 'glpi_plugin_credit_tickets',
+            'WHERE'  => [
+                'plugin_credit_entities_id' => $credit_id,
+            ],
+        ];
+
+        $ticket_result = $DB->request($ticket_query)->current();
+
+        return (int)$ticket_result['consumed_total'];
     }
 }

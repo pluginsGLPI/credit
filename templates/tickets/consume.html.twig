@@ -27,24 +27,29 @@
 
     <div class="quantity">
         {{ fields.numberField(
-            'plugin_credit_quantity_container',
+            'plugin_credit_quantity',
             0,
             __('Quantity consumed', 'credit'),
             {
                 'entity': entity_id,
                 'condition': condition,
-                'max': 0,
+                'max': default_credit_max,
                 'min': 0,
+                'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>' ~ default_credit_max,
             }
         ) }}
     </div>
 
     <script>
         function getQuantityRemaining{{ rand }}(val) {
-            quantity = document.querySelector('[id*="plugin-credit-quantity-container"]');
+            quantity = document.querySelector('[id*="plugin-credit-quantity"]');
+            quantity_label = document.querySelector('[for*="plugin-credit-quantity"]');
+            console.log('val')
             if (val == 0) {
                 document.querySelector('.quantity').style.display = 'none';
+                quantity.max = 0;
                 quantity.value = 0;
+                quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
             } else {
                 document.querySelector('.quantity').style.display = 'block';
                 $.ajax({
@@ -56,6 +61,7 @@
                 }).done(function (data) {
                     quantity.max = data;
                     quantity.value = 0;
+                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                 });
             }
         }
