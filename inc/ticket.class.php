@@ -233,6 +233,7 @@ class PluginCreditTicket extends CommonDBTM
                 }
             }
         }
+        PluginCreditTicketConfig::showForTicket($ticket);
 
         TemplateRenderer::getInstance()->display('@credit/tickets/form.html.twig', [
             'rand'                  => $rand,
