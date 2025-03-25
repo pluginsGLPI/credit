@@ -11,47 +11,69 @@
         'plugin_credit_consumed_voucher',
         consume,
         __('Consume a voucher ?', 'credit'),
-    ) }}
-
-    {{ fields.dropdownField(
-        creditentityclass,
-        'plugin_credit_entities_id',
-        default_credit,
-        __('Voucher name', 'credit'),
         {
-            'entity': entity_id,
-            'condition': condition,
-            'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
+            'additional_attributes': {
+                'onchange': 'showCreditDiv(this.value)',
+            }
         }
     ) }}
 
-    <div class="quantity">
-        {{ fields.numberField(
-            'plugin_credit_quantity',
-            0,
-            __('Quantity consumed', 'credit'),
-            {
-                'entity': entity_id,
-                'condition': condition,
-                'max': default_credit_max,
-                'min': 0,
-                'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>' ~ default_credit_max,
-            }
-        ) }}
+    <div id="creditvoucherblock" style="display: {% if consume == 1 %}block{% else %}none{% endif %}">
+        <div class="row">
+            {{ fields.dropdownField(
+                creditentityclass,
+                'plugin_credit_entities_id',
+                default_credit,
+                __('Voucher name', 'credit'),
+                {
+                    'entity': entity_id,
+                    'condition': condition,
+                    'on_change': 'getQuantityRemaining(this.value);',
+                    'field_class': 'col-6 col-sm-6',
+                }
+            ) }}
+
+            {{ fields.numberField(
+                'plugin_credit_quantity',
+                0,
+                __('Quantity consumed', 'credit'),
+                {
+                    'entity': entity_id,
+                    'condition': condition,
+                    'max': default_credit_max,
+                    'min': 0,
+                    'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>' ~ default_credit_max,
+                    'field_class': 'col-6 col-sm-6',
+                    'input_class': 'col-xxl-5',
+                    'label_class': 'col-xxl-7',
+                }
+            ) }}
+        </div>
     </div>
 
     <script>
-        function getQuantityRemaining{{ rand }}(val) {
-            quantity = document.querySelector('[id*="plugin-credit-quantity"]');
-            quantity_label = document.querySelector('[for*="plugin-credit-quantity"]');
-            console.log('val')
+        function showCreditDiv() {
+            const creditVoucherBlock = document.getElementById('creditvoucherblock');
+            if (creditVoucherBlock) {
+                creditVoucherBlock.style.display = creditVoucherBlock.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function getQuantityRemaining(val) {
+            consumeblock = document.querySelector('[name="credit_consume"]');
+            quantity = consumeblock.querySelector('[id*="plugin-credit-quantity"]');
+            quantity_label = consumeblock.querySelector('[for*="plugin-credit-quantity"]');
             if (val == 0) {
-                document.querySelector('.quantity').style.display = 'none';
+                quantity_label.style.display = 'none';
+                quantity.style.display = 'none';
+
                 quantity.max = 0;
                 quantity.value = 0;
                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
             } else {
-                document.querySelector('.quantity').style.display = 'block';
+                quantity_label.style.display = 'block';
+                quantity.style.display = 'block';
+
                 $.ajax({
                     type: 'POST',
                     url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
