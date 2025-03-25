@@ -2,7 +2,7 @@
 
 <div class="credit_ticket_form">
     {% if canedit %}
-        <div class="firstblock">
+        <div class="formblock">
             <div class="hr-text mt-2">
                 <i class="fa-2x ti ti-coin"></i>
                 <span>{{ __('Add a voucher to the ticket', 'credit') }}</span>
@@ -18,7 +18,7 @@
                         {
                             'entity': entity_id,
                             'condition': conditions,
-                            'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
+                            'on_change': 'getQuantityRemainingForm(this.value);',
                             'field_class': 'col-4 col-sm-4',
                         }
                     ) }}
@@ -38,9 +38,10 @@
                     ) }}
 
                     <script>
-                        function getQuantityRemaining{{ rand }}(val) {
-                            quantity = document.querySelector('[id*="plugin-credit-quantity"]');
-                            quantity_label = document.querySelector('[for*="plugin-credit-quantity"]');
+                        function getQuantityRemainingForm(val) {
+                            var formblock = document.querySelector('.formblock');
+                            var quantity = formblock.querySelector('[id*="plugin-credit-quantity"]');
+                            var quantity_label = formblock.querySelector('[for*="plugin-credit-quantity"]');
 
                             if (val == 0) {
                                 quantity.value = 0;
