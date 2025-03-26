@@ -228,7 +228,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-19T15:46:42+00:00"
+          "time": "2025-02-19T15:46:42+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
