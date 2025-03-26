@@ -10,6 +10,7 @@
             <form name="creditentity_form{{ rand }}" id="creditentity_form{{ rand }}" method="post" action="{{ form_url }}">
                 <div class="row">
                     <input type="hidden" name="tickets_id" value="{{ ID }}">
+                    <div class="col-1 col-sm-1"></div>
                     {{ fields.dropdownField(
                         creditentityclass,
                         'plugin_credit_entities_id',
@@ -22,6 +23,7 @@
                             'field_class': 'col-4 col-sm-4',
                         }
                     ) }}
+                    <div class="col-1 col-sm-1"></div>
 
                     {{ fields.numberField(
                         'plugin_credit_quantity',
@@ -98,7 +100,7 @@
         'formatters': {
             'name': 'raw_html',
             'plugin_credit_types_id': 'raw_html',
-            'date_creation': 'date',
+            'date_creation': 'datetime',
             'users_id': 'raw_html',
         },
         'entries': entries,
