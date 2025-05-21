@@ -340,7 +340,7 @@ class PluginCreditTicket extends CommonDBTM
         TemplateRenderer::getInstance()->display('@credit/tickets/consume.html.twig', [
             'rand'                  => $rand,
             'consume'               => $consume,
-            'default_credit'        => $default_credit,
+            'default_credit'        => $default_credit ?? 0,
             'default_credit_max'    => $max ?? 0,
             'entity_id'             => $ticket->getEntityID(),
             'type_name'             => self::getTypeName(2),
