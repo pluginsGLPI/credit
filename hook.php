@@ -29,6 +29,9 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * Plugin install process
  *
@@ -63,6 +66,7 @@ function plugin_credit_install()
         'PluginCreditEntity',
         'creditexpired',
         DAY_TIMESTAMP,
+        // @phpstan-ignore-next-line
         [
             'comment' => '',
             'mode' => CronTask::MODE_EXTERNAL,
@@ -73,6 +77,7 @@ function plugin_credit_install()
         'PluginCreditEntity',
         'lowcredits',
         DAY_TIMESTAMP,
+        // @phpstan-ignore-next-line
         [
             'comment' => '',
             'mode' => CronTask::MODE_INTERNAL,
