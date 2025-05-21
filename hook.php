@@ -62,22 +62,22 @@ function plugin_credit_install()
 
     $migration->executeMigration();
 
-    // @phpstan-ignore-next-line
     CronTask::register(
         'PluginCreditEntity',
         'creditexpired',
         DAY_TIMESTAMP,
+        // @phpstan-ignore-next-line
         [
             'comment' => '',
             'mode' => CronTask::MODE_EXTERNAL,
         ]
     );
 
-    // @phpstan-ignore-next-line
     CronTask::register(
         'PluginCreditEntity',
         'lowcredits',
         DAY_TIMESTAMP,
+        // @phpstan-ignore-next-line
         [
             'comment' => '',
             'mode' => CronTask::MODE_INTERNAL,
