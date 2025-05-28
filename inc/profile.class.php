@@ -36,6 +36,11 @@ class PluginCreditProfile extends Profile
         return self::createTabEntry(PluginCreditTicket::getTypeName(Session::getPluralNumber()));
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
+    }
+
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $profile = new self();
