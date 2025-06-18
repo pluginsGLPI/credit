@@ -29,12 +29,24 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
 Session::haveRight("ticket", UPDATE);
 
 $PluginCreditTicket = new PluginCreditTicket();
-
+if ($_REQUEST['plugin_credit_entities_id'] == 0) {
+    Session::addMessageAfterRedirect(
+        __('Credit voucher entity must be selected.', 'credit'),
+        true,
+        ERROR
+    );
+    Html::back();
+} elseif ($_REQUEST['plugin_credit_quantity'] == 0) {
+    Session::addMessageAfterRedirect(
+        __('Credit voucher quantity must be greater than 0.', 'credit'),
+        true,
+        ERROR
+    );
+    Html::back();
+}
 $input = [
     'tickets_id'                => $_REQUEST['tickets_id'],
     'plugin_credit_entities_id' => $_REQUEST['plugin_credit_entities_id'],
@@ -50,4 +62,4 @@ if ($PluginCreditTicket->add($input)) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new Glpi\Exception\Http\BadRequestHttpException();
