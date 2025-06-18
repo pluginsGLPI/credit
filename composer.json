@@ -3,6 +3,7 @@
         "php": ">=8.2"
     },
     "require-dev": {
+        "friendsoftwig/twigcs": "^6.5",
         "glpi-project/tools": "^0.7.5",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/extension-installer": "^1.4",
@@ -18,6 +19,11 @@
         "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Glpi\\Tools\\": "../../tools/src/"
         }
     }
 }
