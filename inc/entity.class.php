@@ -40,20 +40,14 @@ class PluginCreditEntity extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item instanceof CommonDBTM) {
-            $nb = self::countForItem($item);
-        } else {
+        if ($item instanceof Entity) {
             $nb = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = self::countForItem($item);
+            }
+            return self::createTabEntry(self::getTypeName($nb), $nb);
         }
-        switch ($item->getType()) {
-            case 'Entity':
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(self::getTypeName($nb), $nb);
-                }
-                return '';
-            default:
-                return self::getTypeName($nb);
-        }
+        return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
