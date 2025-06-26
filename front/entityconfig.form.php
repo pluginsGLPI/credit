@@ -30,6 +30,7 @@
  */
 
 include('../../../inc/includes.php');
+Session::checkLoginUser();
 
 $entity_config = new PluginCreditEntityConfig();
 

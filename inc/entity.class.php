@@ -40,25 +40,20 @@ class PluginCreditEntity extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = self::countForItem($item);
-        switch ($item->getType()) {
-            case 'Entity':
-                if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(self::getTypeName($nb), $nb);
-                }
-                return '';
-            default:
-                return self::getTypeName($nb);
+        if ($item instanceof Entity) {
+            $nb = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = self::countForItem($item);
+            }
+            return self::createTabEntry(self::getTypeName($nb), $nb);
         }
         return '';
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'Entity':
-                self::showForItemtype($item);
-                break;
+        if ($item instanceof Entity) {
+            self::showForItemtype($item);
         }
         return true;
     }
@@ -90,7 +85,7 @@ class PluginCreditEntity extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (isset($input['name']) && strlen($input['name']) == '') {
+        if (isset($input['name']) && strlen($input['name']) === 0) {
             Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
@@ -652,7 +647,7 @@ class PluginCreditEntity extends CommonDBTM
                     KEY `end_date` (`end_date`)
                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             // 1.5.0
             $migration->addField($table, 'overconsumption_allowed', 'bool', ['update' => "1"]);
