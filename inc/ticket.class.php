@@ -199,7 +199,7 @@ class PluginCreditTicket extends CommonDBTM
                     'comments'  => false,
                     'entity'    => $ticket->getEntityID(),
                     'display'   => false,
-                    'condition' => PluginCreditEntity::getActiveFilter(),
+                    'condition' => PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type']),
                     'rand'      => $rand
                 ]
             );
@@ -332,7 +332,7 @@ class PluginCreditTicket extends CommonDBTM
 
         $Entity = new Entity();
         $Entity->getFromDB($ticket->fields['entities_id']);
-        PluginCreditEntity::showForItemtype($Entity, 'Ticket');
+        PluginCreditEntity::showForItemtype($Entity, 'Ticket', $ticket->fields['type']);
     }
 
     /**
@@ -435,7 +435,7 @@ class PluginCreditTicket extends CommonDBTM
                 'entity'    => $ticket->getEntityID(),
                 'display'   => false,
                 'value'     => $default_credit,
-                'condition' => PluginCreditEntity::getActiveFilter(),
+                'condition' => PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type']),
                 'rand'      => $rand
             ]);
             $out .= "</td><td colspan='2'></td>";
