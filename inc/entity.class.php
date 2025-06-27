@@ -80,6 +80,13 @@ class PluginCreditEntity extends CommonDBTM
             $input['end_date'] .= ' 23:59:59';
         }
 
+        if (!isset($input['visible_on_incident'])) {
+            $input['visible_on_incident'] = 1;
+        }
+        if (!isset($input['visible_on_request'])) {
+            $input['visible_on_request'] = 1;
+        }
+
         return $input;
     }
 
@@ -137,8 +144,9 @@ class PluginCreditEntity extends CommonDBTM
      *
      * @param $entity object Entity
      * @param $itemtype string Entity or Ticket
+     * @param $ticket_type int Tickettype (1=Incident, 2=Request)
      */
-    public static function showForItemtype(Entity $entity, $itemtype = 'Entity')
+    public static function showForItemtype(Entity $entity, $itemtype = 'Entity', $ticket_type = null)
     {
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
@@ -215,6 +223,15 @@ class PluginCreditEntity extends CommonDBTM
                 'unit'    => '%'
             ]);
             $out .= "</td>";
+            $out .= "<td class='tab_bg_2 right'>" . __('Visible on incident', 'credit') . "</td>";
+            $out .= "<td>";
+            $out .= Dropdown::showYesNo("visible_on_incident", 1, -1, ['display' => false]);
+            $out .= "</td>";
+            $out .= "<td class='tab_bg_2 right'>" . __('Visible on request', 'credit') . "</td>";
+            $out .= "<td>";
+            $out .= Dropdown::showYesNo("visible_on_request", 1, -1, ['display' => false]);
+            $out .= "</td>";
+            $out .= "<td colspan='2'></td>";
             $out .= "</tr>";
             $out .= "<tr class='tab_bg_1'>";
             $out .= "<td class='tab_bg_2 center' colspan='8'>";
@@ -276,6 +293,8 @@ class PluginCreditEntity extends CommonDBTM
             $header_end .= "<th>" . __('Quantity remaining', 'credit') . "</th>";
             $header_end .= "<th>" . __('Allow overconsumption', 'credit') . "</th>";
             $header_end .= "<th>" . __('Low credits alert') . "</th>";
+            $header_end .= "<th>" . __('Visible on incident', 'credit') . "</th>";
+            $header_end .= "<th>" . __('Visible on request', 'credit') . "</th>";
             $header_end .= "<th>" . __('Entity') . "</th>";
             $header_end .= "<th>" . __('Child entities') . "</th>";
             $header_end .= "</tr>";
@@ -286,6 +305,14 @@ class PluginCreditEntity extends CommonDBTM
                 $sqlfilter = [
                     'is_active' => '1'
                 ];
+                
+                if ($ticket_type !== null) {
+                    if ($ticket_type == 1) { // Incident
+                        $sqlfilter['visible_on_incident'] = 1;
+                    } elseif ($ticket_type == 2) { // Request
+                        $sqlfilter['visible_on_request'] = 1;
+                    }
+                }
             }
 
             foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
@@ -351,6 +378,14 @@ class PluginCreditEntity extends CommonDBTM
 
                 $out .= "<td>";
                 $out .= $data["low_credit_alert"] == -1 ? __('Disabled') : $data["low_credit_alert"] . '%';
+                $out .= "</td>";
+
+                $out .= "<td>";
+                $out .= ($data["visible_on_incident"]) ? __('Yes') : __('No');
+                $out .= "</td>";
+
+                $out .= "<td>";
+                $out .= ($data["visible_on_request"]) ? __('Yes') : __('No');
                 $out .= "</td>";
 
                 $out .= "<td>";
@@ -444,6 +479,22 @@ class PluginCreditEntity extends CommonDBTM
             'step'    => 10,
             'toadd'   => [-1 => __('Disabled')],
             'unit'    => '%'
+        ];
+
+        $tab[] = [
+            'id'       => 998,
+            'table'    => self::getTable(),
+            'field'    => 'visible_on_incident',
+            'name'     => __('Visible on incident', 'credit'),
+            'datatype' => 'bool',
+        ];
+
+        $tab[] = [
+            'id'       => 999,
+            'table'    => self::getTable(),
+            'field'    => 'visible_on_request',
+            'name'     => __('Visible on request', 'credit'),
+            'datatype' => 'bool',
         ];
 
         return $tab;
@@ -637,6 +688,8 @@ class PluginCreditEntity extends CommonDBTM
                     `quantity` int NOT NULL DEFAULT '0',
                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
                     `low_credit_alert` int DEFAULT NULL,
+                    `visible_on_incident` tinyint NOT NULL DEFAULT '1',
+                    `visible_on_request` tinyint NOT NULL DEFAULT '1',
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`),
                     KEY `entities_id` (`entities_id`),
@@ -661,6 +714,10 @@ SQL;
 
             // 1.13.2
             $migration->addField($table, 'low_credit_alert', 'int', ['update' => "NULL"]);
+            
+            // new
+            $migration->addField($table, 'visible_on_incident', 'bool', ['update' => "1"]);
+            $migration->addField($table, 'visible_on_request', 'bool', ['update' => "1"]);
         }
 
         return true;
@@ -695,5 +752,24 @@ SQL;
                 ),
             ],
         ];
+    }
+
+    /**
+     * Get active filter with visibility conditions based on ticket type
+     *
+     * @param int $ticket_type Type de ticket (1=Incident, 2=Demande)
+     * @return array Filter conditions
+     */
+    public static function getActiveFilterForTicketType($ticket_type)
+    {
+        $filter = self::getActiveFilter();
+        
+        if ($ticket_type == 1) { // Incident
+            $filter['glpi_plugin_credit_entities.visible_on_incident'] = 1;
+        } elseif ($ticket_type == 2) { // Request
+            $filter['glpi_plugin_credit_entities.visible_on_request'] = 1;
+        }
+        
+        return $filter;
     }
 }

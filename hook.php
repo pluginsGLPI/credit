@@ -176,3 +176,11 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
         ];
     }
 }
+
+function plugin_credit_dashboardcards($cards = []): array
+{
+    if (is_null($cards)) {
+        $cards = [];
+    }
+    return array_merge($cards, PluginCreditDashboardCards::getCards());
+}
