@@ -241,7 +241,7 @@ class PluginCreditEntity extends CommonDBTM
             }
 
             $entries[] = array_merge($data, [
-                'name'                      => $item->getLink(),
+                'name'                      => $item->getName(),
                 'quantity'                  => $quantity_sold,
                 'itemtype'                  => PluginCreditEntity::class,
                 'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
