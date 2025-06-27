@@ -51,6 +51,11 @@ class PluginCreditTicketConfig extends CommonDBTM
      */
     public static function getDefaultForTicket($ticket_id, $itemtype)
     {
+        $ticket = new Ticket();
+        if (!$ticket->getFromDB($ticket_id)) {
+            return null;
+        }
+
         $ticket_config = new self();
         $ticket_config->getFromDBByCrit(['tickets_id' => $ticket_id]);
 
@@ -71,7 +76,7 @@ class PluginCreditTicketConfig extends CommonDBTM
 
         $criteria = array_merge(
             ['id' => $voucher_id],
-            PluginCreditEntity::getActiveFilter()
+            PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type'])
         );
         if (countElementsInTable(PluginCreditEntity::getTable(), $criteria) === 0) {
             $voucher_id = null;
@@ -113,7 +118,7 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'entity_sons' => true,
                 'display'     => false,
                 'value'       => $ticket->input['plugin_credit_entities_id_default'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
+                'condition'   => PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type']),
                 'comments'    => false,
                 'rand'        => $rand,
                 'on_change'   => 'PluginCredit.propagateDefaultVoucherValue(this)',
@@ -128,7 +133,7 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'display'     => false,
                 'value'       => $ticket->input['plugin_credit_entities_id_followups'] ??
                                  $ticket_config->fields['plugin_credit_entities_id_followups'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
+                'condition'   => PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type']),
                 'comments'    => false,
                 'rand'        => $rand,
                 'width'       => $embed_in_ticket_form ? '100%' : '',
@@ -142,7 +147,7 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'display'     => false,
                 'value'       => $ticket->input['plugin_credit_entities_id_tasks'] ??
                                  $ticket_config->fields['plugin_credit_entities_id_tasks'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
+                'condition'   => PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type']),
                 'comments'    => false,
                 'rand'        => $rand,
                 'width'       => $embed_in_ticket_form ? '100%' : '',
@@ -156,7 +161,7 @@ class PluginCreditTicketConfig extends CommonDBTM
                 'display'     => false,
                 'value'       => $ticket->input['plugin_credit_entities_id_solutions'] ??
                                  $ticket_config->fields['plugin_credit_entities_id_solutions'] ?? 0,
-                'condition'   => PluginCreditEntity::getActiveFilter(),
+                'condition'   => PluginCreditEntity::getActiveFilterForTicketType($ticket->fields['type']),
                 'comments'    => false,
                 'rand'        => $rand,
                 'width'       => $embed_in_ticket_form ? '100%' : '',
