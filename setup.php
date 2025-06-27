@@ -29,12 +29,14 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.14.1');
+use Glpi\Plugin\Hooks;
+
+define('PLUGIN_CREDIT_VERSION', '1.15.0-beta2');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "10.0.0");
+define("PLUGIN_CREDIT_MIN_GLPI", "11.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "10.0.99");
+define("PLUGIN_CREDIT_MAX_GLPI", "11.0.99");
 
 /**
  * Init hooks of the plugin.
@@ -63,7 +65,7 @@ function plugin_init_credit()
         if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
             Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
-            $PLUGIN_HOOKS['post_item_form']['credit'] = [
+            $PLUGIN_HOOKS[Hooks::PRE_ITIL_INFO_SECTION]['credit'] = [
                 'PluginCreditTicket',
                 'displayVoucherInTicketProcessingForm'
             ];
@@ -110,4 +112,11 @@ function plugin_version_credit()
             ]
         ]
     ];
+}
+
+function plugin_credit_geturl(): string
+{
+    /** @var array $CFG_GLPI */
+    global $CFG_GLPI;
+    return sprintf('%s/plugins/credit/', $CFG_GLPI['url_base']);
 }
