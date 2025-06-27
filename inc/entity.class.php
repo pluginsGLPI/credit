@@ -305,7 +305,7 @@ class PluginCreditEntity extends CommonDBTM
                 $sqlfilter = [
                     'is_active' => '1'
                 ];
-                
+
                 if ($ticket_type !== null) {
                     if ($ticket_type == 1) { // Incident
                         $sqlfilter['visible_on_incident'] = 1;
@@ -714,7 +714,7 @@ SQL;
 
             // 1.13.2
             $migration->addField($table, 'low_credit_alert', 'int', ['update' => "NULL"]);
-            
+
             // new
             $migration->addField($table, 'visible_on_incident', 'bool', ['update' => "1"]);
             $migration->addField($table, 'visible_on_request', 'bool', ['update' => "1"]);
@@ -763,13 +763,13 @@ SQL;
     public static function getActiveFilterForTicketType($ticket_type)
     {
         $filter = self::getActiveFilter();
-        
+
         if ($ticket_type == 1) { // Incident
             $filter['glpi_plugin_credit_entities.visible_on_incident'] = 1;
         } elseif ($ticket_type == 2) { // Request
             $filter['glpi_plugin_credit_entities.visible_on_request'] = 1;
         }
-        
+
         return $filter;
     }
 }
