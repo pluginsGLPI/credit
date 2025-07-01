@@ -385,40 +385,40 @@ class PluginCreditTicket extends CommonDBTM
      * @param int $ID plugin_credit_entities_id
      */
     public static function displayConsumed($ID)
-{
-    $consumed_credits = self::getConsumedForCreditEntity($ID);
-    $tickets_data = [];
+    {
+        $consumed_credits = self::getConsumedForCreditEntity($ID);
+        $tickets_data = [];
 
-    if ($consumed_credits > 0) {
-        foreach (self::getAllForCreditEntity($ID) as $data) {
-            $Ticket = new Ticket();
-            $Ticket->getFromDB($data['tickets_id']);
+        if ($consumed_credits > 0) {
+            foreach (self::getAllForCreditEntity($ID) as $data) {
+                $Ticket = new Ticket();
+                $Ticket->getFromDB($data['tickets_id']);
 
-            $itilcat = new ITILCategory();
-            $category = __('None');
-            if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
-                $category = $itilcat->getName(['comments' => true]);
+                $itilcat = new ITILCategory();
+                $category = __('None');
+                if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
+                    $category = $itilcat->getName(['comments' => true]);
+                }
+
+                $showuserlink = Session::haveRight('user', READ) ? 1 : 0;
+
+                $tickets_data[] = [
+                    'ticket_link' => $Ticket->getLink(['linkoption' => 'target="_blank"']),
+                    'status' => Ticket::getStatus($Ticket->fields['status']),
+                    'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
+                    'category' => $category,
+                    'date_creation' => $data["date_creation"],
+                    'username' => getUserName($data["users_id"], $showuserlink),
+                    'consumed' => $data['consumed'],
+                ];
             }
-
-            $showuserlink = Session::haveRight('user', READ) ? 1 : 0;
-
-            $tickets_data[] = [
-                'ticket_link' => $Ticket->getLink(['linkoption' => 'target="_blank"']),
-                'status' => Ticket::getStatus($Ticket->fields['status']),
-                'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
-                'category' => $category,
-                'date_creation' => $data["date_creation"],
-                'username' => getUserName($data["users_id"], $showuserlink),
-                'consumed' => $data['consumed'],
-            ];
         }
-    }
 
-    TemplateRenderer::getInstance()->display('@credit/tickets/consumed_details.html.twig', [
-        'consumed_credits' => $consumed_credits,
-        'tickets_data' => $tickets_data,
-    ]);
-}
+        TemplateRenderer::getInstance()->display('@credit/tickets/consumed_details.html.twig', [
+            'consumed_credits' => $consumed_credits,
+            'tickets_data' => $tickets_data,
+        ]);
+    }
 
     /**
      * Test if consumed voucher is selected and add them.
