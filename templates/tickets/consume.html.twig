@@ -28,8 +28,9 @@
  #}
 
 {% import "components/form/fields_macros.html.twig" as fields %}
+{% set rand = random() %}
 
-<div name="credit_consume">
+<div name="credit_consume_{{ rand }}">
 
     <div class="hr-text mt-2">
         <i class="fa-2x ti ti-coin"></i>
@@ -42,12 +43,13 @@
         __('Consume a voucher ?', 'credit'),
         {
             'additional_attributes': {
-                'onchange': 'showCreditDiv(this.value)',
-            }
+                'onchange': 'showCreditDiv' ~ rand ~ '(this.value)',
+            },
+            'rand': rand,
         }
     ) }}
 
-    <div id="creditvoucherblock" style="display: {% if consume == 1 %}block{% else %}none{% endif %}">
+    <div id="creditvoucherblock{{ rand }}" style="display: {% if consume == 1 %}block{% else %}none{% endif %}">
         <div class="row">
             {{ fields.dropdownField(
                 creditentityclass,
@@ -57,8 +59,9 @@
                 {
                     'entity': entity_id,
                     'condition': condition,
-                    'on_change': 'getQuantityRemaining(this.value);',
+                    'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
                     'field_class': 'col-6 col-sm-6',
+                    'rand': rand,
                 }
             ) }}
 
@@ -75,23 +78,26 @@
                     'field_class': 'col-6 col-sm-6',
                     'input_class': 'col-xxl-5',
                     'label_class': 'col-xxl-7',
+                    'rand': rand,
                 }
             ) }}
         </div>
     </div>
 
     <script>
-        function showCreditDiv() {
-            const creditVoucherBlock = document.getElementById('creditvoucherblock');
+        function showCreditDiv{{ rand }}() {
+            const creditVoucherBlock = document.getElementById('creditvoucherblock{{ rand }}');
+            console.log('plugin-credit-quantity_{{ rand }}');
             if (creditVoucherBlock) {
                 creditVoucherBlock.style.display = creditVoucherBlock.style.display === 'none' ? 'block' : 'none';
             }
         }
 
-        function getQuantityRemaining(val) {
-            consumeblock = document.querySelector('[name="credit_consume"]');
-            quantity = consumeblock.querySelector('[id*="plugin-credit-quantity"]');
-            quantity_label = consumeblock.querySelector('[for*="plugin-credit-quantity"]');
+        function getQuantityRemaining{{ rand }}(val) {
+            console.log('plugin-credit-quantity_{{ rand }}');
+            consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
+            quantity = consumeblock.querySelector('[id*="plugin-credit-quantity_{{ rand }}"]');
+            quantity_label = consumeblock.querySelector('[for*="plugin-credit-quantity_{{ rand }}"]');
             if (val == 0) {
                 quantity_label.style.display = 'none';
                 quantity.style.display = 'none';
