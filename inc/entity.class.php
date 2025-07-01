@@ -32,35 +32,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 
-/**
- * -------------------------------------------------------------------------
- * Credit plugin for GLPI
- * -------------------------------------------------------------------------
- *
- * LICENSE
- *
- * This file is part of Credit.
- *
- * Credit is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * Credit is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Credit. If not, see <http://www.gnu.org/licenses/>.
- * -------------------------------------------------------------------------
- * @author    François Legastelois
- * @copyright Copyright (C) 2017-2023 by Credit plugin team.
- * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
- * @link      https://github.com/pluginsGLPI/credit
- * -------------------------------------------------------------------------
- */
-
 class PluginCreditEntity extends CommonDBTM
 {
     public static $rightname = 'entity';
@@ -240,12 +211,23 @@ class PluginCreditEntity extends CommonDBTM
                 $data['plugin_credit_types_id'] = '';
             }
 
+            $modal = Ajax::createIframeModalWindow(
+                'displaycreditconsumed_' . $data["id"],
+                plugin_credit_geturl() . "front/ticket.php?plugcreditentity=" . $data["id"],
+                ['title'         => __('Consumed details', 'credit'),
+                    'reloadonclose' => false,
+                    'display'       => false
+                ]
+            );
+
+            $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __('Consumed details', 'credit') . "' alt='" . __('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
+
             $entries[] = array_merge($data, [
-                'name'                      => $item->getLink(),
+                'name'                      => $item->getName(),
                 'quantity'                  => $quantity_sold,
                 'itemtype'                  => PluginCreditEntity::class,
                 'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
-                'quantity_consumed'         => PluginCreditEntity::getConsumedForCredit($data['id']),
+                'quantity_consumed'         => $modal . $link,
                 'quantity_remaining'        => $data['quantity'] > 0 ? $data['quantity'] - PluginCreditEntity::getConsumedForCredit($data['id']) : 'Unlimited',
                 'entities_id'               => Entity::badgeCompletenameLink($entity),
             ]);
