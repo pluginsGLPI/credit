@@ -385,84 +385,40 @@ class PluginCreditTicket extends CommonDBTM
      * @param int $ID plugin_credit_entities_id
      */
     public static function displayConsumed($ID)
-    {
-        $out = "";
-        $out .= "<div class='spaced'>";
-        $out .= "<table class='tab_cadre_fixe'>";
-        $out .= "<tr class='tab_bg_1'><th colspan='2'>";
-        $out .= __('Detail of tickets on which consumption is declared', 'credit');
-        $out .= "</th></tr></table>";
-        $out .= "</div>";
+{
+    $consumed_credits = self::getConsumedForCreditEntity($ID);
+    $tickets_data = [];
 
-        if (self::getConsumedForCreditEntity($ID) == 0) {
-            $out .= "<p class='center b'>";
-            $out .= __('No credit was recorded', 'credit');
-            $out .= "</p>";
-        } else {
-            $out .= "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            $header_end .= "<th>" . __('Title') . "</th>";
-            $header_end .= "<th>" . __('Status') . "</th>";
-            $header_end .= "<th>" . __('Type') . "</th>";
-            $header_end .= "<th>" . __('Ticket category') . "</th>";
-            $header_end .= "<th>" . __('Date consumed', 'credit') . "</th>";
-            $header_end .= "<th>" . __('User consumed', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
-            $header_end .= "</tr>";
-            $out .= $header_begin . $header_top . $header_end;
+    if ($consumed_credits > 0) {
+        foreach (self::getAllForCreditEntity($ID) as $data) {
+            $Ticket = new Ticket();
+            $Ticket->getFromDB($data['tickets_id']);
 
-            foreach (self::getAllForCreditEntity($ID) as $data) {
-                $Ticket = new Ticket();
-                $Ticket->getFromDB($data['tickets_id']);
-
-                $out .= "<tr class='tab_bg_2'>";
-                $out .= "<td class='center'>";
-                $out .= $Ticket->getLink(['linkoption' => 'target="_blank"']);
-                $out .= "</td>";
-                $out .= "<td class='center'>";
-                $out .= Ticket::getStatus($Ticket->fields['status']);
-                $out .= "</td>";
-                $out .= "<td class='center'>";
-                $out .= Ticket::getTicketTypeName($Ticket->fields['type']);
-                $out .= "</td>";
-
-                $itilcat = new ITILCategory();
-                if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
-                    $out .= "<td class='center'>";
-                    $out .= $itilcat->getName(['comments' => true]);
-                    $out .= "</td>";
-                } else {
-                    $out .= "<td class='center'>";
-                    $out .= __('None');
-                    $out .= "</td>";
-                }
-
-                $out .= "<td class='center'>";
-                $out .= Html::convDate($data["date_creation"]);
-                $out .= "</td>";
-
-                $showuserlink = 0;
-                if (Session::haveRight('user', READ)) {
-                    $showuserlink = 1;
-                }
-
-                $out .= "<td class='center'>";
-                $out .= getUserName($data["users_id"], $showuserlink);
-                $out .= "</td>";
-                $out .= "<td class='center'>";
-                $out .= $data['consumed'];
-                $out .= "</td></tr>";
+            $itilcat = new ITILCategory();
+            $category = __('None');
+            if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
+                $category = $itilcat->getName(['comments' => true]);
             }
 
-            $out .= $header_begin . $header_bottom . $header_end;
-            $out .= "</table>";
-        }
+            $showuserlink = Session::haveRight('user', READ) ? 1 : 0;
 
-        echo $out;
+            $tickets_data[] = [
+                'ticket_link' => $Ticket->getLink(['linkoption' => 'target="_blank"']),
+                'status' => Ticket::getStatus($Ticket->fields['status']),
+                'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
+                'category' => $category,
+                'date_creation' => $data["date_creation"],
+                'username' => getUserName($data["users_id"], $showuserlink),
+                'consumed' => $data['consumed'],
+            ];
+        }
     }
+
+    TemplateRenderer::getInstance()->display('@credit/tickets/consumed_details.html.twig', [
+        'consumed_credits' => $consumed_credits,
+        'tickets_data' => $tickets_data,
+    ]);
+}
 
     /**
      * Test if consumed voucher is selected and add them.

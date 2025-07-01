@@ -1,0 +1,70 @@
+{#
+ # -------------------------------------------------------------------------
+ # Credit plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Credit.
+ #
+ # Credit is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Credit is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Credit. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @copyright Copyright (C) 2017-2023 by Credit plugin team.
+ # @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ # @link      https://github.com/pluginsGLPI/credit
+ # -------------------------------------------------------------------------
+ #}
+
+<div class="spaced">
+    <table class="tab_cadre_fixe">
+        <tr class="tab_bg_1">
+            <th colspan="2">{{ __('Detail of tickets on which consumption is declared', 'credit') }}</th>
+        </tr>
+    </table>
+</div>
+
+{% if consumed_credits == 0 %}
+    <p class="center b">{{ __('No credit was recorded', 'credit') }}</p>
+{% else %}
+    {% set columns = {
+        'ticket_link': __('Title'),
+        'status': __('Status'),
+        'type': __('Type'),
+        'category': __('Ticket category'),
+        'date_creation': __('Date consumed', 'credit'),
+        'username': __('User consumed', 'credit'),
+        'consumed': __('Quantity consumed', 'credit')
+    } %}
+
+    {% set datatable_params = {
+        'is_tab': true,
+        'nopager': true,
+        'nofilter': true,
+        'nosort': true,
+        'columns': columns,
+        'formatters': {
+            'ticket_link': 'raw_html',
+            'date_creation': 'datetime',
+            'username': 'raw_html',
+            'consumed': 'raw_html',
+        },
+        'entries': tickets_data,
+        'total_number': tickets_data|length,
+        'filtered_number': tickets_data|length,
+        'showmassiveactions': false,
+    } %}
+
+    {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
+
+{% endif %}
