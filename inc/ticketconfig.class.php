@@ -76,9 +76,15 @@ class PluginCreditTicketConfig extends CommonDBTM
                 break;
         }
 
+        // Get the ticket to check its type for visibility filter
+        $ticket = new Ticket();
+        if (!$ticket->getFromDB($ticket_id)) {
+            return null;
+        }
+
         $criteria = array_merge(
             ['id' => $voucher_id],
-            PluginCreditEntity::getActiveFilter()
+            PluginCreditEntity::getActiveFilterForTicket($ticket)
         );
         if (countElementsInTable(PluginCreditEntity::getTable(), $criteria) === 0) {
             $voucher_id = null;
@@ -121,7 +127,7 @@ class PluginCreditTicketConfig extends CommonDBTM
             'uncollapsed'          => $uncollapsed ?? false,
             'type_name'            => self::getTypeName(),
             'creditentitytype'     => PluginCreditEntity::class,
-            'condition'            => PluginCreditEntity::getActiveFilter(),
+            'condition'            => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'entity_id'            => $ticket->getEntityID(),
             'ticket'               => $ticket,
             'ticket_config'        => $ticket_config,

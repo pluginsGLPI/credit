@@ -180,6 +180,8 @@ class PluginCreditEntity extends CommonDBTM
             'quantity_remaining'        => __('Quantity remaining', 'credit'),
             'overconsumption_allowed'   => __('Allow overconsumption', 'credit'),
             'low_credit_alert'          => __('Low credits alert', 'credit'),
+            'visible_on_incident'       => __('Visible on incident', 'credit'),
+            'visible_on_request'        => __('Visible on request', 'credit'),
             'entities_id'               => __('Entity'),
             'is_recursive'              => __('Child entities')
         ];
@@ -322,6 +324,22 @@ class PluginCreditEntity extends CommonDBTM
             'step'    => 10,
             'toadd'   => [-1 => __('Disabled')],
             'unit'    => '%'
+        ];
+
+        $tab[] = [
+            'id'       => 998,
+            'table'    => self::getTable(),
+            'field'    => 'visible_on_incident',
+            'name'     => __('Visible on incident', 'credit'),
+            'datatype' => 'bool',
+        ];
+
+        $tab[] = [
+            'id'       => 999,
+            'table'    => self::getTable(),
+            'field'    => 'visible_on_request',
+            'name'     => __('Visible on request', 'credit'),
+            'datatype' => 'bool',
         ];
 
         return $tab;
@@ -515,6 +533,8 @@ class PluginCreditEntity extends CommonDBTM
                     `quantity` int NOT NULL DEFAULT '0',
                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
                     `low_credit_alert` int DEFAULT NULL,
+                    `visible_on_incident` tinyint NOT NULL DEFAULT '1',
+                    `visible_on_request` tinyint NOT NULL DEFAULT '1',
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`),
                     KEY `entities_id` (`entities_id`),
@@ -539,6 +559,10 @@ SQL;
 
             // 1.13.2
             $migration->addField($table, 'low_credit_alert', 'int', ['update' => "NULL"]);
+
+            // Add visibility options (incident/request)
+            $migration->addField($table, 'visible_on_incident', 'bool', ['update' => "1"]);
+            $migration->addField($table, 'visible_on_request', 'bool', ['update' => "1"]);
         }
 
         return true;
@@ -573,6 +597,28 @@ SQL;
                 ),
             ],
         ];
+    }
+
+    /**
+     * Get filter for active vouchers with ticket type visibility filter
+     *
+     * @param Ticket $ticket The ticket to check type for
+     * @return array Filter criteria
+     */
+    public static function getActiveFilterForTicket(Ticket $ticket)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $base_filter = self::getActiveFilter();
+
+        if ($ticket->fields['type'] == 1) { // Incident
+            $base_filter['glpi_plugin_credit_entities.visible_on_incident'] = 1;
+        } elseif ($ticket->fields['type'] == 2) { // Request
+            $base_filter['glpi_plugin_credit_entities.visible_on_request'] = 1;
+        }
+
+        return $base_filter;
     }
 
     public static function getMaximumConsumptionForCredit(int $credit_id)

@@ -109,6 +109,18 @@
                     'unit': '%'
                 }
             ) }}
+
+            {{ fields.dropdownYesNo(
+                'visible_on_incident',
+                1,
+                __('Visible on incident', 'credit'),
+            ) }}
+
+            {{ fields.dropdownYesNo(
+                'visible_on_request',
+                1,
+                __('Visible on request', 'credit'),
+            ) }}
         </div>
         <div class="hr mt-3 mb-3"></div>
         <div class="hstack gap-1">
@@ -136,6 +148,8 @@
             'overconsumption_allowed': 'yesno',
             'is_active': 'yesno',
             'is_recursive': 'yesno',
+            'visible_on_incident': 'yesno',
+            'visible_on_request': 'yesno',
             'entities_id': 'raw_html',
             'quantity_consumed': 'raw_html',
         },
