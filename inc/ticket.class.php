@@ -270,7 +270,7 @@ class PluginCreditTicket extends CommonDBTM
             'type_name'             => self::getTypeName(2),
             'creditentityclass'     => PluginCreditEntity::class,
             'form_url'              => self::getFormUrl(),
-            'conditions'            => PluginCreditEntity::getActiveFilter(),
+            'conditions'            => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'canedit'               => $canedit,
             'ID'                    => $ID,
             'entries'               => $entries,
@@ -358,7 +358,7 @@ class PluginCreditTicket extends CommonDBTM
             $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
             if ($default_credit == 0) {
                 //get default value for entity
-                $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
+                $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType(), $ticket);
             }
 
             if ($default_credit != 0) {
@@ -373,7 +373,7 @@ class PluginCreditTicket extends CommonDBTM
             'default_credit_max'    => $max ?? 0,
             'entity_id'             => $ticket->getEntityID(),
             'type_name'             => self::getTypeName(2),
-            'condition'             => PluginCreditEntity::getActiveFilter(),
+            'condition'             => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'creditentityclass'     => PluginCreditEntity::class,
             'plugin_credit_geturl'  => plugin_credit_geturl(),
         ]);

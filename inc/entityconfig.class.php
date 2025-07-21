@@ -94,10 +94,11 @@ class PluginCreditEntityConfig extends CommonDBTM
      *
      * @param int     $entity_id
      * @param string  $itemtype
+     * @param Ticket|null $ticket Optional ticket to apply visibility filter
      *
      * @return null|int
      */
-    public static function getDefaultForEntityAndType($entity_id, $itemtype)
+    public static function getDefaultForEntityAndType($entity_id, $itemtype, $ticket = null)
     {
         $config = new self();
         $config->getFromDBByCrit(['entities_id' => $entity_id]);
@@ -117,10 +118,18 @@ class PluginCreditEntityConfig extends CommonDBTM
                 break;
         }
 
-        $criteria = array_merge(
-            ['id' => $voucher_id],
-            PluginCreditEntity::getActiveFilter()
-        );
+        if ($ticket !== null) {
+            $criteria = array_merge(
+                ['id' => $voucher_id],
+                PluginCreditEntity::getActiveFilterForTicket($ticket)
+            );
+        } else {
+            $criteria = array_merge(
+                ['id' => $voucher_id],
+                PluginCreditEntity::getActiveFilter()
+            );
+        }
+
         if (countElementsInTable(PluginCreditEntity::getTable(), $criteria) === 0) {
             $voucher_id = null;
         }
