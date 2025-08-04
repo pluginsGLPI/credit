@@ -36,15 +36,16 @@
 } %}
 
 {% if embed_in_ticket_form %}
-        </div>
+            </div>
+        </section>
     </section>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="heading-plugin-credit-ticket-config">
+    <section class="accordion-item" aria-label="Credit">
+        <div class="accordion-header" id="heading-plugin-credit-ticket-config">
             <button class="accordion-button {{ uncollapsed ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#plugin-credit-ticket-config" aria-expanded="true" aria-controls="plugin-credit-ticket-config">
                 <i class="ti ti-coin me-1"></i>
                 <span class="item-title"> {{ type_name }}</span>
             </button>
-        </h2>
+        </div>
         <div id="plugin-credit-ticket-config" class="accordion-collapse collapse {{ uncollapsed ? 'show' : '' }}" aria-labelledby="heading-plugin-credit-ticket-config">
             <div class="accordion-body row m-0 mt-n2">
                 {{ fields.dropdownField(
@@ -71,7 +72,6 @@
                     fields_options
                 ) }}
             </div>
-        </div>
 {% else %}
     <form method="post" action="{{ form_url }}">
         <input type="hidden" name="tickets_id" value="{{ ticket.fields['id'] }}" />
