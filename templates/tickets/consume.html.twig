@@ -1,0 +1,126 @@
+{#
+ # -------------------------------------------------------------------------
+ # Credit plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Credit.
+ #
+ # Credit is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Credit is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Credit. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @author    François Legastelois
+ # @copyright Copyright (C) 2017-2023 by Credit plugin team.
+ # @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ # @link      https://github.com/pluginsGLPI/credit
+ # -------------------------------------------------------------------------
+ #}
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+{% set rand = random() %}
+
+<div name="credit_consume_{{ rand }}">
+
+    <div class="hr-text mt-2">
+        <i class="fa-2x ti ti-coin"></i>
+        <span>{{ type_name }}</span>
+    </div>
+
+    {{ fields.sliderField(
+        'plugin_credit_consumed_voucher',
+        consume,
+        __('Consume a voucher ?', 'credit'),
+        {
+            'additional_attributes': {
+                'onchange': 'showCreditDiv' ~ rand ~ '(this.value)',
+            },
+            'rand': rand,
+        }
+    ) }}
+
+    <div id="creditvoucherblock{{ rand }}" style="display: {% if consume == 1 %}block{% else %}none{% endif %}">
+        <div class="row">
+            {{ fields.dropdownField(
+                creditentityclass,
+                'plugin_credit_entities_id',
+                default_credit,
+                __('Voucher name', 'credit'),
+                {
+                    'entity': entity_id,
+                    'condition': condition,
+                    'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
+                    'field_class': 'col-6 col-sm-6',
+                    'rand': rand,
+                }
+            ) }}
+
+            {{ fields.numberField(
+                'plugin_credit_quantity',
+                0,
+                __('Quantity consumed', 'credit'),
+                {
+                    'entity': entity_id,
+                    'condition': condition,
+                    'max': default_credit_max,
+                    'min': 0,
+                    'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>' ~ default_credit_max,
+                    'field_class': 'col-6 col-sm-6',
+                    'input_class': 'col-xxl-5',
+                    'label_class': 'col-xxl-7',
+                    'rand': rand,
+                }
+            ) }}
+        </div>
+    </div>
+
+    <script>
+        function showCreditDiv{{ rand }}() {
+            const creditVoucherBlock = document.getElementById('creditvoucherblock{{ rand }}');
+            console.log('plugin-credit-quantity_{{ rand }}');
+            if (creditVoucherBlock) {
+                creditVoucherBlock.style.display = creditVoucherBlock.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function getQuantityRemaining{{ rand }}(val) {
+            console.log('plugin-credit-quantity_{{ rand }}');
+            consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
+            quantity = consumeblock.querySelector('[id*="plugin-credit-quantity_{{ rand }}"]');
+            quantity_label = consumeblock.querySelector('[for*="plugin-credit-quantity_{{ rand }}"]');
+            if (val == 0) {
+                quantity_label.style.display = 'none';
+                quantity.style.display = 'none';
+
+                quantity.max = 0;
+                quantity.value = 0;
+                quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
+            } else {
+                quantity_label.style.display = 'block';
+                quantity.style.display = 'block';
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
+                    data: {
+                        entity: val,
+                    }
+                }).done(function (data) {
+                    quantity.max = data;
+                    quantity.value = 0;
+                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
+                });
+            }
+        }
+    </script>
+</div>
