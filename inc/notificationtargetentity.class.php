@@ -34,8 +34,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
     public function getEvents()
     {
         return [
-            'expired' => __('Expiration date', 'credit'),
-            'lowcredits' => __('Low credits', 'credit')
+            'expired' => __s('Expiration date', 'credit'),
+            'lowcredits' => __s('Low credits', 'credit')
         ];
     }
 
@@ -71,16 +71,16 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
             $this->obj->getField('entities_id')
         );
         $this->data['##credit.type##'] = Dropdown::getDropdownName('glpi_plugin_credit_types', $this->obj->getField('plugin_credit_types_id'));
-        $this->data['##lang.credit.begindate##'] = __('Begin date');
-        $this->data['##lang.credit.enddate##'] = __('End date', 'credit');
-        $this->data['##lang.credit.quantity_remaining##'] = __('Quantity remaining', 'credit');
-        $this->data['##lang.credit.quantity_sold##'] = __('Quantity sold', 'credit');
+        $this->data['##lang.credit.begindate##'] = __s('Begin date');
+        $this->data['##lang.credit.enddate##'] = __s('End date', 'credit');
+        $this->data['##lang.credit.quantity_remaining##'] = __s('Quantity remaining', 'credit');
+        $this->data['##lang.credit.quantity_sold##'] = __s('Quantity sold', 'credit');
         $this->data['##lang.credit.name##'] = PluginCreditEntity::getTypeName();
-        $this->data['##lang.credit.overconsumption_allowed##'] = __('Allow overconsumption', 'credit');
-        $this->data['##lang.credit.child_entities##'] = __('Child entities');
-        $this->data['##lang.credit.quantity_consumed##'] = __('Quantity consumed', 'credit');
+        $this->data['##lang.credit.overconsumption_allowed##'] = __s('Allow overconsumption', 'credit');
+        $this->data['##lang.credit.child_entities##'] = __s('Child entities');
+        $this->data['##lang.credit.quantity_consumed##'] = __s('Quantity consumed', 'credit');
         $this->data['##lang.credit.entity##'] = Entity::getTypeName(1);
-        $this->data['##lang.credit.type##'] = __('Type');
+        $this->data['##lang.credit.type##'] = __s('Type');
 
         $this->getTags();
         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -94,15 +94,15 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
     {
         $tags = [
             'credit.name'                    => PluginCreditEntity::getTypeName(),
-            'credit.quantity_sold'           => __('Quantity sold', 'credit'),
-            'credit.begindate'               => __('Begin date'),
-            'credit.enddate'                 => __('End date', 'credit'),
-            'credit.quantity_remaining'      => __('Quantity remaining', 'credit'),
-            'credit.quantity_consumed'       => __('Quantity consumed', 'credit'),
-            'credit.child_entities'          => __('Child entities'),
+            'credit.quantity_sold'           => __s('Quantity sold', 'credit'),
+            'credit.begindate'               => __s('Begin date'),
+            'credit.enddate'                 => __s('End date', 'credit'),
+            'credit.quantity_remaining'      => __s('Quantity remaining', 'credit'),
+            'credit.quantity_consumed'       => __s('Quantity consumed', 'credit'),
+            'credit.child_entities'          => __s('Child entities'),
             'credit.entity'                  => Entity::getTypeName(1),
-            'credit.overconsumption_allowed' => __('Allow overconsumption', 'credit'),
-            'credit.type'                    => __('Type'),
+            'credit.overconsumption_allowed' => __s('Allow overconsumption', 'credit'),
+            'credit.type'                    => __s('Type'),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -116,10 +116,10 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
         }
 
         $lang = [
-            'credit.expired'             => __('Credit voucher expiration', 'credit'),
-            'credit.expired.information' => __('This credit voucher will expire soon. Please, consider buying a new one.', 'credit'),
-            'credit.lowcredits' => __('Amount of credit remaining close to or at 0', 'credit'),
-            'credit.lowcredits.information' => __('The remaining quantity has reached 0 or almost.', 'credit'),
+            'credit.expired'             => __s('Credit voucher expiration', 'credit'),
+            'credit.expired.information' => __s('This credit voucher will expire soon. Please, consider buying a new one.', 'credit'),
+            'credit.lowcredits' => __s('Amount of credit remaining close to or at 0', 'credit'),
+            'credit.lowcredits.information' => __s('The remaining quantity has reached 0 or almost.', 'credit'),
         ];
 
         foreach ($lang as $tag => $label) {

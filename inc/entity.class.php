@@ -38,7 +38,7 @@ class PluginCreditEntity extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
+        return _sn('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
     public static function getIcon()
@@ -90,7 +90,7 @@ class PluginCreditEntity extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         if (!isset($input['name']) || $input['name'] == '') {
-            Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
+            Session::addMessageAfterRedirect(__s('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
 
@@ -104,7 +104,7 @@ class PluginCreditEntity extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         if (isset($input['name']) && strlen($input['name']) === 0) {
-            Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
+            Session::addMessageAfterRedirect(__s('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
 
@@ -170,18 +170,18 @@ class PluginCreditEntity extends CommonDBTM
         }
 
         $columns = [
-            'name'                      => __('Name'),
-            'plugin_credit_types_id'    => __('Type'),
-            'is_active'                 => __('Active'),
-            'begin_date'                => __('Start date'),
-            'end_date'                  => __('End date'),
-            'quantity'                  => __('Quantity sold', 'credit'),
-            'quantity_consumed'         => __('Quantity consumed', 'credit'),
-            'quantity_remaining'        => __('Quantity remaining', 'credit'),
-            'overconsumption_allowed'   => __('Allow overconsumption', 'credit'),
-            'low_credit_alert'          => __('Low credits alert', 'credit'),
-            'entities_id'               => __('Entity'),
-            'is_recursive'              => __('Child entities')
+            'name'                      => __s('Name'),
+            'plugin_credit_types_id'    => __s('Type'),
+            'is_active'                 => __s('Active'),
+            'begin_date'                => __s('Start date'),
+            'end_date'                  => __s('End date'),
+            'quantity'                  => __s('Quantity sold', 'credit'),
+            'quantity_consumed'         => __s('Quantity consumed', 'credit'),
+            'quantity_remaining'        => __s('Quantity remaining', 'credit'),
+            'overconsumption_allowed'   => __s('Allow overconsumption', 'credit'),
+            'low_credit_alert'          => __s('Low credits alert', 'credit'),
+            'entities_id'               => __s('Entity'),
+            'is_recursive'              => __s('Child entities')
         ];
 
         $sqlfilter = [];
@@ -195,7 +195,7 @@ class PluginCreditEntity extends CommonDBTM
         foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
             $quantity_sold = (int)$data['quantity'];
             if (0 === $quantity_sold) {
-                $quantity_sold = __('Unlimited');
+                $quantity_sold = __s('Unlimited');
             }
 
             $item = new self();
@@ -214,19 +214,19 @@ class PluginCreditEntity extends CommonDBTM
             $modal = Ajax::createIframeModalWindow(
                 'displaycreditconsumed_' . $data["id"],
                 plugin_credit_geturl() . "front/ticket.php?plugcreditentity=" . $data["id"],
-                ['title'         => __('Consumed details', 'credit'),
+                ['title'         => __s('Consumed details', 'credit'),
                     'reloadonclose' => false,
                     'display'       => false
                 ]
             );
 
-            $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __('Consumed details', 'credit') . "' alt='" . __('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
+            $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __s('Consumed details', 'credit') . "' alt='" . __s('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
 
             $entries[] = array_merge($data, [
                 'name'                      => $item->getName(),
                 'quantity'                  => $quantity_sold,
                 'itemtype'                  => PluginCreditEntity::class,
-                'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
+                'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __s('Disabled') : $data['low_credit_alert'] . '%',
                 'quantity_consumed'         => $modal . $link,
                 'quantity_remaining'        => $data['quantity'] > 0 ? $data['quantity'] - PluginCreditEntity::getConsumedForCredit($data['id']) : 'Unlimited',
                 'entities_id'               => Entity::badgeCompletenameLink($entity),
@@ -263,7 +263,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 991,
             'table'    => self::getTable(),
             'field'    => 'is_active',
-            'name'     => __('Active'),
+            'name'     => __s('Active'),
             'datatype' => 'bool',
         ];
 
@@ -271,7 +271,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 992,
             'table'    => self::getTable(),
             'field'    => 'begin_date',
-            'name'     => __('Start date'),
+            'name'     => __s('Start date'),
             'datatype' => 'date',
         ];
 
@@ -279,7 +279,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 993,
             'table'    => self::getTable(),
             'field'    => 'end_date',
-            'name'     => __('End date'),
+            'name'     => __s('End date'),
             'datatype' => 'date',
         ];
 
@@ -287,12 +287,12 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 994,
             'table'    => self::getTable(),
             'field'    => 'quantity',
-            'name'     => __('Quantity sold', 'credit'),
+            'name'     => __s('Quantity sold', 'credit'),
             'datatype' => 'number',
             'min'      => 1,
             'max'      => 1000000,
             'step'     => 1,
-            'toadd'    => [0 => __('Unlimited')],
+            'toadd'    => [0 => __s('Unlimited')],
         ];
 
         $tab[] = [
@@ -307,7 +307,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 996,
             'table'    => self::getTable(),
             'field'    => 'overconsumption_allowed',
-            'name'     => __('Allow overconsumption', 'credit'),
+            'name'     => __s('Allow overconsumption', 'credit'),
             'datatype' => 'bool',
         ];
 
@@ -315,12 +315,12 @@ class PluginCreditEntity extends CommonDBTM
             'id'      => 997,
             'table'   => self::getTable(),
             'field'   => 'low_credit_alert',
-            'name'    => __('Low credit alert', 'credit'),
+            'name'    => __s('Low credit alert', 'credit'),
             'datatype' => 'number',
             'min'     => 0,
             'max'     => 50,
             'step'    => 10,
-            'toadd'   => [-1 => __('Disabled')],
+            'toadd'   => [-1 => __s('Disabled')],
             'unit'    => '%'
         ];
 
@@ -332,12 +332,12 @@ class PluginCreditEntity extends CommonDBTM
         switch ($name) {
             case 'creditexpired':
                 return [
-                    'description' => __('Expiration date', 'credit'),
-                    'parameter'   => __('Notice (in days)', 'credit')
+                    'description' => __s('Expiration date', 'credit'),
+                    'parameter'   => __s('Notice (in days)', 'credit')
                 ];
             case 'lowcredits':
                 return [
-                    'description' => __('Low credits', 'credit'),
+                    'description' => __s('Low credits', 'credit'),
                 ];
         }
         return [];

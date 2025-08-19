@@ -66,7 +66,7 @@ class PluginCreditEntityConfig extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
+        return _sn('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
     public static function getIcon()

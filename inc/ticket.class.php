@@ -67,7 +67,7 @@ class PluginCreditTicket extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
+        return _sn('Credit voucher', 'Credit vouchers', $nb, 'credit');
     }
 
     public static function getIcon()
@@ -395,7 +395,7 @@ class PluginCreditTicket extends CommonDBTM
                 $Ticket->getFromDB($data['tickets_id']);
 
                 $itilcat = new ITILCategory();
-                $category = __('None');
+                $category = __s('None');
                 if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
                     $category = $itilcat->getName(['comments' => true]);
                 }
@@ -470,7 +470,7 @@ class PluginCreditTicket extends CommonDBTM
             || $item->input['plugin_credit_entities_id'] == 0
         ) {
             Session::addMessageAfterRedirect(
-                __('You must provide a credit voucher', 'credit'),
+                __s('You must provide a credit voucher', 'credit'),
                 true,
                 ERROR
             );
@@ -490,7 +490,7 @@ class PluginCreditTicket extends CommonDBTM
             if ($credit_entity->getField('overconsumption_allowed')) {
                 Session::addMessageAfterRedirect(
                     sprintf(
-                        __('Quantity consumed exceeds remaining credits: %d', 'credit'),
+                        __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
                         $quantity_remaining
                     ),
                     true,
@@ -499,7 +499,7 @@ class PluginCreditTicket extends CommonDBTM
             } else {
                 Session::addMessageAfterRedirect(
                     sprintf(
-                        __('Quantity consumed exceeds remaining credits: %d', 'credit'),
+                        __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
                         $quantity_remaining
                     ),
                     true,
@@ -517,7 +517,7 @@ class PluginCreditTicket extends CommonDBTM
         ];
         if ($credit_ticket->add($input)) {
             Session::addMessageAfterRedirect(
-                __('Credit voucher successfully added.', 'credit'),
+                __s('Credit voucher successfully added.', 'credit'),
                 true,
                 INFO
             );
@@ -532,7 +532,7 @@ class PluginCreditTicket extends CommonDBTM
             'id'       => 881,
             'table'    => self::getTable(),
             'field'    => 'date_creation',
-            'name'     => __('Date consumed', 'credit'),
+            'name'     => __s('Date consumed', 'credit'),
             'datatype' => 'date',
         ];
 
@@ -540,12 +540,12 @@ class PluginCreditTicket extends CommonDBTM
             'id'       => 882,
             'table'    => self::getTable(),
             'field'    => 'consumed',
-            'name'     => __('Quantity consumed', 'credit'),
+            'name'     => __s('Quantity consumed', 'credit'),
             'datatype' => 'number',
             'min'      => 1,
             'max'      => 1000000,
             'step'     => 1,
-            'toadd'    => [0 => __('Unlimited')],
+            'toadd'    => [0 => __s('Unlimited')],
         ];
 
         $tab[] = [
