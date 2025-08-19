@@ -126,8 +126,8 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
     global $DB;
 
     $target->data['##lang.credit.voucher##'] = PluginCreditEntity::getTypeName();
-    $target->data['##lang.credit.used##']    = __('Quantity consumed', 'credit');
-    $target->data['##lang.credit.left##']    = __('Quantity remaining', 'credit');
+    $target->data['##lang.credit.used##']    = __s('Quantity consumed', 'credit');
+    $target->data['##lang.credit.left##']    = __s('Quantity remaining', 'credit');
 
     $id = $target->data['##ticket.id##'];
     $ticket = new Ticket();

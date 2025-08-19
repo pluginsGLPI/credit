@@ -43,7 +43,7 @@ if (isset($_POST["add"])) {
             "entity",
             4,
             "setup",
-            sprintf(__('%s adds a vouchers to an entity'), $_SESSION["glpiname"])
+            sprintf(__s('%s adds a vouchers to an entity'), $_SESSION["glpiname"])
         );
     }
     Html::back();

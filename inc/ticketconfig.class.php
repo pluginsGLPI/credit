@@ -40,7 +40,7 @@ class PluginCreditTicketConfig extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Default voucher option', 'Default voucher options', $nb, 'credit');
+        return _sn('Default voucher option', 'Default voucher options', $nb, 'credit');
     }
 
     public static function getIcon()
@@ -214,8 +214,8 @@ SQL;
     public function getRights($interface = 'central')
     {
         return [
-            self::TICKET_TAB  => __('Update in ticket tab', 'credit'),
-            self::TICKET_FORM => __('Update in ticket form', 'credit'),
+            self::TICKET_TAB  => __s('Update in ticket tab', 'credit'),
+            self::TICKET_FORM => __s('Update in ticket form', 'credit'),
         ];
     }
 }
