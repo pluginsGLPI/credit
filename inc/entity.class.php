@@ -29,13 +29,31 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+
 class PluginCreditEntity extends CommonDBTM
 {
     public static $rightname = 'entity';
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Credit voucher', 'Credit vouchers', $nb, 'credit');
+        return _sn('Credit voucher', 'Credit vouchers', $nb, 'credit');
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
+    }
+
+    public static function canCreate(): bool
+    {
+        return true;
+    }
+
+    public function canCreateItem(): bool
+    {
+        return true;
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -72,7 +90,7 @@ class PluginCreditEntity extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         if (!isset($input['name']) || $input['name'] == '') {
-            Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
+            Session::addMessageAfterRedirect(__s('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
 
@@ -86,7 +104,7 @@ class PluginCreditEntity extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         if (isset($input['name']) && strlen($input['name']) === 0) {
-            Session::addMessageAfterRedirect(__('Credit voucher name is mandatory.', 'credit'));
+            Session::addMessageAfterRedirect(__s('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
 
@@ -145,236 +163,96 @@ class PluginCreditEntity extends CommonDBTM
             return;
         }
 
-        $out     = "";
         $canedit = $itemtype === 'Entity' && $entity->canEdit($ID);
 
         if ($itemtype === 'Entity') {
-            $out .= PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
+            PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
         }
+
+        $columns = [
+            'name'                      => __s('Name'),
+            'plugin_credit_types_id'    => __s('Type'),
+            'is_active'                 => __s('Active'),
+            'begin_date'                => __s('Start date'),
+            'end_date'                  => __s('End date'),
+            'quantity'                  => __s('Quantity sold', 'credit'),
+            'quantity_consumed'         => __s('Quantity consumed', 'credit'),
+            'quantity_remaining'        => __s('Quantity remaining', 'credit'),
+            'overconsumption_allowed'   => __s('Allow overconsumption', 'credit'),
+            'low_credit_alert'          => __s('Low credits alert', 'credit'),
+            'entities_id'               => __s('Entity'),
+            'is_recursive'              => __s('Child entities')
+        ];
+
+        $sqlfilter = [];
+        if ($itemtype == 'Ticket') {
+            $sqlfilter = [
+                'is_active' => '1'
+            ];
+        }
+
+        $entries = [];
+        foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
+            $quantity_sold = (int)$data['quantity'];
+            if (0 === $quantity_sold) {
+                $quantity_sold = __s('Unlimited');
+            }
+
+            $item = new self();
+            $item = $item->getById($data['id']);
+
+            if (!empty($data['plugin_credit_types_id'])) {
+                $type = new PluginCreditType();
+                $type = $type->getById($data['plugin_credit_types_id']);
+                if ($type) {
+                    $data['plugin_credit_types_id'] = $type->getLink();
+                }
+            } else {
+                $data['plugin_credit_types_id'] = '';
+            }
+
+            $modal = Ajax::createIframeModalWindow(
+                'displaycreditconsumed_' . $data["id"],
+                plugin_credit_geturl() . "front/ticket.php?plugcreditentity=" . $data["id"],
+                ['title'         => __s('Consumed details', 'credit'),
+                    'reloadonclose' => false,
+                    'display'       => false
+                ]
+            );
+
+            $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __s('Consumed details', 'credit') . "' alt='" . __s('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
+
+            $entries[] = array_merge($data, [
+                'name'                      => $item->getName(),
+                'quantity'                  => $quantity_sold,
+                'itemtype'                  => PluginCreditEntity::class,
+                'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __s('Disabled') : $data['low_credit_alert'] . '%',
+                'quantity_consumed'         => $modal . $link,
+                'quantity_remaining'        => $data['quantity'] > 0 ? $data['quantity'] - PluginCreditEntity::getConsumedForCredit($data['id']) : 'Unlimited',
+                'entities_id'               => Entity::badgeCompletenameLink($entity),
+            ]);
+        }
+
+
+        $rand  = mt_rand();
+        $nb = count($entries);
+        $massiveactionparams = [
+            'num_displayed'    => min($nb, $_SESSION['glpilist_limit']),
+            'container'        => 'mass' . __CLASS__ . $rand,
+            'itemtype'         => PluginCreditEntity::class,
+        ];
 
         if ($itemtype === 'Entity' && $canedit) {
-            $rand = mt_rand();
-            $out .= "<div class='firstbloc'>";
-            $out .= "<form name='creditentity_form$rand' id='creditentity_form$rand' method='post' action='";
-            $out .= self::getFormUrl() . "'>";
-            $out .= "<input type='hidden' name='entities_id' value='$ID'>";
-            $out .= "<table class='tab_cadre_fixe'>";
-            $out .= "<tr class='tab_bg_1'>";
-            $out .= "<th colspan='10'>" . __('Add a credit voucher', 'credit') . "</th>";
-            $out .= "</tr>";
-            $out .= "<tr class='tab_bg_1'>";
-            $out .= "<td>" . __('Name') . "<span class='red'>*</span></strong></td>";
-            $out .= "<td colspan='5'>" . Html::input("name", ['size' => 50]) . "</td>";
-            $out .= "<td class='tab_bg_2 right'>" . __('Type') . "</td>";
-            $out .= "<td>";
-            $out .= PluginCreditType::dropdown(['name'    => 'plugin_credit_types_id',
-                'display' => false
+            TemplateRenderer::getInstance()->display('@credit/creditentity.hmtl.twig', [
+                'form_url'              => self::getFormUrl(),
+                'credittypeclass'       => PluginCreditType::class,
+                'columns'               => $columns,
+                'entity_id'             => $ID,
+                'entries'               => $entries,
+                'canedit'               => $canedit,
+                'massiveactionparams'   => $massiveactionparams,
             ]);
-            $out .= "</td>";
-            $out .= "<td class='tab_bg_2 right'>" . __('Start date') . "</td>";
-            $out .= "<td>";
-            $out .= Html::showDateField("begin_date", ['value'   => '', 'display' => false]);
-            $out .= "</td>";
-            $out .= "</tr>";
-            $out .= "<tr class='tab_bg_1'>";
-            $out .= "<td>" . __('Active') . "</td>";
-            $out .= "<td>";
-            $out .= Dropdown::showYesNo("is_active", 0, -1, ['display' => false]);
-            $out .= "</td>";
-            $out .= "<td class='tab_bg_2 right'>" . __('Child entities') . "</td><td>";
-            $out .= Dropdown::showYesNo("is_recursive", 0, -1, ['display' => false]);
-            $out .= "</td>";
-            $out .= "<td class='tab_bg_2 right'>";
-            $out .= __('Quantity sold', 'credit') . "</td><td>";
-            $out .= Dropdown::showNumber("quantity", ['value'   => '',
-                'min'     => 1,
-                'max'     => 1000000,
-                'step'    => 1,
-                'toadd'   => [0 => __('Unlimited')],
-                'display' => false
-            ]);
-            $out .= "</td>";
-            $out .= "<td>" . __('Allow overconsumption', 'credit') . "</td>";
-            $out .= "<td>";
-            $out .= Dropdown::showYesNo("overconsumption_allowed", 0, -1, ['display' => false]);
-            $out .= "</td>";
-            $out .= "<td class='tab_bg_2 right'>" . __('End date') . "</td>";
-            $out .= "<td>";
-            $out .= Html::showDateField("end_date", ['value' => '', 'display' => false]);
-            $out .= "</td>";
-            $out .= "</tr>";
-            $out .= "<tr class='tab_bg_1'>";
-            $out .= "<td colspan='3'>";
-            $out .= __('Low credit alert threshold') . "</td><td>";
-            $out .= Dropdown::showNumber("low_credit_alert", ['value'   => -1,
-                'min'     => 0,
-                'max'     => 50,
-                'step'    => 10,
-                'toadd'   => [-1 => __('Disabled')],
-                'display' => false,
-                'unit'    => '%'
-            ]);
-            $out .= "</td>";
-            $out .= "</tr>";
-            $out .= "<tr class='tab_bg_1'>";
-            $out .= "<td class='tab_bg_2 center' colspan='8'>";
-            $out .= "<input type='submit' name='add' value='" . _sx('button', 'Add') . "' class='submit'>";
-            $out .= "</td>";
-            $out .= "</tr>";
-            $out .= "</table>";
-            $out .= Html::closeForm(false);
-            $out .= "</div>";
         }
-
-        $out    .= "<div class='spaced'>";
-        $number  = self::countForItem($entity);
-        $rand = mt_rand();
-
-        if ($number) {
-            if ($canedit) {
-                $out .= Html::getOpenMassiveActionsForm('mass' . __CLASS__ . $rand);
-
-                $specific_actions = [
-                    'update' => _x('button', 'Update'),
-                    'purge'  => _x('button', 'Delete permanently'),
-                ];
-                MassiveAction::getAddTransferList($specific_actions);
-
-                // Remove icons
-                $specific_actions = array_map(function ($action) {
-                    return strip_tags($action);
-                }, $specific_actions);
-
-                $massiveactionparams = [
-                    'num_displayed'    => $number,
-                    'container'        => 'mass' . __CLASS__ . $rand,
-                    'rand'             => $rand,
-                    'display'          => false,
-                    'specific_actions' => $specific_actions,
-                ];
-                $out .= Html::showMassiveActions($massiveactionparams);
-            }
-
-            $out .= "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_end    .= "</th>";
-            }
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "<th>" . __('Type') . "</th>";
-            $header_end .= "<th>" . __('Active') . "</th>";
-            $header_end .= "<th>" . __('Start date') . "</th>";
-            $header_end .= "<th>" . __('End date') . "</th>";
-            $header_end .= "<th>" . __('Quantity sold', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Quantity consumed', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Quantity remaining', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Allow overconsumption', 'credit') . "</th>";
-            $header_end .= "<th>" . __('Low credits alert') . "</th>";
-            $header_end .= "<th>" . __('Entity') . "</th>";
-            $header_end .= "<th>" . __('Child entities') . "</th>";
-            $header_end .= "</tr>";
-            $out .= $header_begin . $header_top . $header_end;
-
-            $sqlfilter = [];
-            if ($itemtype == 'Ticket') {
-                $sqlfilter = [
-                    'is_active' => '1'
-                ];
-            }
-
-            foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
-                $out .= "<tr class='tab_bg_2'>";
-                if ($canedit) {
-                    $out .= "<td width='10'>";
-                    $out .= Html::getMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    $out .= "</td>";
-                }
-
-                $out .= "<td width='30%'>";
-                $out .= "<a href='" . Entity::getFormURLWithID($ID, true);
-                $out .= "&forcetab=PluginCreditEntity$1'>";
-                $out .= $data['name'] == '' ? '(' . $data['id'] . ')' : $data['name'];
-                $out .= "</a>";
-                $out .= "</td>";
-                $out .= "<td width='15%'>";
-                $out .= Dropdown::getDropdownName(
-                    PluginCreditType::getTable(),
-                    $data['plugin_credit_types_id']
-                );
-                $out .= "</td>";
-                $out .= "<td>";
-                $out .= ($data["is_active"]) ? __('Yes') : __('No');
-                $out .= "</td>";
-                $out .= "<td class='tab_date'>";
-                $out .= Html::convDate($data["begin_date"]);
-                $out .= "</td>";
-                $out .= "<td class='tab_date'>";
-                $out .= Html::convDate($data["end_date"]);
-                $out .= "</td>";
-
-                $quantity_sold = (int)$data['quantity'];
-                $out .= "<td class='center'>";
-                $out .= 0 === $quantity_sold ? __('Unlimited') : $quantity_sold;
-                $out .= "</td>";
-
-                $quantity_consumed = PluginCreditTicket::getConsumedForCreditEntity($data['id']);
-                $out .= "<td class='center'>";
-                $out .= Ajax::createIframeModalWindow(
-                    'displaycreditconsumed_' . $data["id"],
-                    Plugin::getWebDir('credit') . "/front/ticket.php?plugcreditentity=" . $data["id"],
-                    ['title'         => __('Consumed details', 'credit'),
-                        'reloadonclose' => false,
-                        'display'       => false
-                    ]
-                );
-
-                $out .= "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' ";
-                $out .= "title='" . __('Consumed details', 'credit') . "' ";
-                $out .= "alt='" . __('Consumed details', 'credit') . "'>";
-                $out .= $quantity_consumed;
-                $out .= "</a></td>";
-
-                $out .= "<td class='center'>";
-                $out .= 0 === $quantity_sold
-                    ? __('Unlimited')
-                    : max(0, $quantity_sold - $quantity_consumed);
-
-                $out .= "</td><td>";
-                $out .= ($data["overconsumption_allowed"]) ? __('Yes') : __('No');
-                $out .= "</td>";
-
-                $out .= "<td>";
-                $out .= $data["low_credit_alert"] == -1 ? __('Disabled') : $data["low_credit_alert"] . '%';
-                $out .= "</td>";
-
-                $out .= "<td>";
-                $out .= Dropdown::getDropdownName(Entity::getTable(), $data['entities_id']);
-                $out .= "</td>";
-                $out .= "<td>";
-                $out .= ($data["is_recursive"]) ? __('Yes') : __('No');
-                $out .= "</td>";
-                $out .= "</tr>";
-            }
-
-            $out .= $header_begin . $header_bottom . $header_end;
-            $out .= "</table>";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                $out .= Html::showMassiveActions($massiveactionparams);
-                $out .= Html::closeForm(false);
-            }
-        } else {
-            $out .= "<p class='center b'>" . __('No credit voucher', 'credit') . "</p>";
-        }
-        $out .= "</div>";
-        echo $out;
     }
 
     public function rawSearchOptions()
@@ -385,7 +263,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 991,
             'table'    => self::getTable(),
             'field'    => 'is_active',
-            'name'     => __('Active'),
+            'name'     => __s('Active'),
             'datatype' => 'bool',
         ];
 
@@ -393,7 +271,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 992,
             'table'    => self::getTable(),
             'field'    => 'begin_date',
-            'name'     => __('Start date'),
+            'name'     => __s('Start date'),
             'datatype' => 'date',
         ];
 
@@ -401,7 +279,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 993,
             'table'    => self::getTable(),
             'field'    => 'end_date',
-            'name'     => __('End date'),
+            'name'     => __s('End date'),
             'datatype' => 'date',
         ];
 
@@ -409,12 +287,12 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 994,
             'table'    => self::getTable(),
             'field'    => 'quantity',
-            'name'     => __('Quantity sold', 'credit'),
+            'name'     => __s('Quantity sold', 'credit'),
             'datatype' => 'number',
             'min'      => 1,
             'max'      => 1000000,
             'step'     => 1,
-            'toadd'    => [0 => __('Unlimited')],
+            'toadd'    => [0 => __s('Unlimited')],
         ];
 
         $tab[] = [
@@ -429,7 +307,7 @@ class PluginCreditEntity extends CommonDBTM
             'id'       => 996,
             'table'    => self::getTable(),
             'field'    => 'overconsumption_allowed',
-            'name'     => __('Allow overconsumption', 'credit'),
+            'name'     => __s('Allow overconsumption', 'credit'),
             'datatype' => 'bool',
         ];
 
@@ -437,12 +315,12 @@ class PluginCreditEntity extends CommonDBTM
             'id'      => 997,
             'table'   => self::getTable(),
             'field'   => 'low_credit_alert',
-            'name'    => __('Low credit alert', 'credit'),
+            'name'    => __s('Low credit alert', 'credit'),
             'datatype' => 'number',
             'min'     => 0,
             'max'     => 50,
             'step'    => 10,
-            'toadd'   => [-1 => __('Disabled')],
+            'toadd'   => [-1 => __s('Disabled')],
             'unit'    => '%'
         ];
 
@@ -454,12 +332,12 @@ class PluginCreditEntity extends CommonDBTM
         switch ($name) {
             case 'creditexpired':
                 return [
-                    'description' => __('Expiration date', 'credit'),
-                    'parameter'   => __('Notice (in days)', 'credit')
+                    'description' => __s('Expiration date', 'credit'),
+                    'parameter'   => __s('Notice (in days)', 'credit')
                 ];
             case 'lowcredits':
                 return [
-                    'description' => __('Low credits', 'credit'),
+                    'description' => __s('Low credits', 'credit'),
                 ];
         }
         return [];
@@ -695,5 +573,58 @@ SQL;
                 ),
             ],
         ];
+    }
+
+    public static function getMaximumConsumptionForCredit(int $credit_id)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $entity_query = [
+            'SELECT' => ['overconsumption_allowed', 'quantity'],
+            'FROM'   => 'glpi_plugin_credit_entities',
+            'WHERE'  => [
+                'id' => $credit_id,
+            ],
+        ];
+        $entity_result = $DB->request($entity_query)->current();
+        $overconsumption_allowed = $entity_result['overconsumption_allowed'];
+        $quantity_sold           = (int)$entity_result['quantity'];
+
+        if (0 !== $quantity_sold && !$overconsumption_allowed) {
+            $consumed = self::getConsumedForCredit($credit_id);
+            $max      = max(0, $quantity_sold - $consumed);
+
+            return $max;
+        } else {
+            return 100000;
+        }
+    }
+
+    /**
+     * Get the total consumption for a credit vouchers.
+     *
+     * @param int $credit_id ID of the credit vouchers
+     *
+     * @return int Total consumption
+     */
+    public static function getConsumedForCredit(int $credit_id)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $ticket_query = [
+            'SELECT' => [
+                'SUM' => 'consumed AS consumed_total',
+            ],
+            'FROM'   => 'glpi_plugin_credit_tickets',
+            'WHERE'  => [
+                'plugin_credit_entities_id' => $credit_id,
+            ],
+        ];
+
+        $ticket_result = $DB->request($ticket_query)->current();
+
+        return (int)$ticket_result['consumed_total'];
     }
 }
