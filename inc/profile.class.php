@@ -36,6 +36,11 @@ class PluginCreditProfile extends Profile
         return self::createTabEntry(PluginCreditTicket::getTypeName(Session::getPluralNumber()));
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
+    }
+
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $profile = new self();
@@ -55,10 +60,11 @@ class PluginCreditProfile extends Profile
         $profile->getFromDB($ID);
         echo "<form method='post' action='" . $profile->getFormURL() . "'>";
 
-        $rights = [['itemtype'  => PluginCreditTicketConfig::getType(),
-            'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
-            'field'     => PluginCreditTicketConfig::$rightname
-        ]
+        $rights = [
+            ['itemtype'  => PluginCreditTicketConfig::getType(),
+                'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
+                'field'     => PluginCreditTicketConfig::$rightname,
+            ],
         ];
         $matrix_options['title'] = PluginCreditTicketConfig::getTypeName(Session::getPluralNumber());
         $profile->displayRightsChoiceMatrix($rights, $matrix_options);

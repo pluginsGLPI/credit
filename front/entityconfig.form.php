@@ -29,8 +29,7 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-Session::checkLoginUser();
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $entity_config = new PluginCreditEntityConfig();
 
@@ -44,4 +43,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

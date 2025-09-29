@@ -29,6 +29,12 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+
+use function Safe\glob;
+use function Safe\preg_match;
+
 /**
  * Plugin install process
  *
@@ -39,9 +45,9 @@ function plugin_credit_install()
     $migration = new Migration(PLUGIN_CREDIT_VERSION);
 
     // Parse inc directory
-    foreach (glob(dirname(__FILE__) . '/inc/*') as $filepath) {
+    foreach (glob(__DIR__ . '/inc/*') as $filepath) {
         // Load *.class.php files and get the class name
-        if (preg_match("/inc.(.+)\.class.php/", $filepath, $matches)) {
+        if (preg_match("/inc.(.+)\.class.php/", $filepath, $matches) !== 0) {
             $classname = 'PluginCredit' . ucfirst($matches[1]);
             include_once($filepath);
             // If the install method exists, load it
@@ -54,7 +60,7 @@ function plugin_credit_install()
     $migration->addRight(
         PluginCreditTicketConfig::$rightname,
         PluginCreditTicketConfig::TICKET_TAB | PluginCreditTicketConfig::TICKET_FORM,
-        [Entity::$rightname => UPDATE]
+        [Entity::$rightname => UPDATE],
     );
 
     $migration->executeMigration();
@@ -66,7 +72,7 @@ function plugin_credit_install()
         [
             'comment' => '',
             'mode' => CronTask::MODE_EXTERNAL,
-        ]
+        ],
     );
 
     CronTask::register(
@@ -76,7 +82,7 @@ function plugin_credit_install()
         [
             'comment' => '',
             'mode' => CronTask::MODE_INTERNAL,
-        ]
+        ],
     );
 
     return true;
@@ -92,9 +98,9 @@ function plugin_credit_uninstall()
     $migration = new Migration(PLUGIN_CREDIT_VERSION);
 
     // Parse inc directory
-    foreach (glob(dirname(__FILE__) . '/inc/*') as $filepath) {
+    foreach (glob(__DIR__ . '/inc/*') as $filepath) {
         // Load *.class.php files and get the class name
-        if (preg_match("/inc.(.+)\.class.php/", $filepath, $matches)) {
+        if (preg_match("/inc.(.+)\.class.php/", $filepath, $matches) !== 0) {
             $classname = 'PluginCredit' . ucfirst($matches[1]);
             include_once($filepath);
             // If the install method exists, load it
@@ -123,8 +129,8 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
     global $DB;
 
     $target->data['##lang.credit.voucher##'] = PluginCreditEntity::getTypeName();
-    $target->data['##lang.credit.used##']    = __('Quantity consumed', 'credit');
-    $target->data['##lang.credit.left##']    = __('Quantity remaining', 'credit');
+    $target->data['##lang.credit.used##']    = __s('Quantity consumed', 'credit');
+    $target->data['##lang.credit.left##']    = __s('Quantity remaining', 'credit');
 
     $id = $target->data['##ticket.id##'];
     $ticket = new Ticket();
@@ -171,8 +177,8 @@ function plugin_credit_get_datas(NotificationTargetTicket $target)
     foreach ($DB->request($query) as $credit) {
         $target->data["credit.ticket"][] = [
             '##credit.voucher##' => $credit['name'],
-            '##credit.used##'    => (int)$credit['consumed_on_ticket'],
-            '##credit.left##'    => (int)$credit['quantity'] - (int)$credit['consumed_total'],
+            '##credit.used##'    => (int) $credit['consumed_on_ticket'],
+            '##credit.left##'    => (int) $credit['quantity'] - (int) $credit['consumed_total'],
         ];
     }
 }

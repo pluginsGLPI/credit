@@ -1,0 +1,144 @@
+{#
+ # -------------------------------------------------------------------------
+ # Credit plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Credit.
+ #
+ # Credit is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Credit is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Credit. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @author    François Legastelois
+ # @copyright Copyright (C) 2017-2023 by Credit plugin team.
+ # @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ # @link      https://github.com/pluginsGLPI/credit
+ # -------------------------------------------------------------------------
+ #}
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+<div class="credit_ticket_form">
+    {% if canedit %}
+        <div class="formblock">
+            <div class="hr-text mt-2">
+                <i class="fa-2x ti ti-coin"></i>
+                <span>{{ __('Add a voucher to the ticket', 'credit') }}</span>
+            </div>
+            <form name="creditentity_form{{ rand }}" id="creditentity_form{{ rand }}" method="post" action="{{ form_url }}">
+                <div class="row">
+                    <input type="hidden" name="tickets_id" value="{{ ID }}">
+                    <div class="col-1 col-sm-1"></div>
+                    {{ fields.dropdownField(
+                        creditentityclass,
+                        'plugin_credit_entities_id',
+                        '',
+                        __('Voucher name', 'credit'),
+                        {
+                            'entity': entity_id,
+                            'condition': conditions,
+                            'on_change': 'getQuantityRemainingForm(this.value);',
+                            'field_class': 'col-4 col-sm-4',
+                        }
+                    ) }}
+                    <div class="col-1 col-sm-1"></div>
+
+                    {{ fields.numberField(
+                        'plugin_credit_quantity',
+                        0,
+                        __('Quantity consumed', 'credit'),
+                        {
+                            'entity': entity_id,
+                            'condition': conditions,
+                            'max': 0,
+                            'min': 0,
+                            'field_class': 'col-4 col-sm-4',
+                            'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>0 ',
+                        }
+                    ) }}
+
+                    <script>
+                        function getQuantityRemainingForm(val) {
+                            var formblock = document.querySelector('.formblock');
+                            var quantity = formblock.querySelector('[id*="plugin-credit-quantity"]');
+                            var quantity_label = formblock.querySelector('[for*="plugin-credit-quantity"]');
+
+                            if (val == 0) {
+                                quantity.value = 0;
+                                quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
+                            } else {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
+                                    data: {
+                                        entity: val,
+                                    }
+                                }).done(function (data) {
+                                    quantity.max = data;
+                                    quantity.value = 0;
+                                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
+                                });
+                            }
+                        }
+                    </script>
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                    <div class="hstack gap-1">
+                        <div class="pe-5 ms-auto mb-2">
+                            <button class="btn btn-primary" type="submit" name="add" value="1">
+                                <i class="ti ti-device-floppy"></i>
+                                <span>{{ _x('button', 'Save') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    <div class="spaced">
+    <div class="hr-text mt-2">
+        <i class="fa-2x ti ti-coins"></i>
+        <span>{{ __('Consumed credits for this ticket', 'credit') }}</span>
+    </div>
+
+    {% set columns = {
+        'name': __('Voucher name', 'credit'),
+        'plugin_credit_types_id': __('Voucher type', 'credit'),
+        'date_creation': __('Date consumed', 'credit'),
+        'users_id': __('User consumed', 'credit'),
+        'consumed': __('Quantity consumed', 'credit')
+    } %}
+
+    {% set datatable_params = {
+        'is_tab': true,
+        'nopager': true,
+        'nofilter': true,
+        'nosort': true,
+        'columns': columns,
+        'formatters': {
+            'name': 'raw_html',
+            'plugin_credit_types_id': 'raw_html',
+            'consumed': 'raw_html',
+            'date_creation': 'datetime',
+            'users_id': 'raw_html',
+        },
+        'entries': entries,
+        'total_number': entries|length,
+        'filtered_number': entries|length,
+        'showmassiveactions': canedit,
+        'massiveactionparams': massiveactionparams,
+    } %}
+
+    {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
+</div>

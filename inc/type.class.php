@@ -37,7 +37,12 @@ class PluginCreditType extends CommonTreeDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
+        return _sn('Credit voucher type', 'Credit vouchers types', $nb, 'credit');
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-coins';
     }
 
     /**

@@ -29,12 +29,10 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
-
-Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
+Html::popHeader(__s('Setup'), $_SERVER['PHP_SELF'], true);
 
 if (!isset($_GET["plugcreditentity"])) {
-    throw new \RuntimeException('Invalid params provided!');
+    throw new RuntimeException('Invalid params provided!');
 } else {
     $_GET['plugcreditentity'] = (int) $_GET['plugcreditentity'];
 }

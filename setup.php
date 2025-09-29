@@ -29,12 +29,14 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_CREDIT_VERSION', '1.14.1');
+use function Safe\define;
+
+define('PLUGIN_CREDIT_VERSION', '1.15.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "10.0.0");
+define("PLUGIN_CREDIT_MIN_GLPI", "11.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "10.0.99");
+define("PLUGIN_CREDIT_MAX_GLPI", "11.0.99");
 
 /**
  * Init hooks of the plugin.
@@ -56,8 +58,8 @@ function plugin_init_credit()
             'PluginCreditEntity',
             [
                 'notificationtemplates_types' => true,
-                'addtabon'                    => 'Entity'
-            ]
+                'addtabon'                    => 'Entity',
+            ],
         );
 
         if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
@@ -65,7 +67,7 @@ function plugin_init_credit()
 
             $PLUGIN_HOOKS['post_item_form']['credit'] = [
                 'PluginCreditTicket',
-                'displayVoucherInTicketProcessingForm'
+                'displayVoucherInTicketProcessingForm',
             ];
 
             $PLUGIN_HOOKS['item_add']['credit'] = [
@@ -80,7 +82,7 @@ function plugin_init_credit()
             ];
         }
         $PLUGIN_HOOKS['add_javascript']['credit'] = [
-            'js/credit.js'
+            'js/credit.js',
         ];
         $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
     }
@@ -98,7 +100,7 @@ function plugin_init_credit()
 function plugin_version_credit()
 {
     return [
-        'name'           => _n('Credit voucher', 'Credit vouchers', 2, 'credit'),
+        'name'           => _sn('Credit voucher', 'Credit vouchers', 2, 'credit'),
         'version'        => PLUGIN_CREDIT_VERSION,
         'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
         'license'        => 'GPLv3',
@@ -107,7 +109,14 @@ function plugin_version_credit()
             'glpi' => [
                 'min' => PLUGIN_CREDIT_MIN_GLPI,
                 'max' => PLUGIN_CREDIT_MAX_GLPI,
-            ]
-        ]
+            ],
+        ],
     ];
+}
+
+function plugin_credit_geturl(): string
+{
+    /** @var array $CFG_GLPI */
+    global $CFG_GLPI;
+    return sprintf('%s/plugins/credit/', $CFG_GLPI['url_base']);
 }
