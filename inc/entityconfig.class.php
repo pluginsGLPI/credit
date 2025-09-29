@@ -31,6 +31,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_decode;
+use function Safe\preg_match;
+
 /**
  * -------------------------------------------------------------------------
  * Credit plugin for GLPI
@@ -85,7 +88,7 @@ class PluginCreditEntityConfig extends CommonDBTM
             'form_url'          => self::getFormUrl(),
             'active_filter'     => PluginCreditEntity::getActiveFilter(),
             'is_new_item'       => $config->isNewItem(),
-            'creditentityclass' => PluginCreditEntity::class
+            'creditentityclass' => PluginCreditEntity::class,
         ]);
     }
 
@@ -119,7 +122,7 @@ class PluginCreditEntityConfig extends CommonDBTM
 
         $criteria = array_merge(
             ['id' => $voucher_id],
-            PluginCreditEntity::getActiveFilter()
+            PluginCreditEntity::getActiveFilter(),
         );
         if (countElementsInTable(PluginCreditEntity::getTable(), $criteria) === 0) {
             $voucher_id = null;

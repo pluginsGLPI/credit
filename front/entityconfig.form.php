@@ -29,6 +29,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 $entity_config = new PluginCreditEntityConfig();
 
 if (isset($_POST["add"])) {
@@ -41,4 +43,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-throw new Glpi\Exception\Http\BadRequestHttpException();
+throw new BadRequestHttpException();

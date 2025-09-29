@@ -35,8 +35,8 @@ class PluginCreditTicketConfig extends CommonDBTM
 {
     public static $rightname = 'plugin_credit_ticketconfig';
 
-    const TICKET_TAB  = 1024;
-    const TICKET_FORM = 2048;
+    public const TICKET_TAB  = 1024;
+    public const TICKET_FORM = 2048;
 
     public static function getTypeName($nb = 0)
     {
@@ -78,7 +78,7 @@ class PluginCreditTicketConfig extends CommonDBTM
 
         $criteria = array_merge(
             ['id' => $voucher_id],
-            PluginCreditEntity::getActiveFilter()
+            PluginCreditEntity::getActiveFilter(),
         );
         if (countElementsInTable(PluginCreditEntity::getTable(), $criteria) === 0) {
             $voucher_id = null;
@@ -148,7 +148,7 @@ class PluginCreditTicketConfig extends CommonDBTM
             }
         }
 
-        if (empty($input)) {
+        if ($input === []) {
             return;
         }
         $input['tickets_id'] = $ticket->getID();

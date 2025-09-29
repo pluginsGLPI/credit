@@ -60,10 +60,11 @@ class PluginCreditProfile extends Profile
         $profile->getFromDB($ID);
         echo "<form method='post' action='" . $profile->getFormURL() . "'>";
 
-        $rights = [['itemtype'  => PluginCreditTicketConfig::getType(),
-            'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
-            'field'     => PluginCreditTicketConfig::$rightname
-        ]
+        $rights = [
+            ['itemtype'  => PluginCreditTicketConfig::getType(),
+                'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
+                'field'     => PluginCreditTicketConfig::$rightname,
+            ],
         ];
         $matrix_options['title'] = PluginCreditTicketConfig::getTypeName(Session::getPluralNumber());
         $profile->displayRightsChoiceMatrix($rights, $matrix_options);

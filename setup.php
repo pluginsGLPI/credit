@@ -29,6 +29,8 @@
  * -------------------------------------------------------------------------
  */
 
+use function Safe\define;
+
 define('PLUGIN_CREDIT_VERSION', '1.15.0-beta5');
 
 // Minimal GLPI version, inclusive
@@ -56,8 +58,8 @@ function plugin_init_credit()
             'PluginCreditEntity',
             [
                 'notificationtemplates_types' => true,
-                'addtabon'                    => 'Entity'
-            ]
+                'addtabon'                    => 'Entity',
+            ],
         );
 
         if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
@@ -65,7 +67,7 @@ function plugin_init_credit()
 
             $PLUGIN_HOOKS['post_item_form']['credit'] = [
                 'PluginCreditTicket',
-                'displayVoucherInTicketProcessingForm'
+                'displayVoucherInTicketProcessingForm',
             ];
 
             $PLUGIN_HOOKS['item_add']['credit'] = [
@@ -80,7 +82,7 @@ function plugin_init_credit()
             ];
         }
         $PLUGIN_HOOKS['add_javascript']['credit'] = [
-            'js/credit.js'
+            'js/credit.js',
         ];
         $PLUGIN_HOOKS['item_get_datas']['credit'] = ['NotificationTargetTicket' => 'plugin_credit_get_datas'];
     }
@@ -107,8 +109,8 @@ function plugin_version_credit()
             'glpi' => [
                 'min' => PLUGIN_CREDIT_MIN_GLPI,
                 'max' => PLUGIN_CREDIT_MAX_GLPI,
-            ]
-        ]
+            ],
+        ],
     ];
 }
 

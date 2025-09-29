@@ -32,6 +32,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\strtotime;
+
 class PluginCreditEntity extends CommonDBTM
 {
     public static $rightname = 'entity';
@@ -83,7 +85,7 @@ class PluginCreditEntity extends CommonDBTM
     {
         return countElementsInTable(
             self::getTable(),
-            getEntitiesRestrictCriteria('', '', $item->getID(), true)
+            getEntitiesRestrictCriteria('', '', $item->getID(), true),
         );
     }
 
@@ -103,7 +105,7 @@ class PluginCreditEntity extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (isset($input['name']) && strlen($input['name']) === 0) {
+        if (isset($input['name']) && (string) $input['name'] === '') {
             Session::addMessageAfterRedirect(__s('Credit voucher name is mandatory.', 'credit'));
             return false;
         }
@@ -119,7 +121,7 @@ class PluginCreditEntity extends CommonDBTM
     {
         $pc_ticket = new PluginCreditTicket();
         $pc_ticket->deleteByCriteria([
-            'plugin_credit_entities_id' => $this->getID()
+            'plugin_credit_entities_id' => $this->getID(),
         ]);
     }
 
@@ -181,19 +183,19 @@ class PluginCreditEntity extends CommonDBTM
             'overconsumption_allowed'   => __s('Allow overconsumption', 'credit'),
             'low_credit_alert'          => __s('Low credits alert', 'credit'),
             'entities_id'               => __s('Entity'),
-            'is_recursive'              => __s('Child entities')
+            'is_recursive'              => __s('Child entities'),
         ];
 
         $sqlfilter = [];
         if ($itemtype == 'Ticket') {
             $sqlfilter = [
-                'is_active' => '1'
+                'is_active' => '1',
             ];
         }
 
         $entries = [];
         foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
-            $quantity_sold = (int)$data['quantity'];
+            $quantity_sold = (int) $data['quantity'];
             if (0 === $quantity_sold) {
                 $quantity_sold = __s('Unlimited');
             }
@@ -216,8 +218,8 @@ class PluginCreditEntity extends CommonDBTM
                 plugin_credit_geturl() . "front/ticket.php?plugcreditentity=" . $data["id"],
                 ['title'         => __s('Consumed details', 'credit'),
                     'reloadonclose' => false,
-                    'display'       => false
-                ]
+                    'display'       => false,
+                ],
             );
 
             $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __s('Consumed details', 'credit') . "' alt='" . __s('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
@@ -238,7 +240,7 @@ class PluginCreditEntity extends CommonDBTM
         $nb = count($entries);
         $massiveactionparams = [
             'num_displayed'    => min($nb, $_SESSION['glpilist_limit']),
-            'container'        => 'mass' . __CLASS__ . $rand,
+            'container'        => 'mass' . self::class . $rand,
             'itemtype'         => PluginCreditEntity::class,
         ];
 
@@ -321,7 +323,7 @@ class PluginCreditEntity extends CommonDBTM
             'max'     => 50,
             'step'    => 10,
             'toadd'   => [-1 => __s('Disabled')],
-            'unit'    => '%'
+            'unit'    => '%',
         ];
 
         return $tab;
@@ -333,7 +335,7 @@ class PluginCreditEntity extends CommonDBTM
             case 'creditexpired':
                 return [
                     'description' => __s('Expiration date', 'credit'),
-                    'parameter'   => __s('Notice (in days)', 'credit')
+                    'parameter'   => __s('Notice (in days)', 'credit'),
                 ];
             case 'lowcredits':
                 return [
@@ -355,7 +357,7 @@ class PluginCreditEntity extends CommonDBTM
             return 0;
         }
 
-        $notice_time = (int)$task->fields['param'];
+        $notice_time = (int) $task->fields['param'];
 
         $alert = new Alert();
         $credits_iterator = $DB->request(
@@ -375,8 +377,8 @@ class PluginCreditEntity extends CommonDBTM
                                     'glpi_alerts.type'     => Alert::END,
                                 ],
                             ],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'glpi_alerts.date'                      => null,
@@ -386,11 +388,11 @@ class PluginCreditEntity extends CommonDBTM
                         sprintf(
                             'ADDDATE(NOW(), INTERVAL %s DAY) >= %s',
                             $notice_time,
-                            $DB->quoteName('glpi_plugin_credit_entities.end_date')
-                        )
+                            $DB->quoteName('glpi_plugin_credit_entities.end_date'),
+                        ),
                     ),
                 ],
-            ]
+            ],
         );
 
         foreach ($credits_iterator as $credit_data) {
@@ -399,8 +401,8 @@ class PluginCreditEntity extends CommonDBTM
                 sprintf(
                     'Credit %s expires on %s',
                     $credit_data['name'],
-                    date('Y-m-d', strtotime($credit_data['end_date']))
-                )
+                    date('Y-m-d', strtotime($credit_data['end_date'])),
+                ),
             );
 
             $credit = new PluginCreditEntity();
@@ -440,7 +442,7 @@ class PluginCreditEntity extends CommonDBTM
                     'glpi_plugin_credit_entities.name',
                     'glpi_plugin_credit_entities.quantity',
                     'glpi_plugin_credit_entities.low_credit_alert',
-                    new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed')
+                    new QueryExpression('SUM(glpi_plugin_credit_tickets.consumed) AS quantity_consumed'),
                 ],
                 'FROM' => 'glpi_plugin_credit_entities',
                 'LEFT JOIN' => [
@@ -448,15 +450,15 @@ class PluginCreditEntity extends CommonDBTM
                         'ON' => [
                             'glpi_plugin_credit_tickets' => 'plugin_credit_entities_id',
                             'glpi_plugin_credit_entities' => 'id',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     'glpi_plugin_credit_entities.is_active' => 1,
                 ],
                 'GROUPBY' => 'glpi_plugin_credit_entities.id',
-                'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')
-            ]
+                'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100'),
+            ],
         );
 
         foreach ($credits_iterator as $credit_data) {
@@ -465,7 +467,7 @@ class PluginCreditEntity extends CommonDBTM
                 sprintf(
                     'Low credit for %s',
                     $credit_data['name'],
-                )
+                ),
             );
 
             $credit = new PluginCreditEntity();
@@ -568,8 +570,8 @@ SQL;
                 new QueryExpression(
                     sprintf(
                         'NOW() < %s',
-                        $DB->quoteName('glpi_plugin_credit_entities.end_date')
-                    )
+                        $DB->quoteName('glpi_plugin_credit_entities.end_date'),
+                    ),
                 ),
             ],
         ];
@@ -589,7 +591,7 @@ SQL;
         ];
         $entity_result = $DB->request($entity_query)->current();
         $overconsumption_allowed = $entity_result['overconsumption_allowed'];
-        $quantity_sold           = (int)$entity_result['quantity'];
+        $quantity_sold           = (int) $entity_result['quantity'];
 
         if (0 !== $quantity_sold && !$overconsumption_allowed) {
             $consumed = self::getConsumedForCredit($credit_id);
@@ -625,6 +627,6 @@ SQL;
 
         $ticket_result = $DB->request($ticket_query)->current();
 
-        return (int)$ticket_result['consumed_total'];
+        return (int) $ticket_result['consumed_total'];
     }
 }

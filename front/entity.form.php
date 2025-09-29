@@ -28,8 +28,8 @@
  * @link      https://github.com/pluginsGLPI/credit
  * -------------------------------------------------------------------------
  */
-
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::haveRight("entity", UPDATE);
 
@@ -43,10 +43,10 @@ if (isset($_POST["add"])) {
             "entity",
             4,
             "setup",
-            sprintf(__s('%s adds a vouchers to an entity'), $_SESSION["glpiname"])
+            sprintf(__s('%s adds a vouchers to an entity'), $_SESSION["glpiname"]),
         );
     }
     Html::back();
 }
 
-throw new Glpi\Exception\Http\BadRequestHttpException();
+throw new BadRequestHttpException();

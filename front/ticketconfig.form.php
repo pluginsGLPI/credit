@@ -29,16 +29,18 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkLoginUser();
 
 $ticket_config = new PluginCreditTicketConfig();
 
 if (!Session::haveRight($ticket_config::$rightname, PluginCreditTicketConfig::TICKET_TAB)) {
-    throw new Glpi\Exception\Http\BadRequestHttpException();
+    throw new BadRequestHttpException();
 }
 
 if (isset($_POST["update"])) {
-    $tickets_id = (int)$_POST['tickets_id'];
+    $tickets_id = (int) $_POST['tickets_id'];
     if ($ticket_config->getFromDBByCrit(['tickets_id' => $tickets_id])) {
         $_POST['id'] = $ticket_config->getID();
         $ticket_config->update($_POST);
@@ -48,4 +50,4 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-throw new Glpi\Exception\Http\BadRequestHttpException();
+throw new BadRequestHttpException();

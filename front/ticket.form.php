@@ -29,6 +29,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::haveRight("ticket", UPDATE);
 
 $PluginCreditTicket = new PluginCreditTicket();
@@ -36,14 +38,14 @@ if ($_REQUEST['plugin_credit_entities_id'] == 0) {
     Session::addMessageAfterRedirect(
         __s('Credit voucher entity must be selected.', 'credit'),
         true,
-        ERROR
+        ERROR,
     );
     Html::back();
 } elseif ($_REQUEST['plugin_credit_quantity'] == 0) {
     Session::addMessageAfterRedirect(
         __s('Credit voucher quantity must be greater than 0.', 'credit'),
         true,
-        ERROR
+        ERROR,
     );
     Html::back();
 }
@@ -57,9 +59,9 @@ if ($PluginCreditTicket->add($input)) {
     Session::addMessageAfterRedirect(
         __s('Credit voucher successfully added.', 'credit'),
         true,
-        INFO
+        INFO,
     );
     Html::back();
 }
 
-throw new Glpi\Exception\Http\BadRequestHttpException();
+throw new BadRequestHttpException();

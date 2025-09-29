@@ -29,7 +29,7 @@
  * -------------------------------------------------------------------------
  */
 
-use Com\Tecnick\Color\Model\Template;
+
 use Glpi\Application\View\TemplateRenderer;
 
 /**
@@ -77,11 +77,7 @@ class PluginCreditTicket extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item instanceof CommonDBTM) {
-            $nb = self::countForItem($item);
-        } else {
-            $nb = 0;
-        }
+        $nb = $item instanceof CommonDBTM ? self::countForItem($item) : 0;
         if ($item instanceof Ticket) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 return self::createTabEntry(self::getTypeName($nb), $nb);
@@ -153,7 +149,7 @@ class PluginCreditTicket extends CommonDBTM
             'SELECT' => '*',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'plugin_credit_entities_id' => $ID
+                'plugin_credit_entities_id' => $ID,
             ],
             'ORDER'  => ['id DESC'],
         ];
@@ -182,7 +178,7 @@ class PluginCreditTicket extends CommonDBTM
             'SELECT' => ['SUM' => 'consumed as sum'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'plugin_credit_entities_id' => $ID
+                'plugin_credit_entities_id' => $ID,
             ],
         ];
 
@@ -224,42 +220,39 @@ class PluginCreditTicket extends CommonDBTM
 
         $entries = [];
 
-        if ($number) {
-            if ($canedit) {
-                $massiveactionparams = [
-                    'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
-                    'container'        => 'mass' . __CLASS__ . $rand,
-                    'itemtype'         => PluginCreditTicket::class,
-                    'specific_actions' => [
-                        'update'    => _x('button', 'Update'),
-                        'purge'     => _x('button', 'Delete permanently')
-                    ]
-                ];
+        if ($number && $canedit) {
+            $massiveactionparams = [
+                'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
+                'container'        => 'mass' . self::class . $rand,
+                'itemtype'         => PluginCreditTicket::class,
+                'specific_actions' => [
+                    'update'    => _x('button', 'Update'),
+                    'purge'     => _x('button', 'Delete permanently'),
+                ],
+            ];
+            foreach (self::getAllForTicket($ID) as $data) {
+                $credit_entity = new PluginCreditEntity();
+                $credit_entity->getFromDB($data['plugin_credit_entities_id']);
 
-                foreach (self::getAllForTicket($ID) as $data) {
-                    $credit_entity = new PluginCreditEntity();
-                    $credit_entity->getFromDB($data['plugin_credit_entities_id']);
-
-                    if (!empty($data['plugin_credit_types_id'])) {
-                        $type = new PluginCreditType();
-                        $type = $type->getById($data['plugin_credit_types_id']);
-                        if ($type) {
-                            $data['plugin_credit_types_id'] = $type->getLink();
-                        }
-                    } else {
-                        $data['plugin_credit_types_id'] = '';
+                if (!empty($data['plugin_credit_types_id'])) {
+                    $type = new PluginCreditType();
+                    $type = $type->getById($data['plugin_credit_types_id']);
+                    if ($type) {
+                        $data['plugin_credit_types_id'] = $type->getLink();
                     }
-
-                    $entries[] = array_merge($data, [
-                        'id'                        => $data['id'],
-                        'name'                      => $credit_entity->getName(),
-                        'plugin_credit_types_id'    => $data['plugin_credit_types_id'],
-                        'date_creation'             => $data['date_creation'],
-                        'users_id'                  => Session::haveRight('user', READ) == true ? getUserLink($data["users_id"]) : getUserName($data["users_id"]),
-                        'consumed'                  => $data['consumed'],
-                        'itemtype'                  => PluginCreditTicket::class,
-                    ]);
+                } else {
+                    $data['plugin_credit_types_id'] = '';
                 }
+
+                $entries[] = array_merge($data, [
+                    'id'                        => $data['id'],
+                    'name'                      => $credit_entity->getName(),
+                    'plugin_credit_types_id'    => $data['plugin_credit_types_id'],
+                    'date_creation'             => $data['date_creation'],
+                    'users_id'                  => Session::haveRight('user', READ) == true ? getUserLink($data["users_id"]) : getUserName($data["users_id"]),
+                    'consumed'                  => $data['consumed'],
+                    'itemtype'                  => PluginCreditTicket::class,
+                ]);
             }
         }
         PluginCreditTicketConfig::showForTicket($ticket);
@@ -274,7 +267,7 @@ class PluginCreditTicket extends CommonDBTM
             'canedit'               => $canedit,
             'ID'                    => $ID,
             'entries'               => $entries,
-            'massiveactionparams'   => $massiveactionparams ?? []
+            'massiveactionparams'   => $massiveactionparams ?? [],
         ]);
 
         $Entity = new Entity();
@@ -307,7 +300,7 @@ class PluginCreditTicket extends CommonDBTM
         }
 
         if (!$item->isNewItem()) {
-           // Do not display fields in item update form.
+            // Do not display fields in item update form.
             return;
         }
 
@@ -437,7 +430,7 @@ class PluginCreditTicket extends CommonDBTM
         if (array_key_exists('tickets_id', $item->fields)) {
             // Ticket ID can be found in `tickets_id` field for TicketTask.
             $ticketId = $item->fields['tickets_id'];
-        } else if (
+        } elseif (
             array_key_exists('itemtype', $item->fields)
              && array_key_exists('items_id', $item->fields)
              && 'Ticket' == $item->fields['itemtype']
@@ -472,7 +465,7 @@ class PluginCreditTicket extends CommonDBTM
             Session::addMessageAfterRedirect(
                 __s('You must provide a credit voucher', 'credit'),
                 true,
-                ERROR
+                ERROR,
             );
             return;
         }
@@ -482,7 +475,7 @@ class PluginCreditTicket extends CommonDBTM
         $credit_entity = new PluginCreditEntity();
         $credit_entity->getFromDB($item->input['plugin_credit_entities_id']);
 
-        $quantity_sold      = (int)$credit_entity->fields['quantity'];
+        $quantity_sold      = (int) $credit_entity->fields['quantity'];
         $quantity_consumed  = $credit_ticket->getConsumedForCreditEntity($item->input['plugin_credit_entities_id']);
         $quantity_remaining = max(0, $quantity_sold - $quantity_consumed);
 
@@ -491,19 +484,19 @@ class PluginCreditTicket extends CommonDBTM
                 Session::addMessageAfterRedirect(
                     sprintf(
                         __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
-                        $quantity_remaining
+                        $quantity_remaining,
                     ),
                     true,
-                    WARNING
+                    WARNING,
                 );
             } else {
                 Session::addMessageAfterRedirect(
                     sprintf(
                         __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
-                        $quantity_remaining
+                        $quantity_remaining,
                     ),
                     true,
-                    ERROR
+                    ERROR,
                 );
                 return;
             }
@@ -519,7 +512,7 @@ class PluginCreditTicket extends CommonDBTM
             Session::addMessageAfterRedirect(
                 __s('Credit voucher successfully added.', 'credit'),
                 true,
-                INFO
+                INFO,
             );
         }
     }
@@ -602,7 +595,7 @@ SQL;
                 $table,
                 'plugin_credit_entities_id',
                 'plugin_credit_entities_id',
-                "int {$default_key_sign} NOT NULL DEFAULT 0"
+                "int {$default_key_sign} NOT NULL DEFAULT 0",
             );
             $migration->changeField($table, 'users_id', 'users_id', "int {$default_key_sign} NOT NULL DEFAULT 0");
 

@@ -35,7 +35,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
     {
         return [
             'expired' => __s('Expiration date', 'credit'),
-            'lowcredits' => __s('Low credits', 'credit')
+            'lowcredits' => __s('Low credits', 'credit'),
         ];
     }
 
@@ -54,21 +54,21 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
         $req = $DB->request(
             [
                 'SELECT' => [
-                    'SUM' => 'consumed AS consumed_total'
+                    'SUM' => 'consumed AS consumed_total',
                 ],
                 'FROM'   => 'glpi_plugin_credit_tickets',
                 'WHERE'  => [
                     'plugin_credit_entities_id' => $this->obj->getField('id'),
                 ],
-            ]
+            ],
         );
         $data = $req->current();
-        $this->data['##credit.quantity_remaining##'] = (int)$this->obj->getField('quantity') - (int)$data['consumed_total'];
-        $this->data['##credit.quantity_consumed##'] = (int)$data['consumed_total'];
+        $this->data['##credit.quantity_remaining##'] = (int) $this->obj->getField('quantity') - (int) $data['consumed_total'];
+        $this->data['##credit.quantity_consumed##'] = (int) $data['consumed_total'];
 
         $this->data['##credit.entity##'] = Dropdown::getDropdownName(
             'glpi_entities',
-            $this->obj->getField('entities_id')
+            $this->obj->getField('entities_id'),
         );
         $this->data['##credit.type##'] = Dropdown::getDropdownName('glpi_plugin_credit_types', $this->obj->getField('plugin_credit_types_id'));
         $this->data['##lang.credit.begindate##'] = __s('Begin date');
@@ -111,7 +111,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'tag'   => $tag,
                     'label' => $label,
                     'value' => true,
-                ]
+                ],
             );
         }
 
@@ -129,7 +129,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'label' => $label,
                     'value' => false,
                     'lang'  => true,
-                ]
+                ],
             );
         }
 
@@ -158,8 +158,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 'WHERE'  => [
                     'itemtype' => 'PluginCreditEntity',
                     'name'     => 'Credit expired',
-                ]
-            ]
+                ],
+            ],
         );
 
         if (count($result) > 0) {
@@ -173,14 +173,14 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'date_mod' => $_SESSION['glpi_currenttime'],
                     'comment'  => '',
                     'css'      => '',
-                ]
+                ],
             );
         }
 
         if ($templates_id) {
             $tanslation_count = countElementsInTable(
                 $translation->getTable(),
-                ['notificationtemplates_id' => $templates_id]
+                ['notificationtemplates_id' => $templates_id],
             );
             if ($tanslation_count == 0) {
                 $translation->add(
@@ -190,13 +190,13 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'subject'                  => '##lang.credit.expired## : ##credit.name##',
                         'content_text'             => '##lang.credit.expired.information##',
                         'content_html'             => '##lang.credit.expired.information##',
-                    ]
+                    ],
                 );
             }
 
             $notifications_count = countElementsInTable(
                 $notification->getTable(),
-                ['itemtype' => 'PluginCreditEntity', 'event' => 'expired']
+                ['itemtype' => 'PluginCreditEntity', 'event' => 'expired'],
             );
 
             if ($notifications_count == 0) {
@@ -210,24 +210,24 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'is_recursive' => 1,
                         'is_active'    => 1,
                         'date_mod'     => $_SESSION['glpi_currenttime'],
-                    ]
+                    ],
                 );
 
-                 $n_n_template->add(
-                     [
-                         'notifications_id'         => $notification_id,
-                         'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                         'notificationtemplates_id' => $templates_id,
-                     ]
-                 );
+                $n_n_template->add(
+                    [
+                        'notifications_id'         => $notification_id,
+                        'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                        'notificationtemplates_id' => $templates_id,
+                    ],
+                );
 
-                 $target->add(
-                     [
-                         'notifications_id' => $notification_id,
-                         'type'             => Notification::USER_TYPE,
-                         'items_id'         => Notification::ENTITY_ADMINISTRATOR,
-                     ]
-                 );
+                $target->add(
+                    [
+                        'notifications_id' => $notification_id,
+                        'type'             => Notification::USER_TYPE,
+                        'items_id'         => Notification::ENTITY_ADMINISTRATOR,
+                    ],
+                );
             }
         }
 
@@ -239,8 +239,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 'WHERE' => [
                     'itemtype' => 'PluginCreditEntity',
                     'name' => 'Low credits',
-                ]
-            ]
+                ],
+            ],
         );
 
         if (count($result_quantity) > 0) {
@@ -254,14 +254,14 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'date_mod' => $_SESSION['glpi_currenttime'],
                     'comment' => '',
                     'css' => '',
-                ]
+                ],
             );
         }
 
         if ($templates_id_quantity) {
             $translation_count_quantity = countElementsInTable(
                 $translation->getTable(),
-                ['notificationtemplates_id' => $templates_id_quantity]
+                ['notificationtemplates_id' => $templates_id_quantity],
             );
             if ($translation_count_quantity == 0) {
                 $translation->add(
@@ -271,13 +271,13 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'subject' => '##lang.credit.lowcredits## : ##credit.name##',
                         'content_text' => '##lang.credit.lowcredits.information##',
                         'content_html' => '##lang.credit.lowcredits.information##',
-                    ]
+                    ],
                 );
             }
 
             $notifications_count_quantity = countElementsInTable(
                 $notification->getTable(),
-                ['itemtype' => 'PluginCreditEntity', 'event' => 'lowcredits']
+                ['itemtype' => 'PluginCreditEntity', 'event' => 'lowcredits'],
             );
 
             if ($notifications_count_quantity == 0) {
@@ -291,7 +291,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'is_recursive' => 1,
                         'is_active' => 1,
                         'date_mod' => $_SESSION['glpi_currenttime'],
-                    ]
+                    ],
                 );
 
                 $n_n_template->add(
@@ -299,7 +299,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'notifications_id' => $notification_id_quantity,
                         'mode' => Notification_NotificationTemplate::MODE_MAIL,
                         'notificationtemplates_id' => $templates_id_quantity,
-                    ]
+                    ],
                 );
 
                 $target->add(
@@ -307,7 +307,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                         'notifications_id' => $notification_id_quantity,
                         'type' => Notification::USER_TYPE,
                         'items_id' => Notification::ENTITY_ADMINISTRATOR,
-                    ]
+                    ],
                 );
             }
         }
@@ -327,7 +327,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'itemtype' => 'PluginCreditEntity',
                     'event'    => 'expired',
                 ],
-            ]
+            ],
         );
         foreach ($notifications_iterator as $notification_data) {
             $notification->delete($notification_data);
@@ -341,7 +341,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                 'WHERE'  => [
                     'itemtype' => 'PluginCreditEntity',
                 ],
-            ]
+            ],
         );
         foreach ($templates_iterator as $template_data) {
             $translation = new NotificationTemplateTranslation();
@@ -352,10 +352,10 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'WHERE'  => [
                         'notificationtemplates_id' => $template_data['id'],
                     ],
-                ]
+                ],
             );
             foreach ($translations_iterator as $translation_data) {
-                 $translation->delete($translation_data);
+                $translation->delete($translation_data);
             }
 
             $template->delete($template_data);
@@ -369,7 +369,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'itemtype' => 'PluginCreditEntity',
                     'event' => 'lowcredits',
                 ],
-            ]
+            ],
         );
         foreach ($notifications_iterator_quantity as $notification_data_quantity) {
             $notification->delete($notification_data_quantity);
@@ -383,7 +383,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'itemtype' => 'PluginCreditEntity',
                     'name' => 'lowcredits',
                 ],
-            ]
+            ],
         );
         foreach ($templates_iterator_quantity as $template_data_quantity) {
             $translation = new NotificationTemplateTranslation();
@@ -394,7 +394,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
                     'WHERE' => [
                         'notificationtemplates_id' => $template_data_quantity['id'],
                     ],
-                ]
+                ],
             );
             foreach ($translations_iterator_quantity as $translation_data_quantity) {
                 $translation = new NotificationTemplateTranslation();
