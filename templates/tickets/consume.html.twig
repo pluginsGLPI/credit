@@ -96,14 +96,15 @@
         function getQuantityRemaining{{ rand }}(val) {
             console.log('plugin-credit-quantity_{{ rand }}');
             consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
-            quantity = consumeblock.querySelector('[id*="plugin-credit-quantity_{{ rand }}"]');
-            quantity_label = consumeblock.querySelector('[for*="plugin-credit-quantity_{{ rand }}"]');
+            quantity = consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]');
+            quantity_label = consumeblock.querySelector('[for*="plugin_credit_quantity_{{ rand }}"]');
             if (val == 0) {
                 quantity_label.style.display = 'none';
                 quantity.style.display = 'none';
 
                 quantity.max = 0;
                 quantity.value = 0;
+                quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
             } else {
                 quantity_label.style.display = 'block';
@@ -118,6 +119,7 @@
                 }).done(function (data) {
                     quantity.max = data;
                     quantity.value = 0;
+                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                 });
             }
