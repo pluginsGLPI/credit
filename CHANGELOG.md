@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.15.1] - 2025-11-18
 
-## Fixe
+### Fixed
 
 - Fix the maximum consumable quantity value displayed in the tooltip
 
