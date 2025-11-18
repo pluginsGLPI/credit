@@ -71,11 +71,12 @@
                     <script>
                         function getQuantityRemainingForm(val) {
                             var formblock = document.querySelector('.formblock');
-                            var quantity = formblock.querySelector('[id*="plugin-credit-quantity"]');
-                            var quantity_label = formblock.querySelector('[for*="plugin-credit-quantity"]');
+                            var quantity = formblock.querySelector('[id*="plugin_credit_quantity"]');
+                            var quantity_label = formblock.querySelector('[for*="plugin_credit_quantity"]');
 
                             if (val == 0) {
                                 quantity.value = 0;
+                                quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                             } else {
                                 $.ajax({
@@ -87,6 +88,7 @@
                                 }).done(function (data) {
                                     quantity.max = data;
                                     quantity.value = 0;
+                                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                 });
                             }
