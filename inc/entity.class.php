@@ -457,7 +457,7 @@ class PluginCreditEntity extends CommonDBTM
                     'glpi_plugin_credit_entities.is_active' => 1,
                 ],
                 'GROUPBY' => 'glpi_plugin_credit_entities.id',
-                'HAVING' => new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100'),
+                'HAVING' => [new QueryExpression('glpi_plugin_credit_entities.quantity - quantity_consumed <= (glpi_plugin_credit_entities.quantity * glpi_plugin_credit_entities.low_credit_alert) / 100')],
             ],
         );
 
