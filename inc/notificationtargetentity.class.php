@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Plugin\Formcreator\Common;
+
 /**
  * -------------------------------------------------------------------------
  * Credit plugin for GLPI
@@ -44,6 +46,10 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
         /** @var DBmysql $DB */
         global $DB;
 
+        if (!($this->obj instanceof CommonDBTM)) {
+            return;
+        }
+
         $this->data['##credit.name##'] = $this->obj->getField('name');
         $this->data['##credit.quantity_sold##'] = $this->obj->getField('quantity');
         $this->data['##credit.begindate##'] = $this->obj->getField('begin_date');
@@ -63,8 +69,8 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
             ],
         );
         $data = $req->current();
-        $this->data['##credit.quantity_remaining##'] = (int) $this->obj->getField('quantity') - (int) $data['consumed_total'];
-        $this->data['##credit.quantity_consumed##'] = (int) $data['consumed_total'];
+        $this->data['##credit.quantity_remaining##'] = (string) ((int) $this->obj->getField('quantity') - (int) $data['consumed_total']);
+        $this->data['##credit.quantity_consumed##'] = (string) $data['consumed_total'];
 
         $this->data['##credit.entity##'] = Dropdown::getDropdownName(
             'glpi_entities',
