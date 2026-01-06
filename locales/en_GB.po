@@ -1,14 +1,14 @@
 # English translations for PACKAGE package.
-# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2025.
+# Automatically generated, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-24 00:52+0000\n"
-"PO-Revision-Date: 2025-10-24 00:52+0000\n"
+"POT-Creation-Date: 2026-01-06 01:01+0000\n"
+"PO-Revision-Date: 2026-01-06 01:01+0000\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: en_GB\n"
@@ -21,14 +21,14 @@ msgstr ""
 msgid "Add a credit voucher"
 msgstr "Add a credit voucher"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:77
-#: inc/notificationtargetentity.class.php:97 inc/entity.class.php:180
+#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:112
+#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:180
 #: inc/entity.class.php:292
 msgid "Quantity sold"
 msgstr "Quantity sold"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:79
-#: inc/notificationtargetentity.class.php:104 inc/entity.class.php:183
+#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:114
+#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:183
 #: inc/entity.class.php:312
 msgid "Allow overconsumption"
 msgstr "Allow overconsumption"
@@ -72,8 +72,8 @@ msgstr "Voucher name"
 #: templates/tickets/consume.html.twig
 #: templates/tickets/consumed_details.html.twig
 #: templates/tickets/form.html.twig inc/ticket.class.php:536
-#: inc/notificationtargetentity.class.php:81
-#: inc/notificationtargetentity.class.php:101 inc/entity.class.php:181
+#: inc/notificationtargetentity.class.php:116
+#: inc/notificationtargetentity.class.php:136 inc/entity.class.php:181
 #: hook.php:132
 msgid "Quantity consumed"
 msgstr "Quantity consumed"
@@ -132,40 +132,40 @@ msgstr "Quantity consumed exceeds remaining credits: %d"
 msgid "Credit voucher successfully added."
 msgstr "Credit voucher successfully added."
 
-#: inc/notificationtargetentity.class.php:37 inc/entity.class.php:337
+#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:337
 msgid "Expiration date"
 msgstr "Expiration date"
 
-#: inc/notificationtargetentity.class.php:38 inc/entity.class.php:342
+#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:342
 msgid "Low credits"
 msgstr "Low credits"
 
-#: inc/notificationtargetentity.class.php:75
-#: inc/notificationtargetentity.class.php:99
+#: inc/notificationtargetentity.class.php:110
+#: inc/notificationtargetentity.class.php:134
 msgid "End date"
 msgstr "End date"
 
-#: inc/notificationtargetentity.class.php:76
-#: inc/notificationtargetentity.class.php:100 inc/entity.class.php:182
+#: inc/notificationtargetentity.class.php:111
+#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:182
 #: hook.php:133
 msgid "Quantity remaining"
 msgstr "Quantity remaining"
 
-#: inc/notificationtargetentity.class.php:119
+#: inc/notificationtargetentity.class.php:154
 msgid "Credit voucher expiration"
 msgstr "Credit voucher expiration"
 
-#: inc/notificationtargetentity.class.php:120
+#: inc/notificationtargetentity.class.php:155
 msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 
-#: inc/notificationtargetentity.class.php:121
+#: inc/notificationtargetentity.class.php:156
 msgid "Amount of credit remaining close to or at 0"
 msgstr "Amount of credit remaining close to or at 0"
 
-#: inc/notificationtargetentity.class.php:122
+#: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
 msgstr "The remaining quantity has reached 0 or almost."
 
