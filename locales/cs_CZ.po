@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-24 00:52+0000\n"
+"POT-Creation-Date: 2025-12-22 01:02+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: David Stepan <stepand@tiscali.cz>, 2025\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/pluginsGLPI/teams/73419/cs_CZ/)\n"
@@ -27,14 +27,14 @@ msgstr ""
 msgid "Add a credit voucher"
 msgstr "Přidat kupon s kreditem"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:77
-#: inc/notificationtargetentity.class.php:97 inc/entity.class.php:180
+#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:112
+#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:180
 #: inc/entity.class.php:292
 msgid "Quantity sold"
 msgstr "Prodané množství"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:79
-#: inc/notificationtargetentity.class.php:104 inc/entity.class.php:183
+#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:114
+#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:183
 #: inc/entity.class.php:312
 msgid "Allow overconsumption"
 msgstr "Umožnit čerpat více, než je předplaceno"
@@ -78,8 +78,8 @@ msgstr "Název kuponu"
 #: templates/tickets/consume.html.twig
 #: templates/tickets/consumed_details.html.twig
 #: templates/tickets/form.html.twig inc/ticket.class.php:536
-#: inc/notificationtargetentity.class.php:81
-#: inc/notificationtargetentity.class.php:101 inc/entity.class.php:181
+#: inc/notificationtargetentity.class.php:116
+#: inc/notificationtargetentity.class.php:136 inc/entity.class.php:181
 #: hook.php:132
 msgid "Quantity consumed"
 msgstr "Spotřebované množství"
@@ -140,40 +140,40 @@ msgstr "Spotřebované množství překračuje zbývající předplacené: %d"
 msgid "Credit voucher successfully added."
 msgstr "Kupon s kreditem úspěšně přidán."
 
-#: inc/notificationtargetentity.class.php:37 inc/entity.class.php:337
+#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:337
 msgid "Expiration date"
 msgstr "Datum vypršení"
 
-#: inc/notificationtargetentity.class.php:38 inc/entity.class.php:342
+#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:342
 msgid "Low credits"
 msgstr "Nízké kredity"
 
-#: inc/notificationtargetentity.class.php:75
-#: inc/notificationtargetentity.class.php:99
+#: inc/notificationtargetentity.class.php:110
+#: inc/notificationtargetentity.class.php:134
 msgid "End date"
 msgstr "Datum ukončení"
 
-#: inc/notificationtargetentity.class.php:76
-#: inc/notificationtargetentity.class.php:100 inc/entity.class.php:182
+#: inc/notificationtargetentity.class.php:111
+#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:182
 #: hook.php:133
 msgid "Quantity remaining"
 msgstr "Zbývající množství"
 
-#: inc/notificationtargetentity.class.php:119
+#: inc/notificationtargetentity.class.php:154
 msgid "Credit voucher expiration"
 msgstr "Platnost kreditního kuponu"
 
-#: inc/notificationtargetentity.class.php:120
+#: inc/notificationtargetentity.class.php:155
 msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr ""
 "Platnost tohoto kreditního kuponu brzy vyprší. Prosím, zvažte koupi nového."
 
-#: inc/notificationtargetentity.class.php:121
+#: inc/notificationtargetentity.class.php:156
 msgid "Amount of credit remaining close to or at 0"
 msgstr "Zbývající částka kreditu blízká 0 nebo na 0"
 
-#: inc/notificationtargetentity.class.php:122
+#: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
 msgstr "Zbývající množství dosáhlo 0 nebo téměř 0."
 
