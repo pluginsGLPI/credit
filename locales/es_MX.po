@@ -2,73 +2,76 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Translators:
+# Edwin Elias Alvarez <elias986@yahoo.com>, 2026
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-29 01:11+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2018-06-01 14:02+0000\n"
+"Last-Translator: Edwin Elias Alvarez <elias986@yahoo.com>, 2026\n"
+"Language-Team: Spanish (Mexico) (https://app.transifex.com/pluginsGLPI/teams/73419/es_MX/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Language: es_MX\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: templates/creditentity.hmtl.twig
 msgid "Add a credit voucher"
-msgstr ""
+msgstr "Agregar un cupón de crédito"
 
 #: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:112
 #: inc/notificationtargetentity.class.php:132 inc/entity.class.php:180
 #: inc/entity.class.php:292
 msgid "Quantity sold"
-msgstr ""
+msgstr "Cantidad vendida"
 
 #: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:114
 #: inc/notificationtargetentity.class.php:139 inc/entity.class.php:183
 #: inc/entity.class.php:312
 msgid "Allow overconsumption"
-msgstr ""
+msgstr "Permitir el sobreconsumo"
 
 #: templates/creditentity.hmtl.twig
 msgid "Low credit alert threshold"
-msgstr ""
+msgstr "Umbral de alerta de crédito bajo"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "Default options for entity"
-msgstr ""
+msgstr "Opciones predeterminadas para la entidad"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "By default consume a voucher for : "
-msgstr ""
+msgstr "De forma predeterminada, consumir un cupón para:"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "Default voucher for : "
-msgstr ""
+msgstr "Cupón predeterminado para:"
 
 #: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
 msgid "Default for followups"
-msgstr ""
+msgstr "Predeterminado para seguimientos"
 
 #: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
 msgid "Default for tasks"
-msgstr ""
+msgstr "Prederteminado para las tareas"
 
 #: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
 msgid "Default for solutions"
-msgstr ""
+msgstr "Prdeterminado para soluciones"
 
 #: templates/tickets/consume.html.twig
 msgid "Consume a voucher ?"
-msgstr ""
+msgstr "Consumir un cupón?"
 
 #: templates/tickets/consume.html.twig templates/tickets/form.html.twig
 msgid "Voucher name"
-msgstr ""
+msgstr "Nombre del cupón"
 
 #: templates/tickets/consume.html.twig
 #: templates/tickets/consumed_details.html.twig
@@ -77,142 +80,147 @@ msgstr ""
 #: inc/notificationtargetentity.class.php:136 inc/entity.class.php:181
 #: hook.php:132
 msgid "Quantity consumed"
-msgstr ""
+msgstr "Cantidad consumida"
 
 #: templates/tickets/consume.html.twig templates/tickets/form.html.twig
 msgid "Maximum consumable quantity"
-msgstr ""
+msgstr "Cantidad máxima de consumibles"
 
 #: templates/tickets/consumed_details.html.twig
 msgid "Detail of tickets on which consumption is declared"
-msgstr ""
+msgstr "Detalle de los tickets en los que se declara el consumo"
 
 #: templates/tickets/consumed_details.html.twig
 msgid "No credit was recorded"
-msgstr ""
+msgstr "No se registró ningún crédito"
 
 #: templates/tickets/consumed_details.html.twig
 #: templates/tickets/form.html.twig inc/ticket.class.php:528
 msgid "Date consumed"
-msgstr ""
+msgstr "Fecha de consumo"
 
 #: templates/tickets/consumed_details.html.twig
 #: templates/tickets/form.html.twig
 msgid "User consumed"
-msgstr ""
+msgstr "Consumido por el usuario"
 
 #: templates/tickets/form.html.twig
 msgid "Add a voucher to the ticket"
-msgstr ""
+msgstr "Añade un voucher al ticket"
 
 #: templates/tickets/form.html.twig
 msgid "Consumed credits for this ticket"
-msgstr ""
+msgstr "Créditos consumidos para este ticket"
 
 #: templates/tickets/form.html.twig
 msgid "Voucher type"
-msgstr ""
+msgstr "Tipo de cupón"
 
 #: setup.php:103 inc/ticket.class.php:70 inc/entityconfig.class.php:72
 #: inc/entity.class.php:43
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Cupón de crédito"
+msgstr[1] "Cupones de crédito"
+msgstr[2] "Cupones de crédito"
 
 #: inc/ticket.class.php:466
 msgid "You must provide a credit voucher"
-msgstr ""
+msgstr "Debe proporcionar un comprobante de crédito"
 
 #: inc/ticket.class.php:486 inc/ticket.class.php:495
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
-msgstr ""
+msgstr "La cantidad consumida supera los créditos restantes:%d"
 
 #: inc/ticket.class.php:513 front/ticket.form.php:60
 msgid "Credit voucher successfully added."
-msgstr ""
+msgstr "Bono de crédito añadido correctamente."
 
 #: inc/notificationtargetentity.class.php:68 inc/entity.class.php:337
 msgid "Expiration date"
-msgstr ""
+msgstr "Fecha de expiración"
 
 #: inc/notificationtargetentity.class.php:69 inc/entity.class.php:342
 msgid "Low credits"
-msgstr ""
+msgstr "Créditos bajos"
 
 #: inc/notificationtargetentity.class.php:110
 #: inc/notificationtargetentity.class.php:134
 msgid "End date"
-msgstr ""
+msgstr "Fecha final"
 
 #: inc/notificationtargetentity.class.php:111
 #: inc/notificationtargetentity.class.php:135 inc/entity.class.php:182
 #: hook.php:133
 msgid "Quantity remaining"
-msgstr ""
+msgstr "Cantidad restante"
 
 #: inc/notificationtargetentity.class.php:154
 msgid "Credit voucher expiration"
-msgstr ""
+msgstr "Vencimiento del cupón de crédito"
 
 #: inc/notificationtargetentity.class.php:155
 msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
 msgstr ""
+"Este bono de crédito caducará pronto. Por favor, considere comprar uno "
+"nuevo."
 
 #: inc/notificationtargetentity.class.php:156
 msgid "Amount of credit remaining close to or at 0"
-msgstr ""
+msgstr "Cantidad de crédito restante cercana o igual a 0"
 
 #: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
-msgstr ""
+msgstr "La cantidad restante ha llegado a 0 o casi."
 
 #: inc/type.class.php:40
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipos de bonos de crédito"
+msgstr[1] "Tipos de bonos de crédito"
+msgstr[2] "Tipos de bonos de crédito"
 
 #: inc/ticketconfig.class.php:43
 msgid "Default voucher option"
 msgid_plural "Default voucher options"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Opciones de bono predeterminado"
+msgstr[1] "Opciones de bono predeterminado"
+msgstr[2] "Opciones de bono predeterminado"
 
 #: inc/ticketconfig.class.php:217
 msgid "Update in ticket tab"
-msgstr ""
+msgstr "Actualización en la pestaña de tickets"
 
 #: inc/ticketconfig.class.php:218
 msgid "Update in ticket form"
-msgstr ""
+msgstr "Actualización en forma de ticket"
 
 #: inc/entity.class.php:95 inc/entity.class.php:109
 msgid "Credit voucher name is mandatory."
-msgstr ""
+msgstr "El nombre del bono de crédito es obligatorio."
 
 #: inc/entity.class.php:184
 msgid "Low credits alert"
-msgstr ""
+msgstr "Alerta de créditos bajos"
 
 #: inc/entity.class.php:219 inc/entity.class.php:225
 msgid "Consumed details"
-msgstr ""
+msgstr "Detalles consumidos"
 
 #: inc/entity.class.php:320
 msgid "Low credit alert"
-msgstr ""
+msgstr "Alerta de créditos bajos"
 
 #: inc/entity.class.php:338
 msgid "Notice (in days)"
-msgstr ""
+msgstr "Aviso (en días)"
 
 #: front/ticket.form.php:39
 msgid "Credit voucher entity must be selected."
-msgstr ""
+msgstr "Se debe seleccionar la entidad del comprobante de crédito."
 
 #: front/ticket.form.php:46
 msgid "Credit voucher quantity must be greater than 0."
-msgstr ""
+msgstr "La cantidad del comprobante de crédito debe ser mayor a 0."
