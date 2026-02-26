@@ -48,3 +48,8 @@ Obtain a personalized service experience, associated with benefits and opportuni
 
 * **Code**: you can redistribute it and/or modify
     it under the terms of the GNU General Public License ([GPL-2.0](https://www.gnu.org/licenses/gpl-2.0.en.html)).
+
+## Additionnal resources
+
+* ([Translations on Transifex service](https://explore.transifex.com/pluginsGLPI/credit))
+
