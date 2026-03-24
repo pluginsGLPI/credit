@@ -214,8 +214,8 @@ SQL;
     public function getRights($interface = 'central')
     {
         return [
-            self::TICKET_TAB  => __s('Update in ticket tab', 'credit'),
-            self::TICKET_FORM => __s('Update in ticket form', 'credit'),
+            self::TICKET_TAB  => __('Update in ticket tab', 'credit'),
+            self::TICKET_FORM => __('Update in ticket form', 'credit'),
         ];
     }
 }
