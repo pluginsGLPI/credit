@@ -48,7 +48,7 @@
                         {
                             'entity': entity_id,
                             'condition': conditions,
-                            'on_change': 'getQuantityRemainingForm(this.value);',
+                            'on_change': 'getQuantityRemainingForm' ~ rand ~ '(this.value, this);',
                             'field_class': 'col-4 col-sm-4',
                         }
                     ) }}
@@ -69,15 +69,27 @@
                     ) }}
 
                     <script>
-                        function getQuantityRemainingForm(val) {
-                            var formblock = document.querySelector('.formblock');
-                            var quantity = formblock.querySelector('[id*="plugin_credit_quantity"]');
-                            var quantity_label = formblock.querySelector('[for*="plugin_credit_quantity"]');
+                        function getQuantityRemainingForm{{ rand }}(val, source) {
+                            var form = source ? source.closest('form') : document.getElementById('creditentity_form{{ rand }}');
+                            if (!form) {
+                                return;
+                            }
+
+                            var quantity = form.querySelector('[id*="plugin_credit_quantity"]');
+                            var quantity_label = form.querySelector('[for*="plugin_credit_quantity"]');
+                            if (!quantity || !quantity_label) {
+                                return;
+                            }
+
+                            var form_help = quantity_label.querySelector('span.form-help');
+                            if (!form_help) {
+                                return;
+                            }
 
                             if (val == 0) {
                                 quantity.value = 0;
-                                quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
-                                quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
+                                form_help.setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
+                                form_help.setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                             } else {
                                 $.ajax({
                                     type: 'POST',
@@ -88,8 +100,8 @@
                                 }).done(function (data) {
                                     quantity.max = data;
                                     quantity.value = 0;
-                                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
-                                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
+                                    form_help.setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
+                                    form_help.setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                 });
                             }
                         }
