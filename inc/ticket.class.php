@@ -220,16 +220,18 @@ class PluginCreditTicket extends CommonDBTM
 
         $entries = [];
 
-        if ($number && $canedit) {
-            $massiveactionparams = [
-                'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
-                'container'        => 'mass' . self::class . $rand,
-                'itemtype'         => PluginCreditTicket::class,
-                'specific_actions' => [
-                    'update'    => _x('button', 'Update'),
-                    'purge'     => _x('button', 'Delete permanently'),
-                ],
-            ];
+        if ($number) {
+            if ($canedit) {
+                $massiveactionparams = [
+                    'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
+                    'container'        => 'mass' . self::class . $rand,
+                    'itemtype'         => PluginCreditTicket::class,
+                    'specific_actions' => [
+                        'update'    => _x('button', 'Update'),
+                        'purge'     => _x('button', 'Delete permanently'),
+                    ],
+                ];
+            }
             foreach (self::getAllForTicket($ID) as $data) {
                 $credit_entity = new PluginCreditEntity();
                 $credit_entity->getFromDB($data['plugin_credit_entities_id']);
