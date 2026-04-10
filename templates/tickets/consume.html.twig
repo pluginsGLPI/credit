@@ -67,13 +67,13 @@
 
             {{ fields.numberField(
                 'plugin_credit_quantity',
-                0,
+                1,
                 __('Quantity consumed', 'credit'),
                 {
                     'entity': entity_id,
                     'condition': condition,
                     'max': default_credit_max,
-                    'min': 0,
+                    'min': 1,
                     'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>' ~ default_credit_max,
                     'field_class': 'col-6 col-sm-6',
                     'input_class': 'col-xxl-5',
