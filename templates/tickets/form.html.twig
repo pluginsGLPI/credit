@@ -62,8 +62,8 @@
                             'entity': entity_id,
                             'condition': conditions,
                             'min': 1,
-                            'field_class': 'col-4 col-sm-4',
-                            'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>0 ',
+                            'field_class': 'col-4 col-sm-4 d-none',
+                            'helper': __('Maximum consumable quantity', 'credit'),
                         }
                     ) }}
 
@@ -71,13 +71,16 @@
                         function getQuantityRemainingForm(val) {
                             var formblock = document.querySelector('.formblock');
                             var quantity = formblock.querySelector('[id*="plugin_credit_quantity"]');
+                            var quantity_field = quantity.closest('.col-4');
                             var quantity_label = formblock.querySelector('[for*="plugin_credit_quantity"]');
 
                             if (val == 0) {
-                                quantity.value = 0;
+                                quantity_field.classList.add('d-none');
+                                quantity.value = 1;
                                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                             } else {
+                                quantity_field.classList.remove('d-none');
                                 $.ajax({
                                     type: 'POST',
                                     url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
@@ -86,7 +89,7 @@
                                     }
                                 }).done(function (data) {
                                     quantity.max = data;
-                                    quantity.value = 0;
+                                    quantity.value = 1;
                                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                 });
