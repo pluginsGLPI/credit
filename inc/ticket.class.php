@@ -402,7 +402,7 @@ class PluginCreditTicket extends CommonDBTM
                     'ticket_link' => sprintf(
                         '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
                         htmlescape($ticket_url),
-                        htmlescape($ticket_name)
+                        htmlescape($ticket_name),
                     ),
                     'status' => Ticket::getStatus($Ticket->fields['status']),
                     'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
