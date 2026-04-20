@@ -1,0 +1,16 @@
+.modal-dialog.modal-xl-credit {
+    max-width: 95vw;
+}
+
+.modal-xl-credit iframe {
+    min-height: 80vh !important;
+}
+
+.credit-consumed-details-table table {
+    min-width: 1100px;
+}
+
+.credit-consumed-details-table th,
+.credit-consumed-details-table td {
+    white-space: nowrap;
+}

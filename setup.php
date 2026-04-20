@@ -81,6 +81,9 @@ function plugin_init_credit()
                 'Ticket' => ['PluginCreditTicketConfig', 'updateConfig'],
             ];
         }
+        $PLUGIN_HOOKS['add_css']['credit'] = [
+            'css/credit.css',
+        ];
         $PLUGIN_HOOKS['add_javascript']['credit'] = [
             'js/credit.js',
         ];
