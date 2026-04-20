@@ -67,15 +67,16 @@
 
             {{ fields.numberField(
                 'plugin_credit_quantity',
-                0,
+                1,
                 __('Quantity consumed', 'credit'),
                 {
                     'entity': entity_id,
                     'condition': condition,
                     'max': default_credit_max,
-                    'min': 0,
+                    'min': 1,
+                    'disabled': not consume or not default_credit,
                     'helper': __('Maximum consumable quantity', 'credit') ~ ' : <b>' ~ default_credit_max,
-                    'field_class': 'col-6 col-sm-6',
+                    'field_class': 'col-6 col-sm-6' ~ (not default_credit ? ' d-none' : ''),
                     'input_class': 'col-xxl-5',
                     'label_class': 'col-xxl-7',
                     'rand': rand,
@@ -88,24 +89,31 @@
         function showCreditDiv{{ rand }}() {
             const creditVoucherBlock = document.getElementById('creditvoucherblock{{ rand }}');
             if (creditVoucherBlock) {
-                creditVoucherBlock.style.display = creditVoucherBlock.style.display === 'none' ? 'block' : 'none';
+                const isHidden = creditVoucherBlock.style.display !== 'none';
+                creditVoucherBlock.style.display = isHidden ? 'none' : 'block';
+                var consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
+                var quantity = consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]');
+                if (quantity) {
+                    quantity.disabled = isHidden;
+                }
             }
         }
 
         function getQuantityRemaining{{ rand }}(val) {
-            consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
-            quantity = consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]');
-            quantity_label = consumeblock.querySelector('[for*="plugin_credit_quantity_{{ rand }}"]');
+            var consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
+            var quantity = consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]');
+            var quantity_field = quantity.closest('.col-6');
+            var quantity_label = consumeblock.querySelector('[for*="plugin_credit_quantity_{{ rand }}"]');
             if (val == 0) {
-                quantity_label.style.display = 'none';
-                quantity.style.display = 'none';
+                quantity_field.classList.add('d-none');
+                quantity.disabled = true;
                 quantity.max = 0;
                 quantity.value = 0;
                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                 quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
             } else {
-                quantity_label.style.display = 'block';
-                quantity.style.display = 'block';
+                quantity_field.classList.remove('d-none');
+                quantity.disabled = false;
 
                 $.ajax({
                     type: 'POST',
@@ -115,7 +123,7 @@
                     }
                 }).done(function (data) {
                     quantity.max = data;
-                    quantity.value = 0;
+                    quantity.value = 1;
                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                 });

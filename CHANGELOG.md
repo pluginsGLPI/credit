@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [unreleased] -
+
+### Fixed
+
+- Fix possibility to set 0 credit used when adding a follow-up, a task, or a solution
+
 ## [1.15.2] - 2025-12-22
 
 ### Fixed
