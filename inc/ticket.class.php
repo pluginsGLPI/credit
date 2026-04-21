@@ -397,6 +397,7 @@ class PluginCreditTicket extends CommonDBTM
 
                 $ticket_url = $Ticket->getLinkURL();
                 $ticket_name = $Ticket->getNameID();
+                $username = $showuserlink ? getUserLink($data['users_id']) : getUserName($data['users_id']);
 
                 $tickets_data[] = [
                     'ticket_link' => sprintf(
@@ -408,7 +409,7 @@ class PluginCreditTicket extends CommonDBTM
                     'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
                     'category' => $category,
                     'date_creation' => $data["date_creation"],
-                    'username' => getUserName($data["users_id"], $showuserlink),
+                    'username' => $username,
                     'consumed' => $data['consumed'],
                 ];
             }
