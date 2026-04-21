@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-26 01:07+0000\n"
+"POT-Creation-Date: 2026-02-26 01:13+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: SeongHyeon Cho <jaymz9634@gmail.com>, 2026\n"
 "Language-Team: Korean (Korea) (https://app.transifex.com/pluginsGLPI/teams/73419/ko_KR/)\n"
@@ -25,15 +25,15 @@ msgstr ""
 msgid "Add a credit voucher"
 msgstr "크레딧 쿠폰 추가"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:112
-#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:180
-#: inc/entity.class.php:292
+#: templates/creditentity.hmtl.twig inc/entity.class.php:180
+#: inc/entity.class.php:292 inc/notificationtargetentity.class.php:112
+#: inc/notificationtargetentity.class.php:132
 msgid "Quantity sold"
 msgstr "판매 수량"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:114
-#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:183
-#: inc/entity.class.php:312
+#: templates/creditentity.hmtl.twig inc/entity.class.php:183
+#: inc/entity.class.php:312 inc/notificationtargetentity.class.php:114
+#: inc/notificationtargetentity.class.php:139
 msgid "Allow overconsumption"
 msgstr "초과소비 허용"
 
@@ -65,27 +65,6 @@ msgstr "업무에 대한 기본값"
 msgid "Default for solutions"
 msgstr "해결책에 대한 기본값"
 
-#: templates/tickets/consume.html.twig
-msgid "Consume a voucher ?"
-msgstr "쿠폰을 사용합니까?"
-
-#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
-msgid "Voucher name"
-msgstr "쿠폰 명"
-
-#: templates/tickets/consume.html.twig
-#: templates/tickets/consumed_details.html.twig
-#: templates/tickets/form.html.twig inc/ticket.class.php:536
-#: inc/notificationtargetentity.class.php:116
-#: inc/notificationtargetentity.class.php:136 inc/entity.class.php:181
-#: hook.php:132
-msgid "Quantity consumed"
-msgstr "소비 수량"
-
-#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
-msgid "Maximum consumable quantity"
-msgstr "최대 소비 수량"
-
 #: templates/tickets/consumed_details.html.twig
 msgid "Detail of tickets on which consumption is declared"
 msgstr "소비로 정의된 티켓의 상세"
@@ -104,9 +83,25 @@ msgstr "소비 일자"
 msgid "User consumed"
 msgstr "사용자 소비"
 
+#: templates/tickets/consumed_details.html.twig
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+#: hook.php:132 inc/ticket.class.php:536 inc/entity.class.php:181
+#: inc/notificationtargetentity.class.php:116
+#: inc/notificationtargetentity.class.php:136
+msgid "Quantity consumed"
+msgstr "소비 수량"
+
 #: templates/tickets/form.html.twig
 msgid "Add a voucher to the ticket"
 msgstr "티켓에 바우처 추가"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+msgid "Voucher name"
+msgstr "쿠폰 명"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+msgid "Maximum consumable quantity"
+msgstr "최대 소비 수량"
 
 #: templates/tickets/form.html.twig
 msgid "Consumed credits for this ticket"
@@ -116,8 +111,18 @@ msgstr "이 티켓에 대해 소비된 신용"
 msgid "Voucher type"
 msgstr "쿠폰 유형"
 
-#: setup.php:103 inc/ticket.class.php:70 inc/entityconfig.class.php:72
-#: inc/entity.class.php:43
+#: templates/tickets/consume.html.twig
+msgid "Consume a voucher ?"
+msgstr "쿠폰을 사용합니까?"
+
+#: hook.php:133 inc/entity.class.php:182
+#: inc/notificationtargetentity.class.php:111
+#: inc/notificationtargetentity.class.php:135
+msgid "Quantity remaining"
+msgstr "잔여 수량"
+
+#: inc/ticket.class.php:70 inc/entity.class.php:43
+#: inc/entityconfig.class.php:72 setup.php:103
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "크레딧 쿠폰"
@@ -135,24 +140,56 @@ msgstr "사용된 수량이 잔여 크레딧을 초과합니다: %d"
 msgid "Credit voucher successfully added."
 msgstr "크레딧 쿠폰이 추가되었습니다"
 
-#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:337
+#: inc/entity.class.php:95 inc/entity.class.php:109
+msgid "Credit voucher name is mandatory."
+msgstr "크레딧 바우처 이름은 필수입니다."
+
+#: inc/entity.class.php:184
+msgid "Low credits alert"
+msgstr "낮은 크레딧 경고"
+
+#: inc/entity.class.php:219 inc/entity.class.php:225
+msgid "Consumed details"
+msgstr "소비 상세"
+
+#: inc/entity.class.php:320
+msgid "Low credit alert"
+msgstr "낮은 크레딧 경고"
+
+#: inc/entity.class.php:337 inc/notificationtargetentity.class.php:68
 msgid "Expiration date"
 msgstr "만료 일자"
 
-#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:342
+#: inc/entity.class.php:338
+msgid "Notice (in days)"
+msgstr "알림 (일)"
+
+#: inc/entity.class.php:342 inc/notificationtargetentity.class.php:69
 msgid "Low credits"
 msgstr "낮은 크레딧"
+
+#: inc/ticketconfig.class.php:43
+msgid "Default voucher option"
+msgid_plural "Default voucher options"
+msgstr[0] "기본 바우처 선택사항"
+
+#: inc/ticketconfig.class.php:217
+msgid "Update in ticket tab"
+msgstr "티켓 탭에서 업데이트"
+
+#: inc/ticketconfig.class.php:218
+msgid "Update in ticket form"
+msgstr "티켓 양식에서 업데이트"
+
+#: inc/type.class.php:40
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "크레딧 쿠폰 유형"
 
 #: inc/notificationtargetentity.class.php:110
 #: inc/notificationtargetentity.class.php:134
 msgid "End date"
 msgstr "종료 일자"
-
-#: inc/notificationtargetentity.class.php:111
-#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:182
-#: hook.php:133
-msgid "Quantity remaining"
-msgstr "잔여 수량"
 
 #: inc/notificationtargetentity.class.php:154
 msgid "Credit voucher expiration"
@@ -170,44 +207,6 @@ msgstr "잔여 크레딧 한도가 0에 가깝거나 0입니다"
 #: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
 msgstr "잔량이 0에 가깝거나 거의 0이 되었습니다"
-
-#: inc/type.class.php:40
-msgid "Credit voucher type"
-msgid_plural "Credit vouchers types"
-msgstr[0] "크레딧 쿠폰 유형"
-
-#: inc/ticketconfig.class.php:43
-msgid "Default voucher option"
-msgid_plural "Default voucher options"
-msgstr[0] "기본 바우처 선택사항"
-
-#: inc/ticketconfig.class.php:217
-msgid "Update in ticket tab"
-msgstr "티켓 탭에서 업데이트"
-
-#: inc/ticketconfig.class.php:218
-msgid "Update in ticket form"
-msgstr "티켓 양식에서 업데이트"
-
-#: inc/entity.class.php:95 inc/entity.class.php:109
-msgid "Credit voucher name is mandatory."
-msgstr "크레딧 바우처 이름은 필수입니다."
-
-#: inc/entity.class.php:184
-msgid "Low credits alert"
-msgstr "낮은 크레딧 경고"
-
-#: inc/entity.class.php:219 inc/entity.class.php:225
-msgid "Consumed details"
-msgstr "소비 상세"
-
-#: inc/entity.class.php:320
-msgid "Low credit alert"
-msgstr "낮은 크레딧 경고"
-
-#: inc/entity.class.php:338
-msgid "Notice (in days)"
-msgstr "알림 (일)"
 
 #: front/ticket.form.php:39
 msgid "Credit voucher entity must be selected."

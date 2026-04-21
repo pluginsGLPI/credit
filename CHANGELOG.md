@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Improve consumed credits modal readability and open related tickets in a new tab
+- Show credit vouchers list in entity tab for read-only users while keeping add/config forms restricted to editable contexts.
 
 ## [1.15.2] - 2025-12-22
 

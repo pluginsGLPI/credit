@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-12 01:04+0000\n"
+"POT-Creation-Date: 2026-02-26 01:13+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: David Stepan <stepand@tiscali.cz>, 2025\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/pluginsGLPI/teams/73419/cs_CZ/)\n"
@@ -27,15 +27,15 @@ msgstr ""
 msgid "Add a credit voucher"
 msgstr "Přidat kupon s kreditem"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:112
-#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:180
-#: inc/entity.class.php:292
+#: templates/creditentity.hmtl.twig inc/entity.class.php:180
+#: inc/entity.class.php:292 inc/notificationtargetentity.class.php:112
+#: inc/notificationtargetentity.class.php:132
 msgid "Quantity sold"
 msgstr "Prodané množství"
 
-#: templates/creditentity.hmtl.twig inc/notificationtargetentity.class.php:114
-#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:183
-#: inc/entity.class.php:312
+#: templates/creditentity.hmtl.twig inc/entity.class.php:183
+#: inc/entity.class.php:312 inc/notificationtargetentity.class.php:114
+#: inc/notificationtargetentity.class.php:139
 msgid "Allow overconsumption"
 msgstr "Umožnit čerpat více, než je předplaceno"
 
@@ -67,27 +67,6 @@ msgstr "Výchozí pro úkoly"
 msgid "Default for solutions"
 msgstr "Výchozí pro řešení"
 
-#: templates/tickets/consume.html.twig
-msgid "Consume a voucher ?"
-msgstr "Využít kupon?"
-
-#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
-msgid "Voucher name"
-msgstr "Název kuponu"
-
-#: templates/tickets/consume.html.twig
-#: templates/tickets/consumed_details.html.twig
-#: templates/tickets/form.html.twig inc/ticket.class.php:536
-#: inc/notificationtargetentity.class.php:116
-#: inc/notificationtargetentity.class.php:136 inc/entity.class.php:181
-#: hook.php:132
-msgid "Quantity consumed"
-msgstr "Spotřebované množství"
-
-#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
-msgid "Maximum consumable quantity"
-msgstr "Maximální spotřebovatelné množství"
-
 #: templates/tickets/consumed_details.html.twig
 msgid "Detail of tickets on which consumption is declared"
 msgstr "Podrobnosti požadavků na které je spotřebováváno"
@@ -106,9 +85,25 @@ msgstr "Datum spotřebování"
 msgid "User consumed"
 msgstr "Uživatel který spotřeboval"
 
+#: templates/tickets/consumed_details.html.twig
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+#: hook.php:132 inc/ticket.class.php:536 inc/entity.class.php:181
+#: inc/notificationtargetentity.class.php:116
+#: inc/notificationtargetentity.class.php:136
+msgid "Quantity consumed"
+msgstr "Spotřebované množství"
+
 #: templates/tickets/form.html.twig
 msgid "Add a voucher to the ticket"
 msgstr "Přidat kupon k požadavku"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+msgid "Voucher name"
+msgstr "Název kuponu"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+msgid "Maximum consumable quantity"
+msgstr "Maximální spotřebovatelné množství"
 
 #: templates/tickets/form.html.twig
 msgid "Consumed credits for this ticket"
@@ -118,8 +113,18 @@ msgstr "Kredit spotřebovaný na tento požadavek"
 msgid "Voucher type"
 msgstr "Typ kuponu"
 
-#: setup.php:103 inc/ticket.class.php:70 inc/entityconfig.class.php:72
-#: inc/entity.class.php:43
+#: templates/tickets/consume.html.twig
+msgid "Consume a voucher ?"
+msgstr "Využít kupon?"
+
+#: hook.php:133 inc/entity.class.php:182
+#: inc/notificationtargetentity.class.php:111
+#: inc/notificationtargetentity.class.php:135
+msgid "Quantity remaining"
+msgstr "Zbývající množství"
+
+#: inc/ticket.class.php:70 inc/entity.class.php:43
+#: inc/entityconfig.class.php:72 setup.php:103
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "Kupon s kreditem"
@@ -140,24 +145,62 @@ msgstr "Spotřebované množství překračuje zbývající předplacené: %d"
 msgid "Credit voucher successfully added."
 msgstr "Kupon s kreditem úspěšně přidán."
 
-#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:337
+#: inc/entity.class.php:95 inc/entity.class.php:109
+msgid "Credit voucher name is mandatory."
+msgstr "Název kreditního kuponu je povinný."
+
+#: inc/entity.class.php:184
+msgid "Low credits alert"
+msgstr "Upozornění na nízký kredit"
+
+#: inc/entity.class.php:219 inc/entity.class.php:225
+msgid "Consumed details"
+msgstr "Podrobnosti o spotřebovaných"
+
+#: inc/entity.class.php:320
+msgid "Low credit alert"
+msgstr "Upozornění na nízký kredit"
+
+#: inc/entity.class.php:337 inc/notificationtargetentity.class.php:68
 msgid "Expiration date"
 msgstr "Datum vypršení"
 
-#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:342
+#: inc/entity.class.php:338
+msgid "Notice (in days)"
+msgstr "Oznámení (ve dnech)"
+
+#: inc/entity.class.php:342 inc/notificationtargetentity.class.php:69
 msgid "Low credits"
 msgstr "Nízké kredity"
+
+#: inc/ticketconfig.class.php:43
+msgid "Default voucher option"
+msgid_plural "Default voucher options"
+msgstr[0] "Výchozí možnosti poukazu"
+msgstr[1] "Výchozí možnosti poukazu"
+msgstr[2] "Výchozích možností poukazu"
+msgstr[3] "Výchozí možnosti poukazu"
+
+#: inc/ticketconfig.class.php:217
+msgid "Update in ticket tab"
+msgstr "Aktualizovat v tabulce požadavku"
+
+#: inc/ticketconfig.class.php:218
+msgid "Update in ticket form"
+msgstr "Aktualizace ve formuláři požadavku"
+
+#: inc/type.class.php:40
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "Typ kuponu s kreditem"
+msgstr[1] "Typy kuponů s kreditem"
+msgstr[2] "Typů kuponů s kreditem"
+msgstr[3] "Typy kuponů s kreditem"
 
 #: inc/notificationtargetentity.class.php:110
 #: inc/notificationtargetentity.class.php:134
 msgid "End date"
 msgstr "Datum ukončení"
-
-#: inc/notificationtargetentity.class.php:111
-#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:182
-#: hook.php:133
-msgid "Quantity remaining"
-msgstr "Zbývající množství"
 
 #: inc/notificationtargetentity.class.php:154
 msgid "Credit voucher expiration"
@@ -176,50 +219,6 @@ msgstr "Zbývající částka kreditu blízká 0 nebo na 0"
 #: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
 msgstr "Zbývající množství dosáhlo 0 nebo téměř 0."
-
-#: inc/type.class.php:40
-msgid "Credit voucher type"
-msgid_plural "Credit vouchers types"
-msgstr[0] "Typ kuponu s kreditem"
-msgstr[1] "Typy kuponů s kreditem"
-msgstr[2] "Typů kuponů s kreditem"
-msgstr[3] "Typy kuponů s kreditem"
-
-#: inc/ticketconfig.class.php:43
-msgid "Default voucher option"
-msgid_plural "Default voucher options"
-msgstr[0] "Výchozí možnosti poukazu"
-msgstr[1] "Výchozí možnosti poukazu"
-msgstr[2] "Výchozích možností poukazu"
-msgstr[3] "Výchozí možnosti poukazu"
-
-#: inc/ticketconfig.class.php:217
-msgid "Update in ticket tab"
-msgstr "Aktualizovat v tabulce požadavku"
-
-#: inc/ticketconfig.class.php:218
-msgid "Update in ticket form"
-msgstr "Aktualizace ve formuláři požadavku"
-
-#: inc/entity.class.php:95 inc/entity.class.php:109
-msgid "Credit voucher name is mandatory."
-msgstr "Název kreditního kuponu je povinný."
-
-#: inc/entity.class.php:184
-msgid "Low credits alert"
-msgstr "Upozornění na nízký kredit"
-
-#: inc/entity.class.php:219 inc/entity.class.php:225
-msgid "Consumed details"
-msgstr "Podrobnosti o spotřebovaných"
-
-#: inc/entity.class.php:320
-msgid "Low credit alert"
-msgstr "Upozornění na nízký kredit"
-
-#: inc/entity.class.php:338
-msgid "Notice (in days)"
-msgstr "Oznámení (ve dnech)"
 
 #: front/ticket.form.php:39
 msgid "Credit voucher entity must be selected."

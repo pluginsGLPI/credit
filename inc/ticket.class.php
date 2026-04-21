@@ -220,16 +220,18 @@ class PluginCreditTicket extends CommonDBTM
 
         $entries = [];
 
-        if ($number && $canedit) {
-            $massiveactionparams = [
-                'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
-                'container'        => 'mass' . self::class . $rand,
-                'itemtype'         => PluginCreditTicket::class,
-                'specific_actions' => [
-                    'update'    => _x('button', 'Update'),
-                    'purge'     => _x('button', 'Delete permanently'),
-                ],
-            ];
+        if ($number) {
+            if ($canedit) {
+                $massiveactionparams = [
+                    'num_displayed'    => min($number, $_SESSION['glpilist_limit']),
+                    'container'        => 'mass' . self::class . $rand,
+                    'itemtype'         => PluginCreditTicket::class,
+                    'specific_actions' => [
+                        'update'    => _x('button', 'Update'),
+                        'purge'     => _x('button', 'Delete permanently'),
+                    ],
+                ];
+            }
             foreach (self::getAllForTicket($ID) as $data) {
                 $credit_entity = new PluginCreditEntity();
                 $credit_entity->getFromDB($data['plugin_credit_entities_id']);
@@ -388,7 +390,7 @@ class PluginCreditTicket extends CommonDBTM
                 $Ticket->getFromDB($data['tickets_id']);
 
                 $itilcat = new ITILCategory();
-                $category = __s('None');
+                $category = __('None');
                 if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
                     $category = $itilcat->getName(['comments' => true]);
                 }
@@ -533,7 +535,7 @@ class PluginCreditTicket extends CommonDBTM
             'id'       => 881,
             'table'    => self::getTable(),
             'field'    => 'date_creation',
-            'name'     => __s('Date consumed', 'credit'),
+            'name'     => __('Date consumed', 'credit'),
             'datatype' => 'date',
         ];
 
@@ -541,12 +543,12 @@ class PluginCreditTicket extends CommonDBTM
             'id'       => 882,
             'table'    => self::getTable(),
             'field'    => 'consumed',
-            'name'     => __s('Quantity consumed', 'credit'),
+            'name'     => __('Quantity consumed', 'credit'),
             'datatype' => 'number',
             'min'      => 1,
             'max'      => 1000000,
             'step'     => 1,
-            'toadd'    => [0 => __s('Unlimited')],
+            'toadd'    => [0 => __('Unlimited')],
         ];
 
         $tab[] = [
