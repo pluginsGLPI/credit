@@ -397,13 +397,21 @@ class PluginCreditTicket extends CommonDBTM
 
                 $showuserlink = Session::haveRight('user', READ) ? 1 : 0;
 
+                $ticket_url = $Ticket->getLinkURL();
+                $ticket_name = $Ticket->getNameID();
+                $username = $showuserlink !== 0 ? getUserLink($data['users_id']) : getUserName($data['users_id']);
+
                 $tickets_data[] = [
-                    'ticket_link' => $Ticket->getLink(['linkoption' => 'target="_blank"']),
+                    'ticket_link' => sprintf(
+                        '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+                        htmlescape($ticket_url),
+                        htmlescape($ticket_name),
+                    ),
                     'status' => Ticket::getStatus($Ticket->fields['status']),
                     'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
                     'category' => $category,
                     'date_creation' => $data["date_creation"],
-                    'username' => getUserName($data["users_id"], $showuserlink),
+                    'username' => $username,
                     'consumed' => $data['consumed'],
                 ];
             }

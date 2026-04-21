@@ -219,6 +219,7 @@ class PluginCreditEntity extends CommonDBTM
                 ['title'         => __('Consumed details', 'credit'),
                     'reloadonclose' => false,
                     'display'       => false,
+                    'dialog_class'  => 'modal-xl-credit',
                 ],
             );
 
