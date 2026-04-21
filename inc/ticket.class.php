@@ -397,7 +397,7 @@ class PluginCreditTicket extends CommonDBTM
 
                 $ticket_url = $Ticket->getLinkURL();
                 $ticket_name = $Ticket->getNameID();
-                $username = $showuserlink ? getUserLink($data['users_id']) : getUserName($data['users_id']);
+                $username = $showuserlink !== 0 ? getUserLink($data['users_id']) : getUserName($data['users_id']);
 
                 $tickets_data[] = [
                     'ticket_link' => sprintf(
