@@ -167,7 +167,7 @@ class PluginCreditEntity extends CommonDBTM
 
         $canedit = $itemtype === 'Entity' && $entity->canEdit($ID);
 
-        if ($itemtype === 'Entity') {
+        if ($itemtype === 'Entity' && $canedit) {
             PluginCreditEntityConfig::showEntityConfigForm($entity->getID());
         }
 
@@ -244,7 +244,7 @@ class PluginCreditEntity extends CommonDBTM
             'itemtype'         => PluginCreditEntity::class,
         ];
 
-        if ($itemtype === 'Entity' && $canedit) {
+        if ($itemtype === 'Entity') {
             TemplateRenderer::getInstance()->display('@credit/creditentity.hmtl.twig', [
                 'form_url'              => self::getFormUrl(),
                 'credittypeclass'       => PluginCreditType::class,

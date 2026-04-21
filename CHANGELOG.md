@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [unreleased] -
+## [Unreleased]
 
 ### Fixed
 
-- Fix possibility to set 0 credit used when adding a follow-up, a task, or a solution
+- Show credit vouchers list in entity tab for read-only users while keeping add/config forms restricted to editable contexts.
 
 ## [1.15.2] - 2025-12-22
 

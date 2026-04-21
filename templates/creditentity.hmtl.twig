@@ -30,6 +30,7 @@
 {% import "components/form/fields_macros.html.twig" as fields %}
 
 {% set rand = random() %}
+{% if canedit %}
 <div name="firstbloc" id="firstbloc" class="">
     <form name="creditentity_form{{ rand }}" id="creditentity_form{{ rand }}" method="post" action="{{ form_url }}">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
@@ -121,6 +122,7 @@
         <div class="hr mt-3 mb-3"></div>
     </form>
 </div>
+{% endif %}
 <div name="secondbloc" id="secondbloc" class="mb-5">
     {% set datatable_params = {
         'is_tab': true,
