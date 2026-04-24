@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Improve consumed credits modal readability and open related tickets in a new tab
 - Show credit vouchers list in entity tab for read-only users while keeping add/config forms restricted to editable contexts.
+- Centralize credit consumption validation, prevent invalid voucher selections outside the validity window, and fix the ticket tab quantity field behavior.
 
 ## [1.15.2] - 2025-12-22
 

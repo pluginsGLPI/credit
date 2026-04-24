@@ -75,6 +75,7 @@
                             }
 
                             var quantity = form.querySelector('[id*="plugin_credit_quantity"]');
+                            var quantity_field = quantity ? quantity.closest('.col-4') : null;
                             var quantity_label = form.querySelector('[for*="plugin_credit_quantity"]');
                             if (!quantity || !quantity_label) {
                                 return;
@@ -86,11 +87,19 @@
                             }
 
                             if (val == 0) {
+                                if (quantity_field) {
+                                    quantity_field.classList.add('d-none');
+                                }
+                                quantity.disabled = true;
+                                quantity.max = 0;
                                 quantity.value = 0;
                                 form_help.setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                                 form_help.setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                             } else {
-                                quantity_field.classList.remove('d-none');
+                                if (quantity_field) {
+                                    quantity_field.classList.remove('d-none');
+                                }
+                                quantity.disabled = false;
                                 $.ajax({
                                     type: 'POST',
                                     url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
