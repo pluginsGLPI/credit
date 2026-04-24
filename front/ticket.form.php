@@ -29,55 +29,27 @@
  * -------------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkRight("ticket", UPDATE);
-Session::checkRightsOr(PluginCreditTicketConfig::$rightname, [PluginCreditTicketConfig::TICKET_TAB, PluginCreditTicketConfig::TICKET_TAB]);
-
-$ticket = new Ticket();
-if (!$ticket->getFromDB((int) $_REQUEST['tickets_id'])) {
-    throw new AccessDeniedHttpException(
-        'Ticket not found.',
-    );
-}
+Session::checkRight(\Ticket::class, UPDATE);
 
 $PluginCreditTicket = new PluginCreditTicket();
-if ($_REQUEST['plugin_credit_entities_id'] == 0) {
-    Session::addMessageAfterRedirect(
-        __s('Credit voucher entity must be selected.', 'credit'),
-        true,
-        ERROR,
-    );
-    Html::back();
-} elseif ($_REQUEST['plugin_credit_quantity'] == 0) {
-    Session::addMessageAfterRedirect(
-        __s('Credit voucher quantity must be greater than 0.', 'credit'),
-        true,
-        ERROR,
-    );
-    Html::back();
-}
+if (isset($_POST["add"])) {
+    $input = [
+        'tickets_id'                => $_POST['tickets_id'] ?? null,
+        'plugin_credit_entities_id' => $_POST['plugin_credit_entities_id'] ?? null,
+        'consumed'                  => $_POST['plugin_credit_quantity'] ?? null,
+        'users_id'                  => Session::getLoginUserID(),
+    ];
 
-if (Session::haveAccessToEntity($_REQUEST['plugin_credit_entities_id'])) {
-    throw new AccessDeniedHttpException();
-}
+    if ($PluginCreditTicket->add($input)) {
+        Session::addMessageAfterRedirect(
+            __s('Credit voucher successfully added.', 'credit'),
+            true,
+            INFO,
+        );
+    }
 
-
-$input = [
-    'tickets_id'                => $_REQUEST['tickets_id'],
-    'plugin_credit_entities_id' => $_REQUEST['plugin_credit_entities_id'],
-    'consumed'                  => $_REQUEST['plugin_credit_quantity'],
-    'users_id'                  => Session::getLoginUserID(),
-];
-
-
-if ($PluginCreditTicket->add($input)) {
-    Session::addMessageAfterRedirect(
-        __s('Credit voucher successfully added.', 'credit'),
-        true,
-        INFO,
-    );
     Html::back();
 }
 
