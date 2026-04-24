@@ -566,14 +566,29 @@ SQL;
         global $DB;
         return [
             'glpi_plugin_credit_entities.is_active' => 1,
-            'OR' => [
-                'glpi_plugin_credit_entities.end_date' => null,
-                new QueryExpression(
-                    sprintf(
-                        'NOW() < %s',
-                        $DB->quoteName('glpi_plugin_credit_entities.end_date'),
-                    ),
-                ),
+            'AND' => [
+                [
+                    'OR' => [
+                        'glpi_plugin_credit_entities.begin_date' => null,
+                        new QueryExpression(
+                            sprintf(
+                                '%s <= NOW()',
+                                $DB->quoteName('glpi_plugin_credit_entities.begin_date'),
+                            ),
+                        ),
+                    ],
+                ],
+                [
+                    'OR' => [
+                        'glpi_plugin_credit_entities.end_date' => null,
+                        new QueryExpression(
+                            sprintf(
+                                'NOW() <= %s',
+                                $DB->quoteName('glpi_plugin_credit_entities.end_date'),
+                            ),
+                        ),
+                    ],
+                ],
             ],
         ];
     }
@@ -588,9 +603,13 @@ SQL;
             'FROM'   => 'glpi_plugin_credit_entities',
             'WHERE'  => [
                 'id' => $credit_id,
-            ],
+            ] + self::getActiveFilter(),
         ];
         $entity_result = $DB->request($entity_query)->current();
+        if ($entity_result === false) {
+            return 0;
+        }
+
         $overconsumption_allowed = $entity_result['overconsumption_allowed'];
         $quantity_sold           = (int) $entity_result['quantity'];
 
