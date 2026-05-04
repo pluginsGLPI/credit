@@ -200,8 +200,50 @@ class PluginCreditTicket extends CommonDBTM
             && !in_array($ticket->fields['status'], array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()));
     }
 
-    private static function getValidatedConsumptionInput(int $ticket_id, int $credit_id, int $consumed, ?self $current_credit = null): array|false
+    private static function checkInput(array $input, ?self $current_credit = null): array|false
     {
+        $ticket_id = filter_var(
+            $input['tickets_id'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        if ($ticket_id === false) {
+            Session::addMessageAfterRedirect(
+                __s('Ticket is mandatory.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $credit_id = filter_var(
+            $input['plugin_credit_entities_id'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        if ($credit_id === false) {
+            Session::addMessageAfterRedirect(
+                __s('Credit voucher entity must be selected.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $consumed = filter_var(
+            $input['consumed'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        if ($consumed === false) {
+            Session::addMessageAfterRedirect(
+                __s('Credit voucher quantity must be greater than 0.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
         $ticket = new Ticket();
         if (
             !$ticket->getFromDB($ticket_id)
@@ -265,49 +307,7 @@ class PluginCreditTicket extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $ticket_id = filter_var(
-            $input['tickets_id'] ?? null,
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        if ($ticket_id === false) {
-            Session::addMessageAfterRedirect(
-                __s('Ticket is mandatory.', 'credit'),
-                true,
-                ERROR,
-            );
-            return false;
-        }
-
-        $credit_id = filter_var(
-            $input['plugin_credit_entities_id'] ?? null,
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        if ($credit_id === false) {
-            Session::addMessageAfterRedirect(
-                __s('Credit voucher entity must be selected.', 'credit'),
-                true,
-                ERROR,
-            );
-            return false;
-        }
-
-        $consumed = filter_var(
-            $input['consumed'] ?? null,
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        if ($consumed === false) {
-            Session::addMessageAfterRedirect(
-                __s('Credit voucher quantity must be greater than 0.', 'credit'),
-                true,
-                ERROR,
-            );
-            return false;
-        }
-
-        $validated_input = self::getValidatedConsumptionInput($ticket_id, $credit_id, $consumed);
+        $validated_input = self::checkInput($input);
         if ($validated_input === false) {
             return false;
         }
@@ -334,49 +334,13 @@ class PluginCreditTicket extends CommonDBTM
             return false;
         }
 
-        $ticket_id = filter_var(
-            $input['tickets_id'] ?? $credit->fields['tickets_id'],
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        if ($ticket_id === false) {
-            Session::addMessageAfterRedirect(
-                __s('Ticket is mandatory.', 'credit'),
-                true,
-                ERROR,
-            );
-            return false;
-        }
+        $input += [
+            'tickets_id'                => $credit->fields['tickets_id'],
+            'plugin_credit_entities_id' => $credit->fields['plugin_credit_entities_id'],
+            'consumed'                  => $credit->fields['consumed'],
+        ];
 
-        $credit_id = filter_var(
-            $input['plugin_credit_entities_id'] ?? $credit->fields['plugin_credit_entities_id'],
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        if ($credit_id === false) {
-            Session::addMessageAfterRedirect(
-                __s('Credit voucher entity must be selected.', 'credit'),
-                true,
-                ERROR,
-            );
-            return false;
-        }
-
-        $consumed = filter_var(
-            $input['consumed'] ?? $credit->fields['consumed'],
-            FILTER_VALIDATE_INT,
-            ['options' => ['min_range' => 1]],
-        );
-        if ($consumed === false) {
-            Session::addMessageAfterRedirect(
-                __s('Credit voucher quantity must be greater than 0.', 'credit'),
-                true,
-                ERROR,
-            );
-            return false;
-        }
-
-        $validated_input = self::getValidatedConsumptionInput($ticket_id, $credit_id, $consumed, $credit);
+        $validated_input = self::checkInput($input, $credit);
         if ($validated_input === false) {
             return false;
         }
