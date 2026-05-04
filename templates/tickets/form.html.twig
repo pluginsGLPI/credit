@@ -90,7 +90,7 @@
                                 form_help.setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                                 form_help.setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
                             } else {
-                                quantity_field.classList.remove('d-none');
+                                quantity.closest('.form-field').classList.remove('d-none');
                                 $.ajax({
                                     type: 'POST',
                                     url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
@@ -99,7 +99,7 @@
                                     }
                                 }).done(function (data) {
                                     quantity.max = data;
-                                    quantity.value = 0;
+                                    quantity.value = 1;
                                     form_help.setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                     form_help.setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                                 });
