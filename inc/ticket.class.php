@@ -371,6 +371,8 @@ class PluginCreditTicket extends CommonDBTM
             'condition'             => PluginCreditEntity::getActiveFilter(),
             'creditentityclass'     => PluginCreditEntity::class,
             'plugin_credit_geturl'  => plugin_credit_geturl(),
+            'is_task'               => $item instanceof TicketTask,
+            'baremes'               => PluginCreditBareme::getAllBaremes(),
         ]);
     }
 
@@ -512,10 +514,28 @@ class PluginCreditTicket extends CommonDBTM
             }
         }
 
+        // Auto-calculate quantity from task duration + bareme when both are provided.
+        $quantity = (int) ($item->input['plugin_credit_quantity'] ?? 1);
+        if (
+            $item instanceof TicketTask
+            && !empty($item->input['plugin_credit_bareme_id'])
+            && (int) $item->input['plugin_credit_bareme_id'] > 0
+            && isset($item->fields['actiontime'])
+            && (int) $item->fields['actiontime'] > 0
+        ) {
+            $calculated = PluginCreditBareme::calculatePoints(
+                (int) $item->fields['actiontime'],
+                (int) $item->input['plugin_credit_bareme_id'],
+            );
+            if ($calculated > 0) {
+                $quantity = $calculated;
+            }
+        }
+
         $input = [
             'tickets_id'                => $ticket->getID(),
             'plugin_credit_entities_id' => $item->input['plugin_credit_entities_id'],
-            'consumed'                  => $item->input['plugin_credit_quantity'],
+            'consumed'                  => $quantity,
             'users_id'                  => Session::getLoginUserID(),
         ];
         if ($credit_ticket->add($input)) {

@@ -62,6 +62,8 @@ function plugin_init_credit()
             ],
         );
 
+        Plugin::registerClass('PluginCreditBareme');
+
         if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
             Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 

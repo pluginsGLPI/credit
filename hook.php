@@ -120,7 +120,10 @@ function plugin_credit_uninstall()
  */
 function plugin_credit_getDropdown()
 {
-    return ['PluginCreditType' => PluginCreditType::getTypeName(Session::getPluralNumber())];
+    return [
+        'PluginCreditType'   => PluginCreditType::getTypeName(Session::getPluralNumber()),
+        'PluginCreditBareme' => PluginCreditBareme::getTypeName(Session::getPluralNumber()),
+    ];
 }
 
 function plugin_credit_get_datas(NotificationTargetTicket $target)

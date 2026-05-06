@@ -65,6 +65,41 @@
                 }
             ) }}
 
+            {% if is_task and baremes|length > 0 %}
+                {# Bareme dropdown — only shown for task forms #}
+                <div class="col-6 col-sm-6">
+                    <div class="row mb-2">
+                        <label class="col-xxl-5 col-form-label">
+                            {{ __('Rate scale', 'credit') }}
+                        </label>
+                        <div class="col-xxl-7">
+                            <select id="plugin_credit_bareme_id_{{ rand }}"
+                                    name="plugin_credit_bareme_id"
+                                    class="form-select"
+                                    onchange="onBaremeChange{{ rand }}()">
+                                <option value="0">{{ __('-- Manual entry --', 'credit') }}</option>
+                                {% for id, bareme in baremes %}
+                                    <option value="{{ id }}" data-points="{{ bareme.points_par_tranche }}">
+                                        {{ bareme.name }} ({{ bareme.points_par_tranche }} pts / 15 min)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {# Auto-calculation preview badge #}
+                <div class="col-12 mb-2" id="credit_auto_calc_block_{{ rand }}" style="display:none;">
+                    <div class="alert alert-info py-2 px-3 mb-0 d-flex align-items-center gap-2">
+                        <i class="ti ti-calculator"></i>
+                        <span>
+                            {{ __('Auto-calculated points', 'credit') }} :
+                            <strong id="credit_auto_calc_detail_{{ rand }}">—</strong>
+                        </span>
+                    </div>
+                </div>
+            {% endif %}
+
             {{ fields.numberField(
                 'plugin_credit_quantity',
                 1,
@@ -126,8 +161,105 @@
                     quantity.value = 1;
                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
                     quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
+                    // Recalculate if bareme is selected
+                    onBaremeChange{{ rand }}();
                 });
             }
         }
+
+        {% if is_task %}
+        /**
+         * Read the current task duration in seconds from the GLPI task form.
+         * GLPI 11 uses a hidden input named "actiontime" (seconds) fed by
+         * a duration picker (hours + minutes selects or a time input).
+         * We also try to reconstruct from named sub-fields if present.
+         */
+        function getTaskDurationSeconds{{ rand }}() {
+            // Primary source: hidden actiontime (seconds) used by GLPI 11 task forms
+            var actiontimeInput = document.querySelector('input[name="actiontime"]')
+                               || document.querySelector('[name="actiontime"]');
+            if (actiontimeInput && parseInt(actiontimeInput.value) > 0) {
+                return parseInt(actiontimeInput.value);
+            }
+
+            // Fallback: reconstruct from "actiontime_hour" + "actiontime_minute" selects
+            // (some GLPI versions render duration as separate hour/minute fields)
+            var hourSel   = document.querySelector('select[name="actiontime_hour"]');
+            var minuteSel = document.querySelector('select[name="actiontime_minute"]');
+            if (hourSel && minuteSel) {
+                var h = parseInt(hourSel.value) || 0;
+                var m = parseInt(minuteSel.value) || 0;
+                return (h * 3600) + (m * 60);
+            }
+
+            return 0;
+        }
+
+        function onBaremeChange{{ rand }}() {
+            var baremeSelect = document.getElementById('plugin_credit_bareme_id_{{ rand }}');
+            var autoBlock    = document.getElementById('credit_auto_calc_block_{{ rand }}');
+            var autoDetail   = document.getElementById('credit_auto_calc_detail_{{ rand }}');
+            var consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
+            var quantityInput = consumeblock
+                ? consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]')
+                : null;
+
+            if (!baremeSelect) return;
+
+            var baremeId = parseInt(baremeSelect.value) || 0;
+
+            if (baremeId === 0) {
+                // Manual mode: hide auto-calc block, re-enable quantity field
+                if (autoBlock)    autoBlock.style.display = 'none';
+                if (quantityInput) {
+                    quantityInput.removeAttribute('readonly');
+                    quantityInput.classList.remove('bg-secondary-subtle');
+                }
+                return;
+            }
+
+            // Auto-calc mode: make quantity field read-only (server will override anyway)
+            if (quantityInput) {
+                quantityInput.setAttribute('readonly', 'readonly');
+                quantityInput.classList.add('bg-secondary-subtle');
+            }
+            if (autoBlock) autoBlock.style.display = 'block';
+
+            var durationSeconds = getTaskDurationSeconds{{ rand }}();
+            if (durationSeconds <= 0) {
+                if (autoDetail) autoDetail.textContent = '{{ __('Duration not set yet', 'credit') }}';
+                return;
+            }
+
+            var durationMinutes = durationSeconds / 60;
+            var tranches        = Math.ceil(durationMinutes / 15);
+            var selectedOption  = baremeSelect.options[baremeSelect.selectedIndex];
+            var ptsPerTranche   = parseInt(selectedOption.getAttribute('data-points')) || 0;
+            var points          = tranches * ptsPerTranche;
+
+            if (autoDetail) {
+                autoDetail.textContent = points + ' pts'
+                    + ' (' + tranches + ' × ' + ptsPerTranche + ' pts)';
+            }
+            if (quantityInput && !isNaN(points)) {
+                quantityInput.value = points;
+            }
+        }
+
+        // Watch duration field changes so the preview updates automatically.
+        (function watchDuration{{ rand }}() {
+            var targets = [
+                document.querySelector('input[name="actiontime"]'),
+                document.querySelector('[name="actiontime"]'),
+                document.querySelector('select[name="actiontime_hour"]'),
+                document.querySelector('select[name="actiontime_minute"]'),
+            ].filter(Boolean);
+
+            targets.forEach(function(el) {
+                el.addEventListener('change', onBaremeChange{{ rand }});
+                el.addEventListener('input',  onBaremeChange{{ rand }});
+            });
+        })();
+        {% endif %}
     </script>
 </div>

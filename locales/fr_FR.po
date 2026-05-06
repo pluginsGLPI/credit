@@ -225,3 +225,27 @@ msgstr "Alerte de crédit faible"
 #: inc/entity.class.php:339
 msgid "Notice (in days)"
 msgstr "Préavis (en jours)"
+
+#: inc/bareme.class.php templates/tickets/consume.html.twig
+msgid "Rate scale"
+msgstr "Barème tarifaire"
+
+#: inc/bareme.class.php templates/tickets/consume.html.twig
+msgid "Rate scales"
+msgstr "Barèmes tarifaires"
+
+#: inc/bareme.class.php
+msgid "Points per 15-minute slot"
+msgstr "Points par tranche de 15 minutes"
+
+#: templates/tickets/consume.html.twig
+msgid "-- Manual entry --"
+msgstr "-- Saisie manuelle --"
+
+#: templates/tickets/consume.html.twig
+msgid "Auto-calculated points"
+msgstr "Points calculés automatiquement"
+
+#: templates/tickets/consume.html.twig
+msgid "Duration not set yet"
+msgstr "Durée non encore définie"
