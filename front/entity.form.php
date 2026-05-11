@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
     $PluginCreditEntity->check($_POST['id'], PURGE);
     $PluginCreditEntity->delete($_POST, true);
     $PluginCreditEntity->redirectToList();
-} elseif (isset($_GET['id']) || !isset($_POST)) {
+} elseif (isset($_GET['id'])) {
     $ID = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
     Session::checkRight(PluginCreditEntity::$rightname, READ);

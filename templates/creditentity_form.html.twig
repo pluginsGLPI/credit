@@ -113,9 +113,7 @@
     ) }}
 
     {% if not item.isNewItem() %}
-        {% set quantity_remaining = item.fields['quantity'] > 0
-            ? item.fields['quantity'] - quantity_consumed
-            : __('Unlimited') %}
+        {% set quantity_remaining = item.fields['quantity'] > 0 ? item.fields['quantity'] - quantity_consumed : __('Unlimited') %}
 
         {{ fields.readOnlyField(
             'quantity_consumed',

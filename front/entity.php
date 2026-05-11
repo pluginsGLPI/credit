@@ -37,7 +37,7 @@ Html::header(
     "admin",
     PluginCreditEntity::class,
     "credit",
-    false
+    false,
 );
 
 Search::show(PluginCreditEntity::class);

@@ -69,9 +69,6 @@ class PluginCreditEntity extends CommonDBTM
             $menu['page']            = self::getSearchURL(false);
             $menu['icon']            = self::getIcon();
             $menu['links']['search'] = self::getSearchURL(false);
-            if (self::canCreate()) {
-                $menu['links']['add'] = self::getFormURL(false);
-            }
         }
         return $menu;
     }
