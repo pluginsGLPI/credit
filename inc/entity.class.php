@@ -48,6 +48,34 @@ class PluginCreditEntity extends CommonDBTM
         return 'ti ti-coins';
     }
 
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        $consumed = $this->isNewItem() ? 0 : self::getConsumedForCredit($this->getID());
+        TemplateRenderer::getInstance()->display('@credit/creditentity_form.html.twig', [
+            'item'             => $this,
+            'params'           => $options,
+            'credittypeclass'  => PluginCreditType::class,
+            'quantity_consumed' => $consumed,
+        ]);
+        return true;
+    }
+
+    public static function getMenuContent()
+    {
+        $menu = [];
+        if (self::canView()) {
+            $menu['title']           = self::getTypeName(Session::getPluralNumber());
+            $menu['page']            = self::getSearchURL(false);
+            $menu['icon']            = self::getIcon();
+            $menu['links']['search'] = self::getSearchURL(false);
+            if (self::canCreate()) {
+                $menu['links']['add'] = self::getFormURL(false);
+            }
+        }
+        return $menu;
+    }
+
     public static function canCreate(): bool
     {
         return true;
@@ -226,7 +254,7 @@ class PluginCreditEntity extends CommonDBTM
             $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __('Consumed details', 'credit') . "' alt='" . __('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
 
             $entries[] = array_merge($data, [
-                'name'                      => $item->getName(),
+                'name'                      => $item->getLink(),
                 'quantity'                  => $quantity_sold,
                 'itemtype'                  => PluginCreditEntity::class,
                 'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
@@ -325,6 +353,14 @@ class PluginCreditEntity extends CommonDBTM
             'step'    => 10,
             'toadd'   => [-1 => __('Disabled')],
             'unit'    => '%',
+        ];
+
+        $tab[] = [
+            'id'       => 80,
+            'table'    => 'glpi_entities',
+            'field'    => 'completename',
+            'name'     => Entity::getTypeName(1),
+            'datatype' => 'dropdown',
         ];
 
         return $tab;

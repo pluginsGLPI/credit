@@ -31,8 +31,6 @@
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::haveRight("entity", UPDATE);
-
 $PluginCreditEntity = new PluginCreditEntity();
 
 if (isset($_POST["add"])) {
@@ -47,6 +45,35 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-}
+} elseif (isset($_POST["update"])) {
+    $PluginCreditEntity->check($_POST['id'], UPDATE);
+    $PluginCreditEntity->update($_POST);
+    Html::back();
+} elseif (isset($_POST["delete"])) {
+    $PluginCreditEntity->check($_POST['id'], DELETE);
+    $PluginCreditEntity->delete($_POST);
+    $PluginCreditEntity->redirectToList();
+} elseif (isset($_POST["restore"])) {
+    $PluginCreditEntity->check($_POST['id'], DELETE);
+    $PluginCreditEntity->restore($_POST);
+    $PluginCreditEntity->redirectToList();
+} elseif (isset($_POST["purge"])) {
+    $PluginCreditEntity->check($_POST['id'], PURGE);
+    $PluginCreditEntity->delete($_POST, true);
+    $PluginCreditEntity->redirectToList();
+} elseif (isset($_GET['id']) || !isset($_POST)) {
+    $ID = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-throw new BadRequestHttpException();
+    Session::checkRight(PluginCreditEntity::$rightname, READ);
+
+    if (isset($_GET['forcetab'])) {
+        Session::setActiveTab(PluginCreditEntity::class, $_GET['forcetab']);
+        unset($_GET['forcetab']);
+    }
+
+    Html::header(PluginCreditEntity::getTypeName(), $_SERVER['PHP_SELF'], "admin", PluginCreditEntity::class, "credit");
+    $PluginCreditEntity->display(['id' => $ID]);
+    Html::footer();
+} else {
+    throw new BadRequestHttpException();
+}

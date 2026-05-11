@@ -1,0 +1,147 @@
+{#
+ # -------------------------------------------------------------------------
+ # Credit plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Credit.
+ #
+ # Credit is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Credit is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Credit. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @author    François Legastelois
+ # @copyright Copyright (C) 2017-2023 by Credit plugin team.
+ # @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ # @link      https://github.com/pluginsGLPI/credit
+ # -------------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    <div class="hr-text">
+        <i class="fa-2x ti ti-info-circle"></i>
+        <span>{{ __('General') }}</span>
+    </div>
+
+    {{ fields.autoNameField('name', item, __('Name'), withtemplate, field_options) }}
+
+    {{ fields.dropdownField(
+        credittypeclass,
+        'plugin_credit_types_id',
+        item.fields['plugin_credit_types_id'],
+        __('Type'),
+        field_options
+    ) }}
+
+    {{ fields.dropdownYesNo(
+        'is_active',
+        item.fields['is_active'],
+        __('Active'),
+        field_options
+    ) }}
+
+    {{ fields.dropdownField(
+        'Entity',
+        'entities_id',
+        item.fields['entities_id'],
+        __('Entity'),
+        field_options|merge({'entity': -1})
+    ) }}
+
+    {{ fields.dropdownYesNo(
+        'is_recursive',
+        item.fields['is_recursive'],
+        __('Child entities'),
+        field_options
+    ) }}
+
+    <div class="hr-text">
+        <i class="fa-2x ti ti ti-calendar"></i>
+        <span>{{ __('Validity') }}</span>
+    </div>
+
+    {{ fields.dateField(
+        'begin_date',
+        item.fields['begin_date'],
+        __('Start date'),
+        field_options
+    ) }}
+
+    {{ fields.dateField(
+        'end_date',
+        item.fields['end_date'],
+        __('End date'),
+        field_options
+    ) }}
+
+    <div class="hr-text">
+        <i class="fa-2x ti ti ti-coins"></i>
+        <span>{{ __('Quantities', 'credit') }}</span>
+    </div>
+
+    {{ fields.dropdownNumberField(
+        'quantity',
+        item.fields['quantity'],
+        __('Quantity sold', 'credit'),
+        field_options|merge({
+            'min': 1,
+            'max': 1000000,
+            'step': 1,
+            'toadd': {'0': __('Unlimited')},
+        })
+    ) }}
+
+    {{ fields.dropdownYesNo(
+        'overconsumption_allowed',
+        item.fields['overconsumption_allowed'],
+        __('Allow overconsumption', 'credit'),
+        field_options
+    ) }}
+
+    {% if not item.isNewItem() %}
+        {% set quantity_remaining = item.fields['quantity'] > 0
+            ? item.fields['quantity'] - quantity_consumed
+            : __('Unlimited') %}
+
+        {{ fields.readOnlyField(
+            'quantity_consumed',
+            quantity_consumed,
+            __('Quantity consumed', 'credit'),
+            field_options
+        ) }}
+
+        {{ fields.readOnlyField(
+            'quantity_remaining',
+            quantity_remaining,
+            __('Quantity remaining', 'credit'),
+            field_options
+        ) }}
+    {% endif %}
+
+    {{ fields.dropdownNumberField(
+        'low_credit_alert',
+        item.fields['low_credit_alert'],
+        __('Low credit alert threshold', 'credit'),
+        field_options|merge({
+            'min': 0,
+            'max': 50,
+            'step': 10,
+            'toadd': {'-1': __('Disabled')},
+            'unit': '%',
+        })
+    ) }}
+{% endblock %}
