@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fixed the minimum consumable quantity at 1
+- Fix duplicate “low credits” alert generation in the cron job.
 
 ## [1.15.3] - 2026-04-29
 
