@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.15.4] - 2026-04-29
+
+### Fixed
+
+- Add the missing pages/tab for credit configuration : (`Credit voucher tab`, `Modify a credit`, `Credits list`)
+
 ## [1.15.3] - 2026-04-29
 
 ### Fixed
