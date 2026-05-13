@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Add the missing pages/tab for credit configuration : (`Credit voucher tab`, `Modify a credit`, `Credits list`)
 - Fixed the minimum consumable quantity at 1
 - Fixed `credit.css` returning 404 by moving it to the `public/` directory
 - Fix duplicate "low credits" alert generation in the cron job.
