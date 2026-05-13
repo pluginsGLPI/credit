@@ -514,8 +514,11 @@ class PluginCreditEntity extends CommonDBTM
                 'itemtype' => self::getType(),
                 'items_id' => $credit_data['id'],
             ];
-            $alert->add($input);
-            unset($alert->fields['id']);
+
+            if (countElementsInTable(Alert::getTable(), $input) === 0) {
+                $alert->add($input);
+                unset($alert->fields['id']);
+            }
         }
 
         return 1;
