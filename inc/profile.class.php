@@ -78,4 +78,12 @@ class PluginCreditProfile extends Profile
 
         return true;
     }
+
+    public static function uninstall(Migration $migration): void
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $DB->delete('glpi_profilerights', ['name' => 'plugin_credit_ticketconfig']);
+    }
 }
