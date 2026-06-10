@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed the minimum consumable quantity at 1
 - Fixed `credit.css` returning 404 by moving it to the `public/` directory
 - Fix duplicate "low credits" alert generation in the cron job.
+- Fix plugin uninstall to correctly remove plugin permissions
 
 ## [1.15.3] - 2026-04-29
 
