@@ -16,7 +16,7 @@
          <cs><![CDATA[Tento zásuvný modul umožňuje deklarovat a evidovat (podle entity) spotřebu různých kuponů s kredity přímo z formuláře požadavku.]]></cs>
       </long>
    </description>
-   <homepage>https://pluginsglpi.github.io/credit/</homepage>
+   <homepage>https://github.com/pluginsGLPI/credit/</homepage>
    <download>https://github.com/pluginsGLPI/credit/releases</download>
    <issues>https://github.com/pluginsGLPI/credit/issues</issues>
    <readme>https://help.glpi-project.org/doc-plugins/credit</readme>
@@ -24,6 +24,11 @@
       <author>TECLIB'</author>
    </authors>
    <versions>
+      <version>
+         <num>1.15.4</num>
+         <compatibility>~11.0.0</compatibility>
+         <download_url>https://github.com/pluginsGLPI/credit/releases/download/1.15.4/glpi-credit-1.15.4.tar.bz2</download_url>
+      </version>
       <version>
          <num>1.15.3</num>
          <compatibility>~11.0.0</compatibility>
