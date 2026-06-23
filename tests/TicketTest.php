@@ -105,11 +105,11 @@ class PluginCreditTicketTest extends DbTestCase
         $ticket = $this->createTicket();
         $future_credit = $this->createCreditVoucher([
             'name'       => 'Future credit test voucher',
-            'begin_date' => date('Y-m-d', strtotime('+1 day')),
+            'begin_date' => date('Y-m-d 00:00:00', strtotime('+1 day')),
         ]);
         $expired_credit = $this->createCreditVoucher([
             'name'     => 'Expired credit test voucher',
-            'end_date' => date('Y-m-d', strtotime('-1 day')),
+            'end_date' => date('Y-m-d 23:59:59', strtotime('-1 day')),
         ]);
 
         $credit_ticket = new PluginCreditTicket();
