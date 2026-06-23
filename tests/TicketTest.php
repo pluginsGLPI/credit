@@ -44,14 +44,16 @@ class PluginCreditTicketTest extends DbTestCase
 
     private function createCreditVoucher(array $extra = []): PluginCreditEntity
     {
-        return $this->createItem(PluginCreditEntity::class, array_merge([
+        $input = array_merge([
             'name'                    => 'Credit test voucher',
             'entities_id'             => 0,
             'is_active'               => 1,
             'quantity'                => 10,
             'overconsumption_allowed' => 0,
             'low_credit_alert'        => -1,
-        ], $extra));
+        ], $extra);
+
+        return $this->createItem(PluginCreditEntity::class, $input, ['begin_date', 'end_date']);
     }
 
     public function testConsumeVoucherOnSolvedTicketFromSolutionHook(): void
@@ -105,11 +107,11 @@ class PluginCreditTicketTest extends DbTestCase
         $ticket = $this->createTicket();
         $future_credit = $this->createCreditVoucher([
             'name'       => 'Future credit test voucher',
-            'begin_date' => date('Y-m-d 00:00:00', strtotime('+1 day')),
+            'begin_date' => date('Y-m-d', strtotime('+1 day')),
         ]);
         $expired_credit = $this->createCreditVoucher([
             'name'     => 'Expired credit test voucher',
-            'end_date' => date('Y-m-d 23:59:59', strtotime('-1 day')),
+            'end_date' => date('Y-m-d', strtotime('-1 day')),
         ]);
 
         $credit_ticket = new PluginCreditTicket();
