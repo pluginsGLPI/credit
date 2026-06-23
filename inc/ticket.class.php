@@ -200,7 +200,7 @@ class PluginCreditTicket extends CommonDBTM
             && !in_array($ticket->fields['status'], array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()));
     }
 
-    private static function checkInput(array $input, ?self $current_credit = null): array|false
+    private static function checkInput(array $input, ?self $current_credit = null, bool $skip_status_check = false): array|false
     {
         $ticket_id = filter_var(
             $input['tickets_id'] ?? null,
@@ -248,7 +248,7 @@ class PluginCreditTicket extends CommonDBTM
         if (
             !$ticket->getFromDB($ticket_id)
             || !$ticket->can($ticket_id, READ)
-            || !self::canUpdateCreditsForTicket($ticket)
+            || (!$skip_status_check && !self::canUpdateCreditsForTicket($ticket))
         ) {
             Session::addMessageAfterRedirect(
                 __s('You do not have rights to update credit vouchers for this ticket.', 'credit'),
@@ -307,13 +307,15 @@ class PluginCreditTicket extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $validated_input = self::checkInput($input);
+        $skip_status_check = (bool) ($input['_skip_status_check'] ?? false);
+        unset($input['_skip_status_check']);
+
+        $validated_input = self::checkInput($input, null, $skip_status_check);
         if ($validated_input === false) {
             return false;
         }
 
         $input = $validated_input + $input;
-        $input['users_id'] = (int) Session::getLoginUserID();
 
         return $input;
     }
@@ -638,6 +640,7 @@ class PluginCreditTicket extends CommonDBTM
             'plugin_credit_entities_id' => $item->input['plugin_credit_entities_id'] ?? null,
             'consumed'                  => $item->input['plugin_credit_quantity'] ?? null,
             'users_id'                  => Session::getLoginUserID(),
+            '_skip_status_check'        => true,
         ];
         $credit_ticket = new self();
         if ($credit_ticket->add($input)) {
