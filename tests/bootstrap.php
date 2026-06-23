@@ -29,4 +29,4 @@
  * -------------------------------------------------------------------------
  */
 
-$loader = require dirname(__DIR__, 3) . '/vendor/autoload.php';
+require dirname(__DIR__, 3) . '/tests/bootstrap.php';
