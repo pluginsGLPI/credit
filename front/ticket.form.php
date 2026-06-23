@@ -31,7 +31,7 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkRight(Ticket::class, UPDATE);
+Session::checkRight(\Ticket::class, UPDATE);
 
 $PluginCreditTicket = new PluginCreditTicket();
 if (isset($_POST["add"])) {
