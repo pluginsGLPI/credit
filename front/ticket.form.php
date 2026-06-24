@@ -29,9 +29,18 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::haveRight("ticket", UPDATE);
+Session::checkRight("ticket", UPDATE);
+Session::checkRightsOr(PluginCreditTicketConfig::$rightname, [PluginCreditTicketConfig::TICKET_TAB, PluginCreditTicketConfig::TICKET_TAB]);
+
+$ticket = new Ticket();
+if (!$ticket->getFromDB((int) $_REQUEST['tickets_id'])) {
+    throw new AccessDeniedHttpException(
+        'Ticket not found.',
+    );
+}
 
 $PluginCreditTicket = new PluginCreditTicket();
 if ($_REQUEST['plugin_credit_entities_id'] == 0) {
@@ -49,12 +58,20 @@ if ($_REQUEST['plugin_credit_entities_id'] == 0) {
     );
     Html::back();
 }
+
+if (Session::haveAccessToEntity($_REQUEST['plugin_credit_entities_id'])) {
+    throw new AccessDeniedHttpException();
+}
+
+
 $input = [
     'tickets_id'                => $_REQUEST['tickets_id'],
     'plugin_credit_entities_id' => $_REQUEST['plugin_credit_entities_id'],
     'consumed'                  => $_REQUEST['plugin_credit_quantity'],
     'users_id'                  => Session::getLoginUserID(),
 ];
+
+
 if ($PluginCreditTicket->add($input)) {
     Session::addMessageAfterRedirect(
         __s('Credit voucher successfully added.', 'credit'),
