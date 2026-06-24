@@ -55,11 +55,7 @@ class PluginCreditProfile extends Profile
         $profile->getFromDB($ID);
         echo "<form method='post' action='" . $profile->getFormURL() . "'>";
 
-        $rights = [['itemtype'  => PluginCreditTicketConfig::getType(),
-            'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
-            'field'     => PluginCreditTicketConfig::$rightname
-        ]
-        ];
+        $rights = self::getAllRights();
         $matrix_options['title'] = PluginCreditTicketConfig::getTypeName(Session::getPluralNumber());
         $profile->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -71,5 +67,22 @@ class PluginCreditProfile extends Profile
         echo "</div>";
 
         return true;
+    }
+
+    private static function getAllRights()
+    {
+        return [
+            ['itemtype'  => PluginCreditTicketConfig::getType(),
+                'label'     => PluginCreditTicketConfig::getTypeName(Session::getPluralNumber()),
+                'field'     => PluginCreditTicketConfig::$rightname,
+            ],
+        ];
+    }
+
+    public static function uninstall(Migration $migration): void
+    {
+        foreach (self::getAllRights() as $right) {
+            ProfileRight::deleteProfileRights([$right['field']]);
+        }
     }
 }
