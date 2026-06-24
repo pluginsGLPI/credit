@@ -31,9 +31,39 @@
 
 include('../../../inc/includes.php');
 
-Session::haveRight("ticket", UPDATE);
+
+
+Session::checkRight("ticket", UPDATE);
+Session::checkRightsOr(PluginCreditTicketConfig::$rightname, [PluginCreditTicketConfig::TICKET_TAB, PluginCreditTicketConfig::TICKET_TAB]);
 
 $PluginCreditTicket = new PluginCreditTicket();
+
+$ticket = new Ticket();
+
+if (!$ticket->getFromDB((int) $_REQUEST['tickets_id'])) {
+    Html::displayErrorAndDie(__('Ticket not found'));
+}
+
+if ($_REQUEST['plugin_credit_entities_id'] == 0) {
+    Session::addMessageAfterRedirect(
+        __('Credit voucher entity must be selected.', 'credit'),
+        true,
+        ERROR,
+    );
+    Html::back();
+} elseif ($_REQUEST['plugin_credit_quantity'] == 0) {
+    Session::addMessageAfterRedirect(
+        __('Credit voucher quantity must be greater than 0.', 'credit'),
+        true,
+        ERROR,
+    );
+    Html::back();
+}
+
+if (!Session::haveAccessToEntity($_REQUEST['plugin_credit_entities_id'])) {
+    Html::displayErrorAndDie(__('Access denied'));
+}
+
 
 $input = [
     'tickets_id'                => $_REQUEST['tickets_id'],
@@ -41,6 +71,7 @@ $input = [
     'consumed'                  => $_REQUEST['plugin_credit_quantity'],
     'users_id'                  => Session::getLoginUserID(),
 ];
+
 if ($PluginCreditTicket->add($input)) {
     Session::addMessageAfterRedirect(
         __('Credit voucher successfully added.', 'credit'),
