@@ -130,4 +130,74 @@ class PluginCreditTicketTest extends DbTestCase
             'users_id'                  => Session::getLoginUserID(),
         ]));
     }
+
+    public function testPrepareInputForAddAllowsOverconsumptionWhenAllowed(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createTicket();
+        $credit = $this->createCreditVoucher([
+            'quantity'                => 1,
+            'overconsumption_allowed' => 1,
+        ]);
+
+        $credit_ticket = new PluginCreditTicket();
+
+        $input = $credit_ticket->prepareInputForAdd([
+            'tickets_id'                => $ticket->getID(),
+            'plugin_credit_entities_id' => $credit->getID(),
+            'consumed'                  => 2,
+            'users_id'                  => Session::getLoginUserID(),
+        ]);
+
+        $this->assertIsArray($input);
+        $this->hasSessionMessages(WARNING, ['Quantity consumed exceeds remaining credits: 1']);
+    }
+
+    public function testPrepareInputForAddRejectsOverconsumptionWhenNotAllowed(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createTicket();
+        $credit = $this->createCreditVoucher([
+            'quantity'                => 1,
+            'overconsumption_allowed' => 0,
+        ]);
+
+        $credit_ticket = new PluginCreditTicket();
+
+        $this->assertFalse($credit_ticket->prepareInputForAdd([
+            'tickets_id'                => $ticket->getID(),
+            'plugin_credit_entities_id' => $credit->getID(),
+            'consumed'                  => 2,
+            'users_id'                  => Session::getLoginUserID(),
+        ]));
+        $this->hasSessionMessages(ERROR, ['Quantity consumed exceeds remaining credits: 1']);
+    }
+
+    public function testPrepareInputForUpdateWithinAdjustedRemainingBudget(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createTicket();
+        $credit = $this->createCreditVoucher(['quantity' => 5]);
+
+        $credit_ticket = new PluginCreditTicket();
+        $this->assertGreaterThan(0, (int) $credit_ticket->add([
+            'tickets_id'                => $ticket->getID(),
+            'plugin_credit_entities_id' => $credit->getID(),
+            'consumed'                  => 3,
+            'users_id'                  => Session::getLoginUserID(),
+        ]));
+
+        // Total consumed for the voucher (3) already accounts for this record, so
+        // updating it to 4 must be validated against the budget with the previous
+        // 3 deducted (5 - 0 = 5 remaining), not against the raw total (5 - 3 = 2).
+        $this->assertTrue($credit_ticket->update([
+            'id'       => $credit_ticket->getID(),
+            'consumed' => 4,
+        ]));
+
+        $this->assertSame(4, (int) $credit_ticket->fields['consumed']);
+    }
 }
