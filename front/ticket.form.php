@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
         );
     }
 
-    Html::back();
 }
+Html::back();
 
 throw new BadRequestHttpException();
