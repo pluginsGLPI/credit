@@ -29,28 +29,4 @@
  * -------------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\BadRequestHttpException;
-
-Session::checkRight(\Ticket::class, UPDATE);
-
-$PluginCreditTicket = new PluginCreditTicket();
-if (isset($_POST["add"])) {
-    $input = [
-        'tickets_id'                => $_POST['tickets_id'] ?? null,
-        'plugin_credit_entities_id' => $_POST['plugin_credit_entities_id'] ?? null,
-        'consumed'                  => $_POST['plugin_credit_quantity'] ?? null,
-        'users_id'                  => Session::getLoginUserID(),
-    ];
-
-    if ($PluginCreditTicket->add($input)) {
-        Session::addMessageAfterRedirect(
-            __s('Credit voucher successfully added.', 'credit'),
-            true,
-            INFO,
-        );
-    }
-
-}
-Html::back();
-
-throw new BadRequestHttpException();
+require dirname(__DIR__, 3) . '/tests/bootstrap.php';
