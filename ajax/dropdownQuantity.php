@@ -29,6 +29,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -36,6 +38,13 @@ Html::header_nocache();
 global $DB;
 
 if (isset($_POST["entity"])) {
+    $credit_entity = new PluginCreditEntity();
+    if (
+        !$credit_entity->getFromDB($_POST["entity"])
+        || !Session::haveAccessToEntity($credit_entity->getField('entities_id'), $credit_entity->getField('is_recursive'))
+    ) {
+        throw new AccessDeniedHttpException();
+    }
     $max = PluginCreditEntity::getMaximumConsumptionForCredit($_POST["entity"]);
     echo $max;
 }
