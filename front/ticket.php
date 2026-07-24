@@ -29,6 +29,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
+
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
 
 if (!isset($_GET["plugcreditentity"])) {
@@ -39,6 +41,14 @@ if (!isset($_GET["plugcreditentity"])) {
 
 Session::checkLoginUser();
 Session::checkRightsOr('ticket', [Ticket::STEAL, Ticket::OWN]);
+
+$credit_entity = new PluginCreditEntity();
+if (
+    !$credit_entity->getFromDB($_GET['plugcreditentity'])
+    || !Session::haveAccessToEntity($credit_entity->getField('entities_id'), $credit_entity->getField('is_recursive'))
+) {
+    throw new AccessDeniedHttpException();
+}
 
 PluginCreditTicket::displayConsumed($_GET['plugcreditentity']);
 
