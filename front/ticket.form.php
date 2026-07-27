@@ -59,7 +59,7 @@ if ($_REQUEST['plugin_credit_entities_id'] == 0) {
     Html::back();
 }
 
-if (Session::haveAccessToEntity($_REQUEST['plugin_credit_entities_id'])) {
+if (!Session::haveAccessToEntity($_REQUEST['plugin_credit_entities_id'])) {
     throw new AccessDeniedHttpException();
 }
 

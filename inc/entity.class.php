@@ -73,16 +73,6 @@ class PluginCreditEntity extends CommonDBTM
         return $menu;
     }
 
-    public static function canCreate(): bool
-    {
-        return true;
-    }
-
-    public function canCreateItem(): bool
-    {
-        return true;
-    }
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof Entity) {

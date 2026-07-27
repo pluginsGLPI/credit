@@ -38,7 +38,7 @@ if (isset($_POST["add"])) {
     $entity_config->add($_POST);
     Html::back();
 } elseif (isset($_POST["update"])) {
-    $entity_config->check(-1, UPDATE, $_POST);
+    $entity_config->check($_POST['id'] ?? -1, UPDATE, $_POST);
     $entity_config->update($_POST);
     Html::back();
 }
