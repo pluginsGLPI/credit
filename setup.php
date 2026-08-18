@@ -34,9 +34,9 @@ use function Safe\define;
 define('PLUGIN_CREDIT_VERSION', '1.15.7');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_CREDIT_MIN_GLPI", "11.0.0");
+define("PLUGIN_CREDIT_MIN_GLPI", "12.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_CREDIT_MAX_GLPI", "11.0.99");
+define("PLUGIN_CREDIT_MAX_GLPI", "12.0.99");
 
 /**
  * Init hooks of the plugin.
@@ -62,7 +62,7 @@ function plugin_init_credit()
             ],
         );
 
-        if (Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])) {
+        if (Session::haveRightsOr(Ticket::$rightname, [Ticket::STEAL, Ticket::OWN])) {
             Plugin::registerClass('PluginCreditTicket', ['addtabon' => 'Ticket']);
 
             $PLUGIN_HOOKS['post_item_form']['credit'] = [
