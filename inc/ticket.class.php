@@ -63,7 +63,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class PluginCreditTicket extends CommonDBTM
 {
-    public static $rightname = 'ticket';
+    public static string $rightname = 'ticket';
 
     public static function getTypeName($nb = 0)
     {
@@ -251,7 +251,7 @@ class PluginCreditTicket extends CommonDBTM
                     'name'                      => $credit_entity->getName(),
                     'plugin_credit_types_id'    => $data['plugin_credit_types_id'],
                     'date_creation'             => $data['date_creation'],
-                    'users_id'                  => Session::haveRight('user', READ) == true ? getUserLink($data["users_id"]) : getUserName($data["users_id"]),
+                    'users_id'                  => Session::haveRight(User::$rightname, READ) == true ? getUserLink($data["users_id"]) : getUserName($data["users_id"]),
                     'consumed'                  => $data['consumed'],
                     'itemtype'                  => PluginCreditTicket::class,
                 ]);
@@ -395,7 +395,7 @@ class PluginCreditTicket extends CommonDBTM
                     $category = $itilcat->getName(['comments' => true]);
                 }
 
-                $showuserlink = Session::haveRight('user', READ) ? 1 : 0;
+                $showuserlink = Session::haveRight(User::$rightname, READ) ? 1 : 0;
 
                 $ticket_url = $Ticket->getLinkURL();
                 $ticket_name = $Ticket->getNameID();
@@ -456,7 +456,7 @@ class PluginCreditTicket extends CommonDBTM
 
         if (
             !is_numeric(Session::getLoginUserID(false))
-            || !Session::haveRightsOr('ticket', [Ticket::STEAL, Ticket::OWN])
+            || !Session::haveRightsOr(Ticket::$rightname, [Ticket::STEAL, Ticket::OWN])
         ) {
             return;
         }

@@ -65,7 +65,7 @@ use function Safe\preg_match;
 
 class PluginCreditEntityConfig extends CommonDBTM
 {
-    public static $rightname = 'entity';
+    public static string $rightname = 'entity';
 
     public static function getTypeName($nb = 0)
     {
