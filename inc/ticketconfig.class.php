@@ -30,10 +30,11 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Config\ConfigContainer;
 
 class PluginCreditTicketConfig extends CommonDBTM
 {
-    public static $rightname = 'plugin_credit_ticketconfig';
+    public static string $rightname = 'plugin_credit_ticketconfig';
 
     public const TICKET_TAB  = 1024;
     public const TICKET_FORM = 2048;
@@ -111,7 +112,10 @@ class PluginCreditTicketConfig extends CommonDBTM
         }
 
         if ($embed_in_ticket_form) {
-            $uncollapsed = (importArrayFromDB(Config::getSafeConfig()['itil_layout'])['items']['plugin-credit-ticket-config'] ?? 'true') == 'true';
+            /** @var ConfigContainer $CFG_GLPI */
+            global $CFG_GLPI;
+
+            $uncollapsed = (importArrayFromDB($CFG_GLPI->getSafeConfig()['itil_layout'])['items']['plugin-credit-ticket-config'] ?? 'true') == 'true';
         } else {
             $form_url = self::getFormUrl();
         }

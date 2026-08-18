@@ -63,7 +63,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class PluginCreditTicket extends CommonDBTM
 {
-    public static $rightname = 'ticket';
+    public static string $rightname = 'ticket';
 
     public static function getTypeName($nb = 0)
     {
