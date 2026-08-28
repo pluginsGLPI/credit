@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 -  Validate entity access in consumeVoucher before recording
+
 ## [1.15.6] - 2026-07-28
 
 ### Fixed
