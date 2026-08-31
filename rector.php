@@ -42,6 +42,7 @@ return RectorConfig::configure()
         __DIR__ . '/ajax',
         __DIR__ . '/front',
         __DIR__ . '/inc',
+        __DIR__ . '/tests/',
     ])
     ->withPhpVersion(PhpVersion::PHP_82)
     ->withCache(

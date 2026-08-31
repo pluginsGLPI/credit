@@ -483,7 +483,18 @@ class PluginCreditTicket extends CommonDBTM
         $credit_ticket = new self();
 
         $credit_entity = new PluginCreditEntity();
-        $credit_entity->getFromDB($item->input['plugin_credit_entities_id']);
+        if (!$credit_entity->getFromDB($item->input['plugin_credit_entities_id'])) {
+            return;
+        }
+
+        if (!Session::haveAccessToEntity($credit_entity->getField('entities_id'), $credit_entity->getField('is_recursive'))) {
+            Session::addMessageAfterRedirect(
+                __s('You are not allowed to consume credits from the selected entity', 'credit'),
+                true,
+                ERROR,
+            );
+            return;
+        }
 
         $quantity_sold      = (int) $credit_entity->fields['quantity'];
         $quantity_consumed  = $credit_ticket->getConsumedForCreditEntity($item->input['plugin_credit_entities_id']);
