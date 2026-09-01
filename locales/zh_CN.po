@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-26 02:13+0000\n"
+"POT-Creation-Date: 2026-09-01 02:39+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: DWXXX, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/pluginsGLPI/teams/73419/zh_CN/)\n"
@@ -22,102 +22,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#: templates/creditentity_form.html.twig
-msgid "Quantities"
-msgstr "数量"
-
-#: templates/creditentity_form.html.twig templates/creditentity.hmtl.twig
-#: inc/notificationtargetentity.class.php:112
-#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:205
-#: inc/entity.class.php:318
-msgid "Quantity sold"
-msgstr "销售数量"
-
-#: templates/creditentity_form.html.twig templates/creditentity.hmtl.twig
-#: inc/notificationtargetentity.class.php:114
-#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:208
-#: inc/entity.class.php:338
-msgid "Allow overconsumption"
-msgstr "过量冲减"
-
-#: templates/creditentity_form.html.twig templates/tickets/consume.html.twig
-#: templates/tickets/form.html.twig
-#: templates/tickets/consumed_details.html.twig
-#: inc/notificationtargetentity.class.php:116
-#: inc/notificationtargetentity.class.php:136 inc/ticket.class.php:546
-#: inc/entity.class.php:206 hook.php:132
-msgid "Quantity consumed"
-msgstr "消耗量"
-
-#: templates/creditentity_form.html.twig
-#: inc/notificationtargetentity.class.php:111
-#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:207
-#: hook.php:133
-msgid "Quantity remaining"
-msgstr "剩余量"
-
-#: templates/creditentity_form.html.twig templates/creditentity.hmtl.twig
-msgid "Low credit alert threshold"
-msgstr "低信用告警阀值"
-
-#: templates/tickets/consume.html.twig
-msgid "Consume a voucher ?"
-msgstr " 消费凭证？ "
-
-#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
-msgid "Voucher name"
-msgstr "凭证名称"
-
-#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
-msgid "Maximum consumable quantity"
-msgstr "最大消耗数量"
-
-#: templates/tickets/config.html.twig templates/creditentity_config.hmtl.twig
-msgid "Default for followups"
-msgstr "跟进默认值"
-
-#: templates/tickets/config.html.twig templates/creditentity_config.hmtl.twig
-msgid "Default for tasks"
-msgstr "任务默认值"
-
-#: templates/tickets/config.html.twig templates/creditentity_config.hmtl.twig
-msgid "Default for solutions"
-msgstr "解决方案默认值"
-
-#: templates/tickets/form.html.twig
-msgid "Add a voucher to the ticket"
-msgstr "增加一个凭证到工单"
-
-#: templates/tickets/form.html.twig
-msgid "Consumed credits for this ticket"
-msgstr "消费券"
-
-#: templates/tickets/form.html.twig
-msgid "Voucher type"
-msgstr "凭证类型"
-
-#: templates/tickets/form.html.twig
-#: templates/tickets/consumed_details.html.twig inc/ticket.class.php:538
-msgid "Date consumed"
-msgstr "消耗日期"
-
-#: templates/tickets/form.html.twig
-#: templates/tickets/consumed_details.html.twig
-msgid "User consumed"
-msgstr "用户消费"
-
-#: templates/tickets/consumed_details.html.twig
-msgid "Detail of tickets on which consumption is declared"
-msgstr "申报消费的票证明细"
-
-#: templates/tickets/consumed_details.html.twig
-msgid "No credit was recorded"
-msgstr "没有信用记录"
-
-#: templates/creditentity.hmtl.twig
-msgid "Add a credit voucher"
-msgstr "添加信用凭证"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "Default options for entity"
@@ -131,23 +35,130 @@ msgstr "默认消耗凭证为："
 msgid "Default voucher for : "
 msgstr "默认凭证为："
 
-#: setup.php:108 inc/ticket.class.php:70 inc/entityconfig.class.php:72
-#: inc/entity.class.php:43
+#: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
+msgid "Default for followups"
+msgstr "跟进默认值"
+
+#: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
+msgid "Default for tasks"
+msgstr "任务默认值"
+
+#: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
+msgid "Default for solutions"
+msgstr "解决方案默认值"
+
+#: templates/tickets/form.html.twig
+msgid "Add a voucher to the ticket"
+msgstr "增加一个凭证到工单"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+msgid "Voucher name"
+msgstr "凭证名称"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+#: templates/tickets/consumed_details.html.twig
+#: templates/creditentity_form.html.twig hook.php:132 inc/ticket.class.php:557
+#: inc/notificationtargetentity.class.php:116
+#: inc/notificationtargetentity.class.php:136 inc/entity.class.php:196
+msgid "Quantity consumed"
+msgstr "消耗量"
+
+#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
+msgid "Maximum consumable quantity"
+msgstr "最大消耗数量"
+
+#: templates/tickets/form.html.twig
+msgid "Consumed credits for this ticket"
+msgstr "消费券"
+
+#: templates/tickets/form.html.twig
+msgid "Voucher type"
+msgstr "凭证类型"
+
+#: templates/tickets/form.html.twig
+#: templates/tickets/consumed_details.html.twig inc/ticket.class.php:549
+msgid "Date consumed"
+msgstr "消耗日期"
+
+#: templates/tickets/form.html.twig
+#: templates/tickets/consumed_details.html.twig
+msgid "User consumed"
+msgstr "用户消费"
+
+#: templates/tickets/consume.html.twig
+msgid "Consume a voucher ?"
+msgstr " 消费凭证？ "
+
+#: templates/tickets/consumed_details.html.twig
+msgid "Detail of tickets on which consumption is declared"
+msgstr "申报消费的票证明细"
+
+#: templates/tickets/consumed_details.html.twig
+msgid "No credit was recorded"
+msgstr "没有信用记录"
+
+#: templates/creditentity.hmtl.twig
+msgid "Add a credit voucher"
+msgstr "添加信用凭证"
+
+#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
+#: inc/notificationtargetentity.class.php:112
+#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:195
+#: inc/entity.class.php:308
+msgid "Quantity sold"
+msgstr "销售数量"
+
+#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
+#: inc/notificationtargetentity.class.php:114
+#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:198
+#: inc/entity.class.php:328
+msgid "Allow overconsumption"
+msgstr "过量冲减"
+
+#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
+msgid "Low credit alert threshold"
+msgstr "低信用告警阀值"
+
+#: templates/creditentity_form.html.twig
+msgid "Quantities"
+msgstr "数量"
+
+#: templates/creditentity_form.html.twig hook.php:133
+#: inc/notificationtargetentity.class.php:111
+#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:197
+msgid "Quantity remaining"
+msgstr "剩余量"
+
+#: front/ticket.form.php:48
+msgid "Credit voucher entity must be selected."
+msgstr "信用凭证实体必须选择。"
+
+#: front/ticket.form.php:55
+msgid "Credit voucher quantity must be greater than 0."
+msgstr "信用凭证数量必须大于0。"
+
+#: front/ticket.form.php:77 inc/ticket.class.php:534
+msgid "Credit voucher successfully added."
+msgstr "信用凭证成功添加。"
+
+#: setup.php:108 inc/ticket.class.php:70 inc/entity.class.php:43
+#: inc/entityconfig.class.php:72
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
 msgstr[0] "信用凭证"
 
-#: front/ticket.form.php:39
-msgid "Credit voucher entity must be selected."
-msgstr "信用凭证实体必须选择。"
+#: inc/ticket.class.php:476
+msgid "You must provide a credit voucher"
+msgstr "你必须提供信用凭证"
 
-#: front/ticket.form.php:46
-msgid "Credit voucher quantity must be greater than 0."
-msgstr "信用凭证数量必须大于0。"
+#: inc/ticket.class.php:492
+msgid "You are not allowed to consume credits from the selected entity"
+msgstr ""
 
-#: front/ticket.form.php:60 inc/ticket.class.php:523
-msgid "Credit voucher successfully added."
-msgstr "信用凭证成功添加。"
+#: inc/ticket.class.php:507 inc/ticket.class.php:516
+#, php-format
+msgid "Quantity consumed exceeds remaining credits: %d"
+msgstr "数量消耗超过剩余信息： %d"
 
 #: inc/ticketconfig.class.php:43
 msgid "Default voucher option"
@@ -162,11 +173,11 @@ msgstr "在工单标签更新"
 msgid "Update in ticket form"
 msgstr "在工单表更新"
 
-#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:371
+#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:361
 msgid "Expiration date"
 msgstr "过期日期"
 
-#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:376
+#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:366
 msgid "Low credits"
 msgstr "低信用"
 
@@ -192,36 +203,27 @@ msgstr "剩余信用总量或接近为0"
 msgid "The remaining quantity has reached 0 or almost."
 msgstr "剩余数量或几乎为0。"
 
-#: inc/ticket.class.php:476
-msgid "You must provide a credit voucher"
-msgstr "你必须提供信用凭证"
+#: inc/entity.class.php:110 inc/entity.class.php:124
+msgid "Credit voucher name is mandatory."
+msgstr "信用凭证名称为必填。"
 
-#: inc/ticket.class.php:496 inc/ticket.class.php:505
-#, php-format
-msgid "Quantity consumed exceeds remaining credits: %d"
-msgstr "数量消耗超过剩余信息： %d"
+#: inc/entity.class.php:199
+msgid "Low credits alert"
+msgstr "低信用告警"
+
+#: inc/entity.class.php:234 inc/entity.class.php:241
+msgid "Consumed details"
+msgstr " 消耗明细"
+
+#: inc/entity.class.php:336
+msgid "Low credit alert"
+msgstr "低信用告警"
+
+#: inc/entity.class.php:362
+msgid "Notice (in days)"
+msgstr "通知（按天）"
 
 #: inc/type.class.php:40
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
 msgstr[0] "信用凭证类型"
-
-#: inc/entity.class.php:120 inc/entity.class.php:134
-msgid "Credit voucher name is mandatory."
-msgstr "信用凭证名称为必填。"
-
-#: inc/entity.class.php:209
-msgid "Low credits alert"
-msgstr "低信用告警"
-
-#: inc/entity.class.php:244 inc/entity.class.php:251
-msgid "Consumed details"
-msgstr " 消耗明细"
-
-#: inc/entity.class.php:346
-msgid "Low credit alert"
-msgstr "低信用告警"
-
-#: inc/entity.class.php:372
-msgid "Notice (in days)"
-msgstr "通知（按天）"
