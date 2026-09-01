@@ -41,7 +41,7 @@ class PluginCreditTicketConfig extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _sn('Default voucher option', 'Default voucher options', $nb, 'credit');
+        return _sn('Default voucher', 'Default voucher', $nb, 'credit');
     }
 
     public static function getIcon()

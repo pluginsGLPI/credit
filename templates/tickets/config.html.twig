@@ -32,7 +32,8 @@
 {% set fields_options = {
     entity: entity_id,
     condition: condition,
-    entity_sons: true
+    entity_sons: true,
+    'field_class': 'col-12 glpi-full-width',
 } %}
 
 {% if embed_in_ticket_form %}
@@ -52,7 +53,7 @@
                     creditentitytype,
                     'plugin_credit_entities_id_followups',
                     ticket.input['plugin_credit_entities_id_followups'] ?? ticket_config.fields['plugin_credit_entities_id_followups'] ?? 0,
-                    __('Default for followups', 'credit'),
+                    __('For followups', 'credit'),
                     fields_options
                 ) }}
 
@@ -60,7 +61,7 @@
                     creditentitytype,
                     'plugin_credit_entities_id_tasks',
                     ticket.input['plugin_credit_entities_id_tasks'] ?? ticket_config.fields['plugin_credit_entities_id_tasks'] ?? 0,
-                    __('Default for tasks', 'credit'),
+                    __('For tasks', 'credit'),
                     fields_options
                 ) }}
 
@@ -68,7 +69,7 @@
                     creditentitytype,
                     'plugin_credit_entities_id_solutions',
                     ticket.input['plugin_credit_entities_id_solutions'] ?? ticket_config.fields['plugin_credit_entities_id_solutions'] ?? 0,
-                    __('Default for solutions', 'credit'),
+                    __('For solutions', 'credit'),
                     fields_options
                 ) }}
             </div>
@@ -86,7 +87,7 @@
                 creditentitytype,
                 'plugin_credit_entities_id_followups',
                 ticket.input['plugin_credit_entities_id_followups'] ?? ticket_config.fields['plugin_credit_entities_id_followups'] ?? 0,
-                __('Default for followups', 'credit'),
+                __('For followups', 'credit'),
                 fields_options|merge({
                     'field_class': 'col-4 col-sm-4',
                 })
@@ -96,7 +97,7 @@
                 creditentitytype,
                 'plugin_credit_entities_id_tasks',
                 ticket.input['plugin_credit_entities_id_tasks'] ?? ticket_config.fields['plugin_credit_entities_id_tasks'] ?? 0,
-                __('Default for tasks', 'credit'),
+                __('For tasks', 'credit'),
                 fields_options|merge({
                     'field_class': 'col-4 col-sm-4',
                 })
@@ -106,7 +107,7 @@
                 creditentitytype,
                 'plugin_credit_entities_id_solutions',
                 ticket.input['plugin_credit_entities_id_solutions'] ?? ticket_config.fields['plugin_credit_entities_id_solutions'] ?? 0,
-                __('Default for solutions', 'credit'),
+                __('For solutions', 'credit'),
                 fields_options|merge({
                     'field_class': 'col-4 col-sm-4',
                 })
