@@ -5,12 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## [1.16.0]
 
 ### Added
 
 - GLPI 12 compatibility
-- 
+
 ## [1.15.7] - 2026-08-31
 
 ### Fixed
