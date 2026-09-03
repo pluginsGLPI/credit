@@ -32,7 +32,7 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkRight("ticket", UPDATE);
+Session::checkRight(Ticket::$rightname, UPDATE);
 Session::checkRightsOr(PluginCreditTicketConfig::$rightname, [PluginCreditTicketConfig::TICKET_TAB, PluginCreditTicketConfig::TICKET_TAB]);
 
 $ticket = new Ticket();

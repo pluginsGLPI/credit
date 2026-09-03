@@ -40,7 +40,7 @@ if (!isset($_GET["plugcreditentity"])) {
 }
 
 Session::checkLoginUser();
-Session::checkRightsOr('ticket', [Ticket::STEAL, Ticket::OWN]);
+Session::checkRightsOr(Ticket::$rightname, [Ticket::STEAL, Ticket::OWN]);
 
 $credit_entity = new PluginCreditEntity();
 if (

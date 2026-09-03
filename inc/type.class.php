@@ -32,8 +32,8 @@
 class PluginCreditType extends CommonTreeDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
     public static function getTypeName($nb = 0)
     {
