@@ -119,9 +119,7 @@ class PluginCreditNotificationTargetEntity extends NotificationTarget
 
         $this->getTags();
         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-            if (!isset($this->data[$tag])) {
-                $this->data[$tag] = $values['label'];
-            }
+            $this->data[$tag] ??= $values['label'];
         }
     }
 
