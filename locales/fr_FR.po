@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-01 02:39+0000\n"
+"POT-Creation-Date: 2026-09-03 02:05+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Marie Bressy, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/pluginsGLPI/teams/73419/fr_FR/)\n"
@@ -21,6 +21,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: templates/creditentity.hmtl.twig
+msgid "Add a credit voucher"
+msgstr "Ajouter un crédit"
+
+#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
+#: inc/entity.class.php:195 inc/entity.class.php:308
+#: inc/notificationtargetentity.class.php:112
+#: inc/notificationtargetentity.class.php:132
+msgid "Quantity sold"
+msgstr "Quantité vendue"
+
+#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
+#: inc/entity.class.php:198 inc/entity.class.php:328
+#: inc/notificationtargetentity.class.php:114
+#: inc/notificationtargetentity.class.php:139
+msgid "Allow overconsumption"
+msgstr "Permettre la surconsommation"
+
+#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
+msgid "Low credit alert threshold"
+msgstr "Seuil d’alerte de crédit minimum"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "Default options for entity"
@@ -46,47 +68,26 @@ msgstr "Défaut pour les tâches"
 msgid "Default for solutions"
 msgstr "Défaut pour les solutions"
 
-#: templates/tickets/form.html.twig
-msgid "Add a voucher to the ticket"
-msgstr "Ajouter un crédit au ticket"
-
-#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
-msgid "Voucher name"
-msgstr "Nom du crédit"
-
-#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
-#: templates/tickets/consumed_details.html.twig
-#: templates/creditentity_form.html.twig hook.php:132 inc/ticket.class.php:557
-#: inc/notificationtargetentity.class.php:116
-#: inc/notificationtargetentity.class.php:136 inc/entity.class.php:196
-msgid "Quantity consumed"
-msgstr "Quantité consommée"
-
-#: templates/tickets/form.html.twig templates/tickets/consume.html.twig
-msgid "Maximum consumable quantity"
-msgstr "Quantité maximum consommable :"
-
-#: templates/tickets/form.html.twig
-msgid "Consumed credits for this ticket"
-msgstr "Crédits déjà consommés pour ce ticket"
-
-#: templates/tickets/form.html.twig
-msgid "Voucher type"
-msgstr "Type de crédit"
-
-#: templates/tickets/form.html.twig
-#: templates/tickets/consumed_details.html.twig inc/ticket.class.php:549
-msgid "Date consumed"
-msgstr "Date de consommation"
-
-#: templates/tickets/form.html.twig
-#: templates/tickets/consumed_details.html.twig
-msgid "User consumed"
-msgstr "Utilisateur déclarant"
-
 #: templates/tickets/consume.html.twig
 msgid "Consume a voucher ?"
 msgstr "Consommation de crédit"
+
+#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
+msgid "Voucher name"
+msgstr "Nom du crédit"
+
+#: templates/tickets/consume.html.twig
+#: templates/tickets/consumed_details.html.twig
+#: templates/tickets/form.html.twig templates/creditentity_form.html.twig
+#: hook.php:132 inc/ticket.class.php:557 inc/entity.class.php:196
+#: inc/notificationtargetentity.class.php:116
+#: inc/notificationtargetentity.class.php:136
+msgid "Quantity consumed"
+msgstr "Quantité consommée"
+
+#: templates/tickets/consume.html.twig templates/tickets/form.html.twig
+msgid "Maximum consumable quantity"
+msgstr "Quantité maximum consommable :"
 
 #: templates/tickets/consumed_details.html.twig
 msgid "Detail of tickets on which consumption is declared"
@@ -97,37 +98,45 @@ msgstr ""
 msgid "No credit was recorded"
 msgstr "Aucun crédit déclaré"
 
-#: templates/creditentity.hmtl.twig
-msgid "Add a credit voucher"
-msgstr "Ajouter un crédit"
+#: templates/tickets/consumed_details.html.twig
+#: templates/tickets/form.html.twig inc/ticket.class.php:549
+msgid "Date consumed"
+msgstr "Date de consommation"
 
-#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
-#: inc/notificationtargetentity.class.php:112
-#: inc/notificationtargetentity.class.php:132 inc/entity.class.php:195
-#: inc/entity.class.php:308
-msgid "Quantity sold"
-msgstr "Quantité vendue"
+#: templates/tickets/consumed_details.html.twig
+#: templates/tickets/form.html.twig
+msgid "User consumed"
+msgstr "Utilisateur déclarant"
 
-#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
-#: inc/notificationtargetentity.class.php:114
-#: inc/notificationtargetentity.class.php:139 inc/entity.class.php:198
-#: inc/entity.class.php:328
-msgid "Allow overconsumption"
-msgstr "Permettre la surconsommation"
+#: templates/tickets/form.html.twig
+msgid "Add a voucher to the ticket"
+msgstr "Ajouter un crédit au ticket"
 
-#: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
-msgid "Low credit alert threshold"
-msgstr "Seuil d’alerte de crédit minimum"
+#: templates/tickets/form.html.twig
+msgid "Consumed credits for this ticket"
+msgstr "Crédits déjà consommés pour ce ticket"
+
+#: templates/tickets/form.html.twig
+msgid "Voucher type"
+msgstr "Type de crédit"
 
 #: templates/creditentity_form.html.twig
 msgid "Quantities"
 msgstr ""
 
-#: templates/creditentity_form.html.twig hook.php:133
+#: templates/creditentity_form.html.twig hook.php:133 inc/entity.class.php:197
 #: inc/notificationtargetentity.class.php:111
-#: inc/notificationtargetentity.class.php:135 inc/entity.class.php:197
+#: inc/notificationtargetentity.class.php:135
 msgid "Quantity remaining"
 msgstr "Quantité restante"
+
+#: setup.php:108 inc/entityconfig.class.php:72 inc/ticket.class.php:70
+#: inc/entity.class.php:43
+msgid "Credit voucher"
+msgid_plural "Credit vouchers"
+msgstr[0] "Crédit"
+msgstr[1] "Crédits"
+msgstr[2] "Crédits"
 
 #: front/ticket.form.php:48
 msgid "Credit voucher entity must be selected."
@@ -140,28 +149,6 @@ msgstr "La quantité de crédit doit être supérieure à 0."
 #: front/ticket.form.php:77 inc/ticket.class.php:534
 msgid "Credit voucher successfully added."
 msgstr "Crédit sauvegardé avec succès."
-
-#: setup.php:108 inc/ticket.class.php:70 inc/entity.class.php:43
-#: inc/entityconfig.class.php:72
-msgid "Credit voucher"
-msgid_plural "Credit vouchers"
-msgstr[0] "Crédit"
-msgstr[1] "Crédits"
-msgstr[2] "Crédits"
-
-#: inc/ticket.class.php:476
-msgid "You must provide a credit voucher"
-msgstr ""
-"Vous devez préciser un crédit sur lequel consommer la quantité souhaitée."
-
-#: inc/ticket.class.php:492
-msgid "You are not allowed to consume credits from the selected entity"
-msgstr ""
-
-#: inc/ticket.class.php:507 inc/ticket.class.php:516
-#, php-format
-msgid "Quantity consumed exceeds remaining credits: %d"
-msgstr "La quantité consommée excède les crédits restants: %d"
 
 #: inc/ticketconfig.class.php:43
 msgid "Default voucher option"
@@ -178,11 +165,52 @@ msgstr "Mise à jour dans l'onglet du ticket"
 msgid "Update in ticket form"
 msgstr "Mise à jour dans le formulaire du ticket"
 
-#: inc/notificationtargetentity.class.php:68 inc/entity.class.php:361
+#: inc/type.class.php:40
+msgid "Credit voucher type"
+msgid_plural "Credit vouchers types"
+msgstr[0] "Type de crédit"
+msgstr[1] "Types de crédits"
+msgstr[2] "Types de crédits"
+
+#: inc/ticket.class.php:476
+msgid "You must provide a credit voucher"
+msgstr ""
+"Vous devez préciser un crédit sur lequel consommer la quantité souhaitée."
+
+#: inc/ticket.class.php:492
+msgid "You are not allowed to consume credits from the selected entity"
+msgstr ""
+
+#: inc/ticket.class.php:507 inc/ticket.class.php:516
+#, php-format
+msgid "Quantity consumed exceeds remaining credits: %d"
+msgstr "La quantité consommée excède les crédits restants: %d"
+
+#: inc/entity.class.php:110 inc/entity.class.php:124
+msgid "Credit voucher name is mandatory."
+msgstr "Le nom du crédit est obligatoire."
+
+#: inc/entity.class.php:199
+msgid "Low credits alert"
+msgstr "Alerte de crédits faibles"
+
+#: inc/entity.class.php:234 inc/entity.class.php:241
+msgid "Consumed details"
+msgstr "Détail des crédits consommés"
+
+#: inc/entity.class.php:336
+msgid "Low credit alert"
+msgstr "Alerte de crédit faible"
+
+#: inc/entity.class.php:361 inc/notificationtargetentity.class.php:68
 msgid "Expiration date"
 msgstr "Date d'expiration"
 
-#: inc/notificationtargetentity.class.php:69 inc/entity.class.php:366
+#: inc/entity.class.php:362
+msgid "Notice (in days)"
+msgstr "Préavis (en jours)"
+
+#: inc/entity.class.php:366 inc/notificationtargetentity.class.php:69
 msgid "Low credits"
 msgstr "Crédits bas"
 
@@ -209,30 +237,3 @@ msgstr "Montant de crédits restant proche de 0 ou épuisé"
 #: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
 msgstr "La quantité restante de crédits a atteint 0 ou est presque à 0"
-
-#: inc/entity.class.php:110 inc/entity.class.php:124
-msgid "Credit voucher name is mandatory."
-msgstr "Le nom du crédit est obligatoire."
-
-#: inc/entity.class.php:199
-msgid "Low credits alert"
-msgstr "Alerte de crédits faibles"
-
-#: inc/entity.class.php:234 inc/entity.class.php:241
-msgid "Consumed details"
-msgstr "Détail des crédits consommés"
-
-#: inc/entity.class.php:336
-msgid "Low credit alert"
-msgstr "Alerte de crédit faible"
-
-#: inc/entity.class.php:362
-msgid "Notice (in days)"
-msgstr "Préavis (en jours)"
-
-#: inc/type.class.php:40
-msgid "Credit voucher type"
-msgid_plural "Credit vouchers types"
-msgstr[0] "Type de crédit"
-msgstr[1] "Types de crédits"
-msgstr[2] "Types de crédits"
