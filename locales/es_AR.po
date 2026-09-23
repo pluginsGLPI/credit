@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Milo Ivir <mail@milotype.de>, 2025
+# Alan Lehoux, 2026
 # 
 #, fuzzy
 msgid ""
@@ -13,67 +13,67 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-23 02:27+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
-"Last-Translator: Milo Ivir <mail@milotype.de>, 2025\n"
-"Language-Team: Croatian (Croatia) (https://app.transifex.com/pluginsGLPI/teams/73419/hr_HR/)\n"
+"Last-Translator: Alan Lehoux, 2026\n"
+"Language-Team: Spanish (Argentina) (https://app.transifex.com/pluginsGLPI/teams/73419/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hr_HR\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: es_AR\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: templates/creditentity.hmtl.twig
 msgid "Add a credit voucher"
-msgstr "Dodaj kreditni vaučer"
+msgstr "Agregar un comprobante de crédito"
 
 #: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
 #: inc/entity.class.php:195 inc/entity.class.php:308
 #: inc/notificationtargetentity.class.php:112
 #: inc/notificationtargetentity.class.php:132
 msgid "Quantity sold"
-msgstr "Prodana količina"
+msgstr "Cantidad vendida"
 
 #: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
 #: inc/entity.class.php:198 inc/entity.class.php:328
 #: inc/notificationtargetentity.class.php:114
 #: inc/notificationtargetentity.class.php:139
 msgid "Allow overconsumption"
-msgstr "Dozvoli prekoračenje kredita"
+msgstr "Permitir sobreconsumo"
 
 #: templates/creditentity.hmtl.twig templates/creditentity_form.html.twig
 msgid "Low credit alert threshold"
-msgstr "Prag upozorenja za niski kredit"
+msgstr "Umbral de alerta de crédito bajo"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "Default options for entity"
-msgstr "Standardne opcije za entitet"
+msgstr "Opciones por defecto para la entidad"
 
 #: templates/creditentity_config.hmtl.twig
 msgid "By default consume a voucher for : "
-msgstr "Standardno koristi vaučer za:"
+msgstr "Por defecto, consumir un comprobante para : "
 
 #: templates/creditentity_config.hmtl.twig
 msgid "Default voucher for : "
-msgstr "Standardni vaučer za:"
+msgstr "Comprobante por defecto para : "
 
 #: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
 msgid "Default for followups"
-msgstr "Standard za priopćenja"
+msgstr "Por defecto para seguimientos"
 
 #: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
 msgid "Default for tasks"
-msgstr "Standard za zadatke"
+msgstr "Por defecto para tareas"
 
 #: templates/creditentity_config.hmtl.twig templates/tickets/config.html.twig
 msgid "Default for solutions"
-msgstr "Standard za rješenja"
+msgstr "Por defecto para soluciones"
 
 #: templates/tickets/consume.html.twig
 msgid "Consume a voucher ?"
-msgstr "Trošiti vaučer?"
+msgstr "¿Consumir un comprobante?"
 
 #: templates/tickets/consume.html.twig templates/tickets/form.html.twig
 msgid "Voucher name"
-msgstr "Ime vaučera"
+msgstr "Nombre del comprobante"
 
 #: templates/tickets/consume.html.twig
 #: templates/tickets/consumed_details.html.twig
@@ -82,153 +82,155 @@ msgstr "Ime vaučera"
 #: inc/notificationtargetentity.class.php:116
 #: inc/notificationtargetentity.class.php:136
 msgid "Quantity consumed"
-msgstr "Potrošena količina"
+msgstr "Cantidad consumida"
 
 #: templates/tickets/consume.html.twig templates/tickets/form.html.twig
 msgid "Maximum consumable quantity"
-msgstr "Maksimalna potrošna količina"
+msgstr "Cantidad máxima consumible"
 
 #: templates/tickets/consumed_details.html.twig
 msgid "Detail of tickets on which consumption is declared"
-msgstr "Detalji naloga u kojima je prijavljena potrošnja"
+msgstr "Detalle de los tickets en los que se declara consumo"
 
 #: templates/tickets/consumed_details.html.twig
 msgid "No credit was recorded"
-msgstr "Nijedan kredit nije zapisan"
+msgstr "No se registró ningún crédito"
 
 #: templates/tickets/consumed_details.html.twig
 #: templates/tickets/form.html.twig inc/ticket.class.php:549
 msgid "Date consumed"
-msgstr "Datum potrošnje"
+msgstr "Fecha de consumo"
 
 #: templates/tickets/consumed_details.html.twig
 #: templates/tickets/form.html.twig
 msgid "User consumed"
-msgstr "Potrošač je potrošio"
+msgstr "Usuario consumidor"
 
 #: templates/tickets/form.html.twig
 msgid "Add a voucher to the ticket"
-msgstr "Dodaj nalogu jedan vaučer"
+msgstr "Agregar un comprobante al ticket"
 
 #: templates/tickets/form.html.twig
 msgid "Consumed credits for this ticket"
-msgstr "Potrošeni krediti za ovaj nalog"
+msgstr "Créditos consumidos para este ticket"
 
 #: templates/tickets/form.html.twig
 msgid "Voucher type"
-msgstr "Vrsta vaučera"
+msgstr "Tipo de comprobante"
 
 #: templates/creditentity_form.html.twig
 msgid "Quantities"
-msgstr ""
+msgstr "Cantidades"
 
 #: templates/creditentity_form.html.twig hook.php:133 inc/entity.class.php:197
 #: inc/notificationtargetentity.class.php:111
 #: inc/notificationtargetentity.class.php:135
 msgid "Quantity remaining"
-msgstr "Preostala količina"
+msgstr "Cantidad restante"
 
 #: setup.php:108 inc/entityconfig.class.php:72 inc/ticket.class.php:70
 #: inc/entity.class.php:43
 msgid "Credit voucher"
 msgid_plural "Credit vouchers"
-msgstr[0] "Kreditni vaučer"
-msgstr[1] "Kreditna vaučera"
-msgstr[2] "Kreditnih vaučera"
+msgstr[0] "Comprobante de crédito"
+msgstr[1] "Comprobantes de crédito"
+msgstr[2] "Comprobantes de crédito"
 
 #: front/ticket.form.php:48
 msgid "Credit voucher entity must be selected."
-msgstr "Jedinica kreditnog vaučera se mora odabrati."
+msgstr "Debe seleccionarse una entidad para el comprobante de crédito."
 
 #: front/ticket.form.php:55
 msgid "Credit voucher quantity must be greater than 0."
-msgstr "Količina kreditnog vaučera mora biti veća od 0."
+msgstr "La cantidad del comprobante de crédito debe ser mayor a 0."
 
 #: front/ticket.form.php:77 inc/ticket.class.php:534
 msgid "Credit voucher successfully added."
-msgstr "Kreditni vaučer je uspješno dodan."
+msgstr "Comprobante de crédito agregado con éxito."
 
 #: inc/ticketconfig.class.php:43
 msgid "Default voucher option"
 msgid_plural "Default voucher options"
-msgstr[0] "Standardna opcija za vaučer"
-msgstr[1] "Standardne opcije za vaučer"
-msgstr[2] "Standardnih opcija za vaučer"
+msgstr[0] "Opción de comprobante por defecto"
+msgstr[1] "Opciones de comprobante por defecto"
+msgstr[2] "Opciones de comprobante por defecto"
 
 #: inc/ticketconfig.class.php:217
 msgid "Update in ticket tab"
-msgstr "Aktualiziraj u kartici naloga"
+msgstr "Actualizar en la pestaña del ticket"
 
 #: inc/ticketconfig.class.php:218
 msgid "Update in ticket form"
-msgstr "Aktualiziraj u obrascu naloga"
+msgstr "Actualizar en el formulario del ticket"
 
 #: inc/type.class.php:40
 msgid "Credit voucher type"
 msgid_plural "Credit vouchers types"
-msgstr[0] "Vrsta kreditnog vaučera"
-msgstr[1] "Vrste kreditnog vaučera"
-msgstr[2] "Vrsta kreditnog vaučera"
+msgstr[0] "Tipo de comprobante de crédito"
+msgstr[1] "Tipos de comprobantes de crédito"
+msgstr[2] "Tipos de comprobantes de crédito"
 
 #: inc/ticket.class.php:476
 msgid "You must provide a credit voucher"
-msgstr "Moraš zadati kreditni vaučer"
+msgstr "Debés proporcionar un comprobante de crédito"
 
 #: inc/ticket.class.php:492
 msgid "You are not allowed to consume credits from the selected entity"
-msgstr ""
+msgstr "No tenés permiso para consumir créditos de la entidad seleccionada"
 
 #: inc/ticket.class.php:507 inc/ticket.class.php:516
 #, php-format
 msgid "Quantity consumed exceeds remaining credits: %d"
-msgstr "Potrošena količina prelazi preostale kredite: %d"
+msgstr "La cantidad consumida supera los créditos restantes: %d"
 
 #: inc/entity.class.php:110 inc/entity.class.php:124
 msgid "Credit voucher name is mandatory."
-msgstr "Ime kreditnog vaučera je obavezno."
+msgstr "El nombre del comprobante de crédito es obligatorio."
 
 #: inc/entity.class.php:199
 msgid "Low credits alert"
-msgstr "Upozorenje za niski kredite"
+msgstr "Alerta de créditos bajos"
 
 #: inc/entity.class.php:234 inc/entity.class.php:241
 msgid "Consumed details"
-msgstr "Detalji potrošnje"
+msgstr "Detalle de consumos"
 
 #: inc/entity.class.php:336
 msgid "Low credit alert"
-msgstr "Upozorenje za niski kredit"
+msgstr "Alerta de crédito bajo"
 
 #: inc/entity.class.php:361 inc/notificationtargetentity.class.php:68
 msgid "Expiration date"
-msgstr "Datum isteka"
+msgstr "Fecha de vencimiento"
 
 #: inc/entity.class.php:362
 msgid "Notice (in days)"
-msgstr "Obavještavanje (u danima)"
+msgstr "Aviso (en días)"
 
 #: inc/entity.class.php:366 inc/notificationtargetentity.class.php:69
 msgid "Low credits"
-msgstr "Niski krediti"
+msgstr "Créditos bajos"
 
 #: inc/notificationtargetentity.class.php:110
 #: inc/notificationtargetentity.class.php:134
 msgid "End date"
-msgstr "Završni datum"
+msgstr "Fecha de fin"
 
 #: inc/notificationtargetentity.class.php:154
 msgid "Credit voucher expiration"
-msgstr "Istek kreditnog vaučera"
+msgstr "Vencimiento del comprobante de crédito"
 
 #: inc/notificationtargetentity.class.php:155
 msgid ""
 "This credit voucher will expire soon. Please, consider buying a new one."
-msgstr "Kreditni vaučer će uskoro isteći. Razmisli o kupnji novog."
+msgstr ""
+"Este comprobante de crédito vencerá pronto. Por favor, considerá comprar uno"
+" nuevo."
 
 #: inc/notificationtargetentity.class.php:156
 msgid "Amount of credit remaining close to or at 0"
-msgstr "Iznos kredita koji je preostao je blizu ili na 0"
+msgstr "Cantidad de crédito restante cercana a o en 0"
 
 #: inc/notificationtargetentity.class.php:157
 msgid "The remaining quantity has reached 0 or almost."
-msgstr "Preostala količina je dosegla 0 ili gotovo 0."
+msgstr "La cantidad restante llegó a 0 o casi."
