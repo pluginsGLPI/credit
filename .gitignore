@@ -4,3 +4,4 @@ vendor/
 .gh_token
 .php-cs-fixer.cache
 .phpunit.result.cache
+var/
