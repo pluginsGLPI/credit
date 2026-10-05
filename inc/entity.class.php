@@ -36,7 +36,7 @@ use function Safe\strtotime;
 
 class PluginCreditEntity extends CommonDBTM
 {
-    public static $rightname = 'entity';
+    public static string $rightname = 'entity';
 
     public static function getTypeName($nb = 0)
     {
