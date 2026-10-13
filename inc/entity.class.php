@@ -604,6 +604,24 @@ SQL;
         ];
     }
 
+    /**
+     * Check if current user can consume a credit voucher, based on the voucher entity.
+     *
+     * @param int $credit_id ID of the credit voucher
+     *
+     * @return bool
+     */
+    public static function canConsumeVoucher(int $credit_id): bool
+    {
+        $credit_entity = new self();
+
+        return $credit_entity->getFromDB($credit_id)
+            && Session::haveAccessToEntity(
+                $credit_entity->getField('entities_id'),
+                (bool) $credit_entity->getField('is_recursive'),
+            );
+    }
+
     public static function getMaximumConsumptionForCredit(int $credit_id)
     {
         /** @var DBmysql $DB */
