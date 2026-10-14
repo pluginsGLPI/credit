@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Fix access denied error when consuming a credit voucher from the ticket Credit tab
+
 ## [1.16.0] - 2026-10-05
 
 ### Fixed
