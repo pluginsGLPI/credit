@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-08 03:36+0000\n"
+"POT-Creation-Date: 2026-10-12 03:20+0000\n"
 "PO-Revision-Date: 2018-06-01 14:02+0000\n"
 "Last-Translator: Edwin Elias Alvarez <elias986@yahoo.com>, 2026\n"
 "Language-Team: Spanish (Mexico) (https://app.transifex.com/pluginsGLPI/teams/73419/es_MX/)\n"
@@ -93,15 +93,15 @@ msgstr "Consumido por el usuario"
 
 #: templates/tickets/config.html.twig
 msgid "For followups"
-msgstr ""
+msgstr "Para seguimientos"
 
 #: templates/tickets/config.html.twig
 msgid "For tasks"
-msgstr ""
+msgstr "Para tareas"
 
 #: templates/tickets/config.html.twig
 msgid "For solutions"
-msgstr ""
+msgstr "Para soluciones"
 
 #: templates/tickets/consumed_details.html.twig
 msgid "Detail of tickets on which consumption is declared"
@@ -193,9 +193,9 @@ msgstr[2] "Tipos de bonos de crédito"
 #: inc/ticketconfig.class.php:44
 msgid "Default voucher"
 msgid_plural "Default voucher"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Cupón predeterminado"
+msgstr[1] "Cupones predeterminados"
+msgstr[2] "Cupones predeterminados"
 
 #: inc/ticketconfig.class.php:221
 msgid "Update in ticket tab"
