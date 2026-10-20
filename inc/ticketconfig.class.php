@@ -125,7 +125,7 @@ class PluginCreditTicketConfig extends CommonDBTM
             'uncollapsed'          => $uncollapsed ?? false,
             'type_name'            => self::getTypeName(),
             'creditentitytype'     => PluginCreditEntity::class,
-            'condition'            => PluginCreditEntity::getActiveFilter(),
+            'condition'            => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'entity_id'            => $ticket->getEntityID(),
             'ticket'               => $ticket,
             'ticket_config'        => $ticket_config,

@@ -265,7 +265,7 @@ class PluginCreditTicket extends CommonDBTM
             'type_name'             => self::getTypeName(2),
             'creditentityclass'     => PluginCreditEntity::class,
             'form_url'              => self::getFormUrl(),
-            'conditions'            => PluginCreditEntity::getActiveFilter(),
+            'conditions'            => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'canedit'               => $canedit,
             'ID'                    => $ID,
             'entries'               => $entries,
@@ -327,6 +327,11 @@ class PluginCreditTicket extends CommonDBTM
             return;
         }
 
+        // No voucher can be consumed for this ticket type in this entity
+        if (!PluginCreditEntity::hasUsableVoucherForTicket($ticket)) {
+            return;
+        }
+
         $canedit = $ticket->canEdit($ticket->getID());
         if (
             in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
@@ -351,9 +356,13 @@ class PluginCreditTicket extends CommonDBTM
         if ($canedit) {
             //get default value for ticket
             $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
-            if ($default_credit == 0) {
+            if ($default_credit == 0 || !PluginCreditEntity::canBeUsedForTicket($default_credit, $ticket)) {
                 //get default value for entity
                 $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
+            }
+            if ($default_credit != 0 && !PluginCreditEntity::canBeUsedForTicket($default_credit, $ticket)) {
+                // Default voucher cannot be used for this ticket type
+                $default_credit = 0;
             }
 
             if ($default_credit != 0) {
@@ -368,7 +377,7 @@ class PluginCreditTicket extends CommonDBTM
             'default_credit_max'    => $max ?? 0,
             'entity_id'             => $ticket->getEntityID(),
             'type_name'             => self::getTypeName(2),
-            'condition'             => PluginCreditEntity::getActiveFilter(),
+            'condition'             => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'creditentityclass'     => PluginCreditEntity::class,
             'plugin_credit_geturl'  => plugin_credit_geturl(),
         ]);
@@ -490,6 +499,15 @@ class PluginCreditTicket extends CommonDBTM
         if (!Session::haveAccessToEntity($credit_entity->getField('entities_id'), $credit_entity->getField('is_recursive'))) {
             Session::addMessageAfterRedirect(
                 __s('You are not allowed to consume credits from the selected entity', 'credit'),
+                true,
+                ERROR,
+            );
+            return;
+        }
+
+        if (!$credit_entity->isUsableForTicketType((int) $ticket->fields['type'])) {
+            Session::addMessageAfterRedirect(
+                __s('This credit voucher cannot be used for this type of ticket', 'credit'),
                 true,
                 ERROR,
             );
