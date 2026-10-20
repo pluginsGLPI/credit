@@ -133,6 +133,59 @@ class PluginCreditTicketConfig extends CommonDBTM
         ]);
     }
 
+    public function prepareInputForAdd($input)
+    {
+        return parent::prepareInputForAdd($this->removeUnusableDefaults($input));
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return parent::prepareInputForUpdate($this->removeUnusableDefaults($input));
+    }
+
+    /**
+     * Reset default vouchers that cannot be used for the ticket type.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    private function removeUnusableDefaults(array $input): array
+    {
+        if (array_key_exists('_ticket_type', $input)) {
+            $ticket_type = (int) $input['_ticket_type'];
+        } else {
+            $ticket = new Ticket();
+            $tickets_id = $input['tickets_id'] ?? $this->fields['tickets_id'] ?? 0;
+            if (!$ticket->getFromDB((int) $tickets_id)) {
+                return $input;
+            }
+            $ticket_type = (int) $ticket->fields['type'];
+        }
+
+        $config_fields = [
+            'plugin_credit_entities_id_followups',
+            'plugin_credit_entities_id_tasks',
+            'plugin_credit_entities_id_solutions',
+        ];
+        foreach ($config_fields as $field) {
+            if (
+                array_key_exists($field, $input)
+                && (int) $input[$field] !== 0
+                && !PluginCreditEntity::canBeUsedForTicketType((int) $input[$field], $ticket_type)
+            ) {
+                $input[$field] = 0;
+                Session::addMessageAfterRedirect(
+                    __s('This credit voucher cannot be used for this type of ticket', 'credit'),
+                    true,
+                    WARNING,
+                );
+            }
+        }
+
+        return $input;
+    }
+
     public static function updateConfig(Ticket $ticket)
     {
         if (!Session::haveRight(self::$rightname, self::TICKET_FORM)) {
@@ -156,6 +209,8 @@ class PluginCreditTicketConfig extends CommonDBTM
             return;
         }
         $input['tickets_id'] = $ticket->getID();
+        // Ticket type may be changed in the same form, and is not yet stored in DB on `pre_item_update`
+        $input['_ticket_type'] = $ticket->input['type'] ?? $ticket->fields['type'] ?? 0;
 
         $ticket_config = new self();
         if ($ticket_config->getFromDBByCrit(['tickets_id' => $ticket->getID()])) {

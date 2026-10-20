@@ -702,10 +702,23 @@ SQL;
      */
     public static function canBeUsedForTicket(int $credit_id, Ticket $ticket): bool
     {
+        return self::canBeUsedForTicketType($credit_id, (int) ($ticket->fields['type'] ?? 0));
+    }
+
+    /**
+     * Check if the credit voucher can be used for the given ticket type.
+     *
+     * @param int $credit_id   ID of the credit voucher
+     * @param int $ticket_type Ticket type (Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE)
+     *
+     * @return bool
+     */
+    public static function canBeUsedForTicketType(int $credit_id, int $ticket_type): bool
+    {
         $credit_entity = new self();
 
         return $credit_entity->getFromDB($credit_id)
-            && $credit_entity->isUsableForTicketType((int) ($ticket->fields['type'] ?? 0));
+            && $credit_entity->isUsableForTicketType($ticket_type);
     }
 
     /**

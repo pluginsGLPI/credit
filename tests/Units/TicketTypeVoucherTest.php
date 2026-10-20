@@ -36,6 +36,7 @@ use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use PluginCreditEntity;
 use PluginCreditTicket;
+use PluginCreditTicketConfig;
 use Ticket;
 
 final class TicketTypeVoucherTest extends DbTestCase
@@ -85,13 +86,19 @@ final class TicketTypeVoucherTest extends DbTestCase
         foreach ([$incident_id, $request_id] as $ticket_id) {
             $followup = new ITILFollowup();
             $this->assertGreaterThan(0, $followup->add([
-                'itemtype'                       => Ticket::class,
-                'items_id'                       => $ticket_id,
-                'content'                        => 'Followup consuming a voucher',
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket_id,
+                'content'  => 'Followup consuming a voucher',
+            ]));
+
+            // `item_add` hooks are registered on plugin init, which occurs before login in tests,
+            // so the hook is called explicitly.
+            $followup->input = [
                 'plugin_credit_consumed_voucher' => 1,
                 'plugin_credit_entities_id'      => $credit_id,
                 'plugin_credit_quantity'         => 1,
-            ]));
+            ];
+            PluginCreditTicket::consumeVoucher($followup);
         }
 
         $credit_ticket = new PluginCreditTicket();
@@ -103,6 +110,100 @@ final class TicketTypeVoucherTest extends DbTestCase
             $credit_ticket->getFromDBByCrit(['tickets_id' => $request_id]),
             'Voucher consumption must be recorded on a request when the voucher is usable for requests',
         );
+    }
+
+    public function testConsumptionCannotBeAddedOrMovedToVoucherNotUsableForTicketType(): void
+    {
+        $this->login();
+
+        $incidents_credit_id = $this->createItem(PluginCreditEntity::class, [
+            'name'             => 'Incidents only voucher',
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+            'is_active'        => 1,
+            'is_for_incidents' => 1,
+            'is_for_requests'  => 0,
+        ])->getID();
+
+        $requests_credit_id = $this->createItem(PluginCreditEntity::class, [
+            'name'             => 'Requests only voucher',
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+            'is_active'        => 1,
+            'is_for_incidents' => 0,
+            'is_for_requests'  => 1,
+        ])->getID();
+
+        $incident_id = $this->createItem(Ticket::class, [
+            'name'        => 'Incident',
+            'content'     => 'Test',
+            'entities_id' => 0,
+            'type'        => Ticket::INCIDENT_TYPE,
+        ])->getID();
+
+        $credit_ticket = new PluginCreditTicket();
+        $this->assertFalse($credit_ticket->add([
+            'tickets_id'                => $incident_id,
+            'plugin_credit_entities_id' => $requests_credit_id,
+            'consumed'                  => 1,
+        ]));
+
+        $credit_ticket_id = $credit_ticket->add([
+            'tickets_id'                => $incident_id,
+            'plugin_credit_entities_id' => $incidents_credit_id,
+            'consumed'                  => 1,
+        ]);
+        $this->assertGreaterThan(0, $credit_ticket_id);
+
+        // Quantity can still be updated
+        $this->assertTrue($credit_ticket->update(['id' => $credit_ticket_id, 'consumed' => 2]));
+
+        // Voucher cannot be changed to one not usable for incidents
+        $this->assertFalse($credit_ticket->update([
+            'id'                        => $credit_ticket_id,
+            'plugin_credit_entities_id' => $requests_credit_id,
+        ]));
+        $this->assertTrue($credit_ticket->getFromDB($credit_ticket_id));
+        $this->assertEquals($incidents_credit_id, $credit_ticket->fields['plugin_credit_entities_id']);
+    }
+
+    public function testTicketDefaultVoucherNotUsableForTicketTypeIsReset(): void
+    {
+        $this->login();
+
+        $incidents_credit_id = $this->createItem(PluginCreditEntity::class, [
+            'name'             => 'Incidents only voucher',
+            'entities_id'      => 0,
+            'is_recursive'     => 1,
+            'is_active'        => 1,
+            'is_for_incidents' => 1,
+            'is_for_requests'  => 0,
+        ])->getID();
+
+        $request_id = $this->createItem(Ticket::class, [
+            'name'        => 'Request',
+            'content'     => 'Test',
+            'entities_id' => 0,
+            'type'        => Ticket::DEMAND_TYPE,
+        ])->getID();
+
+        $ticket_config = new PluginCreditTicketConfig();
+        $ticket_config_id = $ticket_config->add([
+            'tickets_id'                          => $request_id,
+            'plugin_credit_entities_id_followups' => $incidents_credit_id,
+        ]);
+        $this->assertGreaterThan(0, $ticket_config_id);
+        $this->assertTrue($ticket_config->getFromDB($ticket_config_id));
+        $this->assertEquals(0, $ticket_config->fields['plugin_credit_entities_id_followups']);
+
+        // Type given explicitly (ticket form, type changed in the same submission)
+        $this->assertTrue($ticket_config->update([
+            'id'                                  => $ticket_config_id,
+            'plugin_credit_entities_id_followups' => $incidents_credit_id,
+            '_ticket_type'                        => Ticket::INCIDENT_TYPE,
+        ]));
+        $this->assertTrue($ticket_config->getFromDB($ticket_config_id));
+        $this->assertEquals($incidents_credit_id, $ticket_config->fields['plugin_credit_entities_id_followups']);
     }
 
     public function testHasUsableVoucherForTicketDependsOnTicketType(): void

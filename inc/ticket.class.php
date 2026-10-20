@@ -556,6 +556,57 @@ class PluginCreditTicket extends CommonDBTM
         }
     }
 
+    public function prepareInputForAdd($input)
+    {
+        if (!$this->checkVoucherTicketType($input)) {
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $relation_changed = false;
+        foreach (['tickets_id', 'plugin_credit_entities_id'] as $field) {
+            if (array_key_exists($field, $input) && $input[$field] != $this->fields[$field]) {
+                $relation_changed = true;
+            }
+        }
+
+        if ($relation_changed && !$this->checkVoucherTicketType($input + $this->fields)) {
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Check that the credit voucher can be consumed on the ticket type.
+     *
+     * @param array $input Input containing `tickets_id` and `plugin_credit_entities_id` keys
+     *
+     * @return bool
+     */
+    private function checkVoucherTicketType(array $input): bool
+    {
+        $ticket = new Ticket();
+        if (!$ticket->getFromDB((int) ($input['tickets_id'] ?? 0))) {
+            return true;
+        }
+
+        if (PluginCreditEntity::canBeUsedForTicket((int) ($input['plugin_credit_entities_id'] ?? 0), $ticket)) {
+            return true;
+        }
+
+        Session::addMessageAfterRedirect(
+            __s('This credit voucher cannot be used for this type of ticket', 'credit'),
+            true,
+            ERROR,
+        );
+        return false;
+    }
+
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
