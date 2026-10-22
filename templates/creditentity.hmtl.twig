@@ -109,6 +109,18 @@
                     'unit': '%'
                 }
             ) }}
+
+            {{ fields.dropdownYesNo(
+                'is_for_incidents',
+                1,
+                __('Usable for incidents', 'credit'),
+            ) }}
+
+            {{ fields.dropdownYesNo(
+                'is_for_requests',
+                1,
+                __('Usable for requests', 'credit'),
+            ) }}
         </div>
         <div class="hstack gap-1">
             <div class="pe-5 ms-auto">
@@ -137,6 +149,8 @@
             'overconsumption_allowed': 'yesno',
             'is_active': 'yesno',
             'is_recursive': 'yesno',
+            'is_for_incidents': 'yesno',
+            'is_for_requests': 'yesno',
             'entities_id': 'raw_html',
             'quantity_consumed': 'raw_html',
         },

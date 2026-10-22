@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Credit vouchers can be restricted to incidents and/or requests (both enabled by default)
+
 ### Fixed
 
 - Fix access denied error when consuming a credit voucher from the ticket Credit tab
