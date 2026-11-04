@@ -69,6 +69,20 @@
         field_options
     ) }}
 
+    {{ fields.dropdownYesNo(
+        'is_for_incidents',
+        item.fields['is_for_incidents'],
+        __('Usable for incidents', 'credit'),
+        field_options
+    ) }}
+
+    {{ fields.dropdownYesNo(
+        'is_for_requests',
+        item.fields['is_for_requests'],
+        __('Usable for requests', 'credit'),
+        field_options
+    ) }}
+
     <div class="hr-text">
         <i class="fa-2x ti ti ti-calendar"></i>
         <span>{{ __('Validity') }}</span>

@@ -265,7 +265,7 @@ class PluginCreditTicket extends CommonDBTM
             'type_name'             => self::getTypeName(2),
             'creditentityclass'     => PluginCreditEntity::class,
             'form_url'              => self::getFormUrl(),
-            'conditions'            => PluginCreditEntity::getActiveFilter(),
+            'conditions'            => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'canedit'               => $canedit,
             'ID'                    => $ID,
             'entries'               => $entries,
@@ -327,6 +327,11 @@ class PluginCreditTicket extends CommonDBTM
             return;
         }
 
+        // No voucher can be consumed for this ticket type in this entity
+        if (!PluginCreditEntity::hasUsableVoucherForTicket($ticket)) {
+            return;
+        }
+
         $canedit = $ticket->canEdit($ticket->getID());
         if (
             in_array($ticket->fields['status'], Ticket::getSolvedStatusArray())
@@ -351,9 +356,13 @@ class PluginCreditTicket extends CommonDBTM
         if ($canedit) {
             //get default value for ticket
             $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
-            if ($default_credit == 0) {
+            if ($default_credit == 0 || !PluginCreditEntity::canBeUsedForTicket($default_credit, $ticket)) {
                 //get default value for entity
                 $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
+            }
+            if ($default_credit != 0 && !PluginCreditEntity::canBeUsedForTicket($default_credit, $ticket)) {
+                // Default voucher cannot be used for this ticket type
+                $default_credit = 0;
             }
 
             if ($default_credit != 0) {
@@ -368,7 +377,7 @@ class PluginCreditTicket extends CommonDBTM
             'default_credit_max'    => $max ?? 0,
             'entity_id'             => $ticket->getEntityID(),
             'type_name'             => self::getTypeName(2),
-            'condition'             => PluginCreditEntity::getActiveFilter(),
+            'condition'             => PluginCreditEntity::getActiveFilterForTicket($ticket),
             'creditentityclass'     => PluginCreditEntity::class,
             'plugin_credit_geturl'  => plugin_credit_geturl(),
         ]);
@@ -496,6 +505,15 @@ class PluginCreditTicket extends CommonDBTM
             return;
         }
 
+        if (!$credit_entity->isUsableForTicketType((int) $ticket->fields['type'])) {
+            Session::addMessageAfterRedirect(
+                __s('This credit voucher cannot be used for this type of ticket', 'credit'),
+                true,
+                ERROR,
+            );
+            return;
+        }
+
         $quantity_sold      = (int) $credit_entity->fields['quantity'];
         $quantity_consumed  = $credit_ticket->getConsumedForCreditEntity($item->input['plugin_credit_entities_id']);
         $quantity_remaining = max(0, $quantity_sold - $quantity_consumed);
@@ -536,6 +554,57 @@ class PluginCreditTicket extends CommonDBTM
                 INFO,
             );
         }
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        if (!$this->checkVoucherTicketType($input)) {
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $relation_changed = false;
+        foreach (['tickets_id', 'plugin_credit_entities_id'] as $field) {
+            if (array_key_exists($field, $input) && $input[$field] != $this->fields[$field]) {
+                $relation_changed = true;
+            }
+        }
+
+        if ($relation_changed && !$this->checkVoucherTicketType($input + $this->fields)) {
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Check that the credit voucher can be consumed on the ticket type.
+     *
+     * @param array $input Input containing `tickets_id` and `plugin_credit_entities_id` keys
+     *
+     * @return bool
+     */
+    private function checkVoucherTicketType(array $input): bool
+    {
+        $ticket = new Ticket();
+        if (!$ticket->getFromDB((int) ($input['tickets_id'] ?? 0))) {
+            return true;
+        }
+
+        if (PluginCreditEntity::canBeUsedForTicket((int) ($input['plugin_credit_entities_id'] ?? 0), $ticket)) {
+            return true;
+        }
+
+        Session::addMessageAfterRedirect(
+            __s('This credit voucher cannot be used for this type of ticket', 'credit'),
+            true,
+            ERROR,
+        );
+        return false;
     }
 
     public function rawSearchOptions()
