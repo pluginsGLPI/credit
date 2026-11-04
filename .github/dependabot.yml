@@ -19,8 +19,16 @@ updates:
       dev-dependencies:
         dependency-type: "development"
 
-  # Strategy for npm dependencies
-  - package-ecosystem: "npm"
+  # Ensure GitHub Actions are used in their latest version (11.0/bugfixes)
+  - package-ecosystem: "github-actions"
+    target-branch: "11.0/bugfixes"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  # Strategy for composer dependencies (11.0/bugfixes)
+  - package-ecosystem: "composer"
+    target-branch: "11.0/bugfixes"
     directory: "/"
     schedule:
       interval: "monthly"
