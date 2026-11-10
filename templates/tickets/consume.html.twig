@@ -42,9 +42,6 @@
         consume,
         __('Consume a voucher ?', 'credit'),
         {
-            'additional_attributes': {
-                'onchange': 'showCreditDiv' ~ rand ~ '(this.value)',
-            },
             'rand': rand,
         }
     ) }}
@@ -59,7 +56,6 @@
                 {
                     'entity': entity_id,
                     'condition': condition,
-                    'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
                     'field_class': 'col-6 col-sm-6',
                     'rand': rand,
                 }
@@ -129,5 +125,12 @@
                 });
             }
         }
+
+        document.getElementById('plugin_credit_consumed_voucher_{{ rand }}').addEventListener('change', function () {
+            showCreditDiv{{ rand }}(this.value);
+        });
+        $('#dropdown_plugin_credit_entities_id{{ rand }}').on('change', function () {
+            getQuantityRemaining{{ rand }}(this.value);
+        });
     </script>
 </div>

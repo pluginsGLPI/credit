@@ -48,8 +48,8 @@
                         {
                             'entity': entity_id,
                             'condition': conditions,
-                            'on_change': 'getQuantityRemainingForm' ~ rand ~ '(this.value, this);',
                             'field_class': 'col-4 col-sm-4',
+                            'rand': rand,
                         }
                     ) }}
                     <div class="col-1 col-sm-1"></div>
@@ -105,6 +105,10 @@
                                 });
                             }
                         }
+
+                        $('#dropdown_plugin_credit_entities_id{{ rand }}').on('change', function () {
+                            getQuantityRemainingForm{{ rand }}(this.value, this);
+                        });
                     </script>
                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                     <div class="hstack gap-1">
