@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.16.1] - 2026-10-27
+## [Unreleased]
 
 ### Added
 
 - Credit vouchers can be restricted to incidents and/or requests (both enabled by default)
+
+## [1.16.1] - 2026-10-27
 
 ### Fixed
 

@@ -354,17 +354,7 @@ class PluginCreditTicket extends CommonDBTM
         $rand = mt_rand();
 
         if ($canedit) {
-            //get default value for ticket
-            $default_credit = PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $item->getType());
-            if ($default_credit == 0 || !PluginCreditEntity::canBeUsedForTicket($default_credit, $ticket)) {
-                //get default value for entity
-                $default_credit = PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $item->getType());
-            }
-            if ($default_credit != 0 && !PluginCreditEntity::canBeUsedForTicket($default_credit, $ticket)) {
-                // Default voucher cannot be used for this ticket type
-                $default_credit = 0;
-            }
-
+            $default_credit = self::getDefaultVoucherForTicket($ticket, $item->getType());
             if ($default_credit != 0) {
                 $max = PluginCreditEntity::getMaximumConsumptionForCredit($default_credit);
             }
@@ -381,6 +371,30 @@ class PluginCreditTicket extends CommonDBTM
             'creditentityclass'     => PluginCreditEntity::class,
             'plugin_credit_geturl'  => plugin_credit_geturl(),
         ]);
+    }
+
+    /**
+     * Get the default credit voucher to consume on a ticket for the given itemtype.
+     * Ticket default is used first, then entity default, as long as the voucher can be used for the ticket type.
+     *
+     * @param Ticket $ticket
+     * @param string $itemtype ITILFollowup, TicketTask or ITILSolution
+     *
+     * @return int Voucher ID, 0 if none
+     */
+    public static function getDefaultVoucherForTicket(Ticket $ticket, string $itemtype): int
+    {
+        $candidates = [
+            PluginCreditTicketConfig::getDefaultForTicket($ticket->getID(), $itemtype),
+            PluginCreditEntityConfig::getDefaultForEntityAndType($ticket->getEntityID(), $itemtype),
+        ];
+        foreach ($candidates as $credit_id) {
+            if ((int) $credit_id !== 0 && PluginCreditEntity::canBeUsedForTicket((int) $credit_id, $ticket)) {
+                return (int) $credit_id;
+            }
+        }
+
+        return 0;
     }
 
     /**
