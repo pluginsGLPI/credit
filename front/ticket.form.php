@@ -63,6 +63,15 @@ if (!PluginCreditEntity::canConsumeVoucher((int) $_REQUEST['plugin_credit_entiti
     throw new AccessDeniedHttpException();
 }
 
+if (!PluginCreditEntity::canBeUsedForTicket((int) $_REQUEST['plugin_credit_entities_id'], $ticket)) {
+    Session::addMessageAfterRedirect(
+        __s('This credit voucher cannot be used for this type of ticket', 'credit'),
+        true,
+        ERROR,
+    );
+    Html::back();
+}
+
 
 $input = [
     'tickets_id'                => $_REQUEST['tickets_id'],
