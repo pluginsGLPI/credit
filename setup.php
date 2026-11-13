@@ -49,11 +49,14 @@ function plugin_init_credit()
     /** @var array $PLUGIN_HOOKS */
     global $PLUGIN_HOOKS;
 
-    $plugin = new Plugin();
-
     $PLUGIN_HOOKS['csrf_compliant']['credit'] = true;
 
-    if (Session::getLoginUserID() && $plugin->isActivated('credit')) {
+    // Outside the session check: purges also run from cron and CLI.
+    $PLUGIN_HOOKS['item_purge']['credit'] = [
+        'Ticket' => ['PluginCreditTicketConfig', 'cleanForTicket'],
+    ];
+
+    if (Session::getLoginUserID()) {
         Plugin::registerClass(
             'PluginCreditEntity',
             [

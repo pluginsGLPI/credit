@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Improve performance of the consumed details, the ticket Credit tab and the entity Credit tab, which no longer run SQL queries for each displayed row
+- Remove 2 SQL queries from every GLPI page by dropping the plugin's own activation check
+- Delete the default voucher options of a ticket when it is purged
+
 ## [1.15.8] - 2026-10-27
 
 ### Fixed
