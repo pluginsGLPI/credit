@@ -197,6 +197,8 @@ class PluginCreditEntity extends CommonDBTM
             'quantity_remaining'        => __('Quantity remaining', 'credit'),
             'overconsumption_allowed'   => __('Allow overconsumption', 'credit'),
             'low_credit_alert'          => __('Low credits alert', 'credit'),
+            'is_for_incidents'          => __('Usable for incidents', 'credit'),
+            'is_for_requests'           => __('Usable for requests', 'credit'),
             'entities_id'               => __('Entity'),
             'is_recursive'              => __('Child entities'),
         ];
@@ -340,6 +342,22 @@ class PluginCreditEntity extends CommonDBTM
             'step'    => 10,
             'toadd'   => [-1 => __('Disabled')],
             'unit'    => '%',
+        ];
+
+        $tab[] = [
+            'id'       => 998,
+            'table'    => self::getTable(),
+            'field'    => 'is_for_incidents',
+            'name'     => __('Usable for incidents', 'credit'),
+            'datatype' => 'bool',
+        ];
+
+        $tab[] = [
+            'id'       => 999,
+            'table'    => self::getTable(),
+            'field'    => 'is_for_requests',
+            'name'     => __('Usable for requests', 'credit'),
+            'datatype' => 'bool',
         ];
 
         $tab[] = [
@@ -544,6 +562,8 @@ class PluginCreditEntity extends CommonDBTM
                     `quantity` int NOT NULL DEFAULT '0',
                     `overconsumption_allowed` tinyint NOT NULL DEFAULT '0',
                     `low_credit_alert` int DEFAULT NULL,
+                    `is_for_incidents` tinyint NOT NULL DEFAULT '1',
+                    `is_for_requests` tinyint NOT NULL DEFAULT '1',
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`),
                     KEY `entities_id` (`entities_id`),
@@ -568,6 +588,10 @@ SQL;
 
             // 1.13.2
             $migration->addField($table, 'low_credit_alert', 'int', ['update' => "NULL"]);
+
+            // Restrict vouchers to incidents and/or requests
+            $migration->addField($table, 'is_for_incidents', 'bool', ['value' => '1', 'update' => '1']);
+            $migration->addField($table, 'is_for_requests', 'bool', ['value' => '1', 'update' => '1']);
         }
 
         return true;
@@ -602,6 +626,99 @@ SQL;
                 ),
             ],
         ];
+    }
+
+    /**
+     * Get criteria restricting credit vouchers to those usable for the given ticket type.
+     *
+     * @param int $ticket_type Ticket type (Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE)
+     *
+     * @return array
+     */
+    public static function getTicketTypeFilter(int $ticket_type): array
+    {
+        return match ($ticket_type) {
+            Ticket::INCIDENT_TYPE => ['glpi_plugin_credit_entities.is_for_incidents' => 1],
+            Ticket::DEMAND_TYPE   => ['glpi_plugin_credit_entities.is_for_requests' => 1],
+            default               => [],
+        };
+    }
+
+    /**
+     * Get criteria restricting credit vouchers to active ones usable for the given ticket.
+     *
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
+    public static function getActiveFilterForTicket(Ticket $ticket): array
+    {
+        return array_merge(
+            self::getActiveFilter(),
+            self::getTicketTypeFilter((int) ($ticket->fields['type'] ?? 0)),
+        );
+    }
+
+    /**
+     * Check if at least one active credit voucher can be consumed on the given ticket.
+     *
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public static function hasUsableVoucherForTicket(Ticket $ticket): bool
+    {
+        return countElementsInTable(self::getTable(), [
+            'WHERE' => [
+                getEntitiesRestrictCriteria(self::getTable(), '', $ticket->getEntityID(), true),
+                self::getActiveFilterForTicket($ticket),
+            ],
+        ]) > 0;
+    }
+
+    /**
+     * Check if the credit voucher can be used for the given ticket type.
+     *
+     * @param int $ticket_type Ticket type (Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE)
+     *
+     * @return bool
+     */
+    public function isUsableForTicketType(int $ticket_type): bool
+    {
+        return match ($ticket_type) {
+            Ticket::INCIDENT_TYPE => (bool) $this->fields['is_for_incidents'],
+            Ticket::DEMAND_TYPE   => (bool) $this->fields['is_for_requests'],
+            default               => true,
+        };
+    }
+
+    /**
+     * Check if the credit voucher can be used for the given ticket, based on the ticket type.
+     *
+     * @param int    $credit_id ID of the credit voucher
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public static function canBeUsedForTicket(int $credit_id, Ticket $ticket): bool
+    {
+        return self::canBeUsedForTicketType($credit_id, (int) ($ticket->fields['type'] ?? 0));
+    }
+
+    /**
+     * Check if the credit voucher can be used for the given ticket type.
+     *
+     * @param int $credit_id   ID of the credit voucher
+     * @param int $ticket_type Ticket type (Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE)
+     *
+     * @return bool
+     */
+    public static function canBeUsedForTicketType(int $credit_id, int $ticket_type): bool
+    {
+        $credit_entity = new self();
+
+        return $credit_entity->getFromDB($credit_id)
+            && $credit_entity->isUsableForTicketType($ticket_type);
     }
 
     /**
