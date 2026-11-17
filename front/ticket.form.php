@@ -30,64 +30,34 @@
  */
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkRight(Ticket::$rightname, UPDATE);
 Session::checkRightsOr(PluginCreditTicketConfig::$rightname, [PluginCreditTicketConfig::TICKET_TAB, PluginCreditTicketConfig::TICKET_TAB]);
 
-$ticket = new Ticket();
-if (!$ticket->getFromDB((int) $_REQUEST['tickets_id'])) {
-    throw new AccessDeniedHttpException(
-        'Ticket not found.',
-    );
-}
-
 $PluginCreditTicket = new PluginCreditTicket();
-if ($_REQUEST['plugin_credit_entities_id'] == 0) {
-    Session::addMessageAfterRedirect(
-        __s('Credit voucher entity must be selected.', 'credit'),
-        true,
-        ERROR,
-    );
-    Html::back();
-} elseif ($_REQUEST['plugin_credit_quantity'] == 0) {
-    Session::addMessageAfterRedirect(
-        __s('Credit voucher quantity must be greater than 0.', 'credit'),
-        true,
-        ERROR,
-    );
-    Html::back();
+if (isset($_POST["add"])) {
+    $ticket = new Ticket();
+    if (
+        !$ticket->getFromDB((int) ($_POST['tickets_id'] ?? 0))
+        || !$ticket->can($ticket->getID(), READ)
+        || !PluginCreditTicket::canUpdateCreditsForTicket($ticket)
+    ) {
+        throw new AccessDeniedHttpException();
+    }
+
+    $input = [
+        'tickets_id'                => $_POST['tickets_id'] ?? null,
+        'plugin_credit_entities_id' => $_POST['plugin_credit_entities_id'] ?? null,
+        'consumed'                  => $_POST['plugin_credit_quantity'] ?? null,
+        'users_id'                  => Session::getLoginUserID(),
+    ];
+
+    if ($PluginCreditTicket->add($input)) {
+        Session::addMessageAfterRedirect(
+            __s('Credit voucher successfully added.', 'credit'),
+            true,
+            INFO,
+        );
+    }
 }
-
-if (!PluginCreditEntity::canConsumeVoucher((int) $_REQUEST['plugin_credit_entities_id'])) {
-    throw new AccessDeniedHttpException();
-}
-
-if (!PluginCreditEntity::canBeUsedForTicket((int) $_REQUEST['plugin_credit_entities_id'], $ticket)) {
-    Session::addMessageAfterRedirect(
-        __s('This credit voucher cannot be used for this type of ticket', 'credit'),
-        true,
-        ERROR,
-    );
-    Html::back();
-}
-
-
-$input = [
-    'tickets_id'                => $_REQUEST['tickets_id'],
-    'plugin_credit_entities_id' => $_REQUEST['plugin_credit_entities_id'],
-    'consumed'                  => $_REQUEST['plugin_credit_quantity'],
-    'users_id'                  => Session::getLoginUserID(),
-];
-
-
-if ($PluginCreditTicket->add($input)) {
-    Session::addMessageAfterRedirect(
-        __s('Credit voucher successfully added.', 'credit'),
-        true,
-        INFO,
-    );
-    Html::back();
-}
-
-throw new BadRequestHttpException();
+Html::back();

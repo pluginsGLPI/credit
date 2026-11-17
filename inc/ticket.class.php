@@ -190,6 +190,180 @@ class PluginCreditTicket extends CommonDBTM
         return $tot;
     }
 
+    public static function canUpdateCreditsForTicket(Ticket $ticket): bool
+    {
+        if (Session::haveRight(Entity::$rightname, UPDATE)) {
+            return true;
+        }
+
+        return $ticket->canEdit($ticket->getID())
+            && !in_array($ticket->fields['status'], array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()));
+    }
+
+    private static function checkInput(array $input, ?self $current_credit = null): array|false
+    {
+        $ticket_id = filter_var(
+            $input['tickets_id'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        if ($ticket_id === false) {
+            Session::addMessageAfterRedirect(
+                __s('Ticket is mandatory.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $credit_id = filter_var(
+            $input['plugin_credit_entities_id'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        if ($credit_id === false) {
+            Session::addMessageAfterRedirect(
+                __s('Credit voucher entity must be selected.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $consumed = filter_var(
+            $input['consumed'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]],
+        );
+        if ($consumed === false) {
+            Session::addMessageAfterRedirect(
+                __s('Credit voucher quantity must be greater than 0.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $ticket = new Ticket();
+        if (!$ticket->getFromDB($ticket_id)) {
+            Session::addMessageAfterRedirect(
+                __s('Ticket is mandatory.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $credit_entity = new PluginCreditEntity();
+        $credit_criteria = getEntitiesRestrictCriteria('', '', $ticket->getEntityID(), true);
+        $credit_criteria['id'] = $credit_id;
+        $credit_criteria += PluginCreditEntity::getActiveFilter();
+
+        if (!$credit_entity->getFromDBByCrit($credit_criteria)) {
+            Session::addMessageAfterRedirect(
+                __s('Selected credit voucher is not available for this ticket.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        if (!Session::haveAccessToEntity($credit_entity->getField('entities_id'), (bool) $credit_entity->getField('is_recursive'))) {
+            Session::addMessageAfterRedirect(
+                __s('You are not allowed to consume credits from the selected entity', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        if (!$credit_entity->isUsableForTicketType((int) $ticket->fields['type'])) {
+            Session::addMessageAfterRedirect(
+                __s('This credit voucher cannot be used for this type of ticket', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $quantity_sold = (int) $credit_entity->fields['quantity'];
+        $quantity_consumed = self::getConsumedForCreditEntity($credit_entity->getID());
+
+        if (
+            $current_credit instanceof self
+            && (int) $current_credit->fields['plugin_credit_entities_id'] === $credit_entity->getID()
+        ) {
+            $quantity_consumed = max(0, $quantity_consumed - (int) $current_credit->fields['consumed']);
+        }
+
+        $quantity_remaining = max(0, $quantity_sold - $quantity_consumed);
+
+        if (0 !== $quantity_sold && $quantity_remaining < $consumed) {
+            $message = sprintf(
+                __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
+                $quantity_remaining,
+            );
+
+            if ($credit_entity->getField('overconsumption_allowed')) {
+                Session::addMessageAfterRedirect($message, true, WARNING);
+            } else {
+                Session::addMessageAfterRedirect($message, true, ERROR);
+                return false;
+            }
+        }
+
+        return [
+            'tickets_id'                => $ticket->getID(),
+            'plugin_credit_entities_id' => $credit_entity->getID(),
+            'consumed'                  => $consumed,
+        ];
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $validated_input = self::checkInput($input);
+        if ($validated_input === false) {
+            return false;
+        }
+
+        $input = $validated_input + $input;
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $credit = new self();
+        if (
+            !isset($input['id'])
+            || filter_var($input['id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) === false
+            || !$credit->getFromDB((int) $input['id'])
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('Unable to find the requested credit consumption.', 'credit'),
+                true,
+                ERROR,
+            );
+            return false;
+        }
+
+        $input += [
+            'tickets_id'                => $credit->fields['tickets_id'],
+            'plugin_credit_entities_id' => $credit->fields['plugin_credit_entities_id'],
+            'consumed'                  => $credit->fields['consumed'],
+        ];
+
+        $validated_input = self::checkInput($input, $credit);
+        if ($validated_input === false) {
+            return false;
+        }
+
+        $input = $validated_input + $input;
+        $input['users_id'] = $credit->fields['users_id'];
+
+        return $input;
+    }
+
     /**
      * Show credit vouchers consumed for a ticket
      *
@@ -205,15 +379,7 @@ class PluginCreditTicket extends CommonDBTM
             return false;
         }
 
-        $canedit = false;
-        if (Session::haveRight(Entity::$rightname, UPDATE)) {
-            $canedit = true; // Entity admin has always right to update credits
-        } elseif (
-            $ticket->canEdit($ID)
-            && !in_array($ticket->fields['status'], array_merge(Ticket::getSolvedStatusArray(), Ticket::getClosedStatusArray()))
-        ) {
-            $canedit = true;
-        }
+        $canedit = self::canUpdateCreditsForTicket($ticket);
 
         $number = self::countForItem($ticket);
         $rand   = mt_rand();
@@ -503,64 +669,13 @@ class PluginCreditTicket extends CommonDBTM
             return;
         }
 
-        $credit_ticket = new self();
-
-        $credit_entity = new PluginCreditEntity();
-        if (!$credit_entity->getFromDB($item->input['plugin_credit_entities_id'])) {
-            return;
-        }
-
-        if (!Session::haveAccessToEntity($credit_entity->getField('entities_id'), $credit_entity->getField('is_recursive'))) {
-            Session::addMessageAfterRedirect(
-                __s('You are not allowed to consume credits from the selected entity', 'credit'),
-                true,
-                ERROR,
-            );
-            return;
-        }
-
-        if (!$credit_entity->isUsableForTicketType((int) $ticket->fields['type'])) {
-            Session::addMessageAfterRedirect(
-                __s('This credit voucher cannot be used for this type of ticket', 'credit'),
-                true,
-                ERROR,
-            );
-            return;
-        }
-
-        $quantity_sold      = (int) $credit_entity->fields['quantity'];
-        $quantity_consumed  = $credit_ticket->getConsumedForCreditEntity($item->input['plugin_credit_entities_id']);
-        $quantity_remaining = max(0, $quantity_sold - $quantity_consumed);
-
-        if (0 !== $quantity_sold && $quantity_remaining < $item->input['plugin_credit_quantity']) {
-            if ($credit_entity->getField('overconsumption_allowed')) {
-                Session::addMessageAfterRedirect(
-                    sprintf(
-                        __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
-                        $quantity_remaining,
-                    ),
-                    true,
-                    WARNING,
-                );
-            } else {
-                Session::addMessageAfterRedirect(
-                    sprintf(
-                        __s('Quantity consumed exceeds remaining credits: %d', 'credit'),
-                        $quantity_remaining,
-                    ),
-                    true,
-                    ERROR,
-                );
-                return;
-            }
-        }
-
         $input = [
             'tickets_id'                => $ticket->getID(),
-            'plugin_credit_entities_id' => $item->input['plugin_credit_entities_id'],
-            'consumed'                  => $item->input['plugin_credit_quantity'],
+            'plugin_credit_entities_id' => $item->input['plugin_credit_entities_id'] ?? null,
+            'consumed'                  => $item->input['plugin_credit_quantity'] ?? null,
             'users_id'                  => Session::getLoginUserID(),
         ];
+        $credit_ticket = new self();
         if ($credit_ticket->add($input)) {
             Session::addMessageAfterRedirect(
                 __s('Credit voucher successfully added.', 'credit'),
@@ -568,57 +683,6 @@ class PluginCreditTicket extends CommonDBTM
                 INFO,
             );
         }
-    }
-
-    public function prepareInputForAdd($input)
-    {
-        if (!$this->checkVoucherTicketType($input)) {
-            return false;
-        }
-
-        return parent::prepareInputForAdd($input);
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        $relation_changed = false;
-        foreach (['tickets_id', 'plugin_credit_entities_id'] as $field) {
-            if (array_key_exists($field, $input) && $input[$field] != $this->fields[$field]) {
-                $relation_changed = true;
-            }
-        }
-
-        if ($relation_changed && !$this->checkVoucherTicketType($input + $this->fields)) {
-            return false;
-        }
-
-        return parent::prepareInputForUpdate($input);
-    }
-
-    /**
-     * Check that the credit voucher can be consumed on the ticket type.
-     *
-     * @param array $input Input containing `tickets_id` and `plugin_credit_entities_id` keys
-     *
-     * @return bool
-     */
-    private function checkVoucherTicketType(array $input): bool
-    {
-        $ticket = new Ticket();
-        if (!$ticket->getFromDB((int) ($input['tickets_id'] ?? 0))) {
-            return true;
-        }
-
-        if (PluginCreditEntity::canBeUsedForTicket((int) ($input['plugin_credit_entities_id'] ?? 0), $ticket)) {
-            return true;
-        }
-
-        Session::addMessageAfterRedirect(
-            __s('This credit voucher cannot be used for this type of ticket', 'credit'),
-            true,
-            ERROR,
-        );
-        return false;
     }
 
     public function rawSearchOptions()
