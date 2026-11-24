@@ -82,5 +82,5 @@
     </div>
 
     <span hidden data-credit-consume-rand="{{ rand }}" data-credit-quantity-url="{{ path('plugins/credit/ajax/dropdownQuantity.php') }}"></span>
-    {{ call('Html::script', ['/plugins/credit/js/ticket_credit.js', {}, false])|raw }}
+    {{ call('Html::script', ['/plugins/credit/js/ticket_credit.js', {'version': constant('PLUGIN_CREDIT_VERSION')}, false])|raw }}
 </div>

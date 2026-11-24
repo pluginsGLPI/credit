@@ -68,7 +68,7 @@
                     ) }}
 
                     <span hidden data-credit-form-rand="{{ rand }}" data-credit-quantity-url="{{ path('plugins/credit/ajax/dropdownQuantity.php') }}"></span>
-                    {{ call('Html::script', ['/plugins/credit/js/ticket_credit.js', {}, false])|raw }}
+                    {{ call('Html::script', ['/plugins/credit/js/ticket_credit.js', {'version': constant('PLUGIN_CREDIT_VERSION')}, false])|raw }}
                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                     <div class="hstack gap-1">
                         <div class="pe-5 ms-auto mb-2">
