@@ -42,9 +42,6 @@
         consume,
         __('Consume a voucher ?', 'credit'),
         {
-            'additional_attributes': {
-                'onchange': 'showCreditDiv' ~ rand ~ '(this.value)',
-            },
             'rand': rand,
         }
     ) }}
@@ -59,7 +56,6 @@
                 {
                     'entity': entity_id,
                     'condition': condition,
-                    'on_change': 'getQuantityRemaining' ~ rand ~ '(this.value);',
                     'field_class': 'col-6 col-sm-6',
                     'rand': rand,
                 }
@@ -85,49 +81,6 @@
         </div>
     </div>
 
-    <script>
-        function showCreditDiv{{ rand }}() {
-            const creditVoucherBlock = document.getElementById('creditvoucherblock{{ rand }}');
-            if (creditVoucherBlock) {
-                const isHidden = creditVoucherBlock.style.display !== 'none';
-                creditVoucherBlock.style.display = isHidden ? 'none' : 'block';
-                var consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
-                var quantity = consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]');
-                if (quantity) {
-                    quantity.disabled = isHidden;
-                }
-            }
-        }
-
-        function getQuantityRemaining{{ rand }}(val) {
-            var consumeblock = document.querySelector('[name="credit_consume_{{ rand }}"]');
-            var quantity = consumeblock.querySelector('[id*="plugin_credit_quantity_{{ rand }}"]');
-            var quantity_field = quantity.closest('.col-6');
-            var quantity_label = consumeblock.querySelector('[for*="plugin_credit_quantity_{{ rand }}"]');
-            if (val == 0) {
-                quantity_field.classList.add('d-none');
-                quantity.disabled = true;
-                quantity.max = 0;
-                quantity.value = 0;
-                quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : 0 ');
-                quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : 0 ');
-            } else {
-                quantity_field.classList.remove('d-none');
-                quantity.disabled = false;
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ path('plugins/credit/ajax/dropdownQuantity.php') }}',
-                    data: {
-                        entity: val,
-                    }
-                }).done(function (data) {
-                    quantity.max = data;
-                    quantity.value = 1;
-                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-title', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
-                    quantity_label.querySelector('span.form-help').setAttribute('data-bs-content', __('Maximum consumable quantity', 'credit') + ' : <b>' + data);
-                });
-            }
-        }
-    </script>
+    <span hidden data-credit-consume-rand="{{ rand }}" data-credit-quantity-url="{{ path('plugins/credit/ajax/dropdownQuantity.php') }}"></span>
+    {{ call('Html::script', ['/plugins/credit/js/ticket_credit.js', {'version': constant('PLUGIN_CREDIT_VERSION')}, false])|raw }}
 </div>
