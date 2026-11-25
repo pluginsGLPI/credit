@@ -110,6 +110,7 @@ function plugin_version_credit()
         'author'         => '<a href="http://www.teclib.com">Teclib\'</a>',
         'license'        => 'GPLv3',
         'homepage'       => 'https://github.com/pluginsGLPI/credit',
+        'csp_compliant'  => true,
         'requirements'   => [
             'glpi' => [
                 'min' => PLUGIN_CREDIT_MIN_GLPI,
