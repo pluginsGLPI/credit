@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove 2 SQL queries from every GLPI page by dropping the plugin's own activation check
 - Delete the default voucher options of a ticket when it is purged
 
+### Changed
+
+- Make the plugin compatible with the Content Security Policy
+
 ## [1.15.8] - 2026-10-27
 
 ### Fixed
