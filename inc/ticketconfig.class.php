@@ -161,6 +161,15 @@ class PluginCreditTicketConfig extends CommonDBTM
         }
     }
 
+    /**
+     * Remove the default voucher options of a purged ticket.
+     * Consumptions are kept: they still count against their voucher.
+     */
+    public static function cleanForTicket(Ticket $ticket): void
+    {
+        (new self())->deleteByCriteria(['tickets_id' => $ticket->getID()]);
+    }
+
     public static function install(Migration $migration)
     {
         /** @var DBmysql $DB */

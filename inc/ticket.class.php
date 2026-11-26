@@ -77,16 +77,11 @@ class PluginCreditTicket extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $nb = $item instanceof CommonDBTM ? self::countForItem($item) : 0;
-        if ($item instanceof Ticket) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(self::getTypeName($nb), $nb);
-            } else {
-                return self::getTypeName($nb);
-            }
-        } else {
-            return self::getTypeName($nb);
+        if ($item instanceof Ticket && $_SESSION['glpishow_count_on_tabs']) {
+            $nb = self::countForItem($item);
+            return self::createTabEntry(self::getTypeName($nb), $nb);
         }
+        return self::getTypeName(Session::getPluralNumber());
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -232,9 +227,27 @@ class PluginCreditTicket extends CommonDBTM
                     ],
                 ];
             }
-            foreach (self::getAllForTicket($ID) as $data) {
-                $credit_entity = new PluginCreditEntity();
-                $credit_entity->getFromDB($data['plugin_credit_entities_id']);
+            $consumptions = self::getAllForTicket($ID);
+
+            // Voucher names and user links are loaded once, not once per consumption.
+            $voucher_names = [];
+            $voucher_ids = array_unique(array_column($consumptions, 'plugin_credit_entities_id'));
+            if ($voucher_ids !== []) {
+                $vouchers = $DB->request([
+                    'SELECT' => ['id', 'name'],
+                    'FROM'   => PluginCreditEntity::getTable(),
+                    'WHERE'  => ['id' => $voucher_ids],
+                ]);
+                foreach ($vouchers as $voucher) {
+                    $voucher_names[$voucher['id']] = $voucher['name'];
+                }
+            }
+            $showuserlink = Session::haveRight('user', READ);
+            $usernames = [];
+
+            foreach ($consumptions as $data) {
+                $users_id = $data['users_id'];
+                $usernames[$users_id] ??= $showuserlink ? getUserLink($users_id) : getUserName($users_id);
 
                 if (!empty($data['plugin_credit_types_id'])) {
                     $type = new PluginCreditType();
@@ -248,10 +261,12 @@ class PluginCreditTicket extends CommonDBTM
 
                 $entries[] = array_merge($data, [
                     'id'                        => $data['id'],
-                    'name'                      => $credit_entity->getName(),
+                    'name'                      => (string) ($voucher_names[$data['plugin_credit_entities_id']] ?? '') !== ''
+                        ? $voucher_names[$data['plugin_credit_entities_id']]
+                        : NOT_AVAILABLE,
                     'plugin_credit_types_id'    => $data['plugin_credit_types_id'],
                     'date_creation'             => $data['date_creation'],
-                    'users_id'                  => Session::haveRight('user', READ) == true ? getUserLink($data["users_id"]) : getUserName($data["users_id"]),
+                    'users_id'                  => $usernames[$users_id],
                     'consumed'                  => $data['consumed'],
                     'itemtype'                  => PluginCreditTicket::class,
                 ]);
@@ -271,10 +286,6 @@ class PluginCreditTicket extends CommonDBTM
             'entries'               => $entries,
             'massiveactionparams'   => $massiveactionparams ?? [],
         ]);
-
-        $Entity = new Entity();
-        $Entity->getFromDB($ticket->fields['entities_id']);
-        PluginCreditEntity::showForItemtype($Entity, 'Ticket');
     }
 
     /**
@@ -381,38 +392,86 @@ class PluginCreditTicket extends CommonDBTM
      */
     public static function displayConsumed($ID)
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
         $consumed_credits = self::getConsumedForCreditEntity($ID);
         $tickets_data = [];
 
         if ($consumed_credits > 0) {
-            foreach (self::getAllForCreditEntity($ID) as $data) {
-                $Ticket = new Ticket();
-                $Ticket->getFromDB($data['tickets_id']);
+            // Tickets and categories come with the consumptions, in a single query.
+            $iterator = $DB->request([
+                'SELECT'    => [
+                    'glpi_tickets.*',
+                    'glpi_itilcategories.name AS credit_category_name',
+                    'glpi_itilcategories.completename AS credit_category_completename',
+                    self::getTable() . '.date_creation AS credit_date_creation',
+                    self::getTable() . '.users_id AS credit_users_id',
+                    self::getTable() . '.consumed AS credit_consumed',
+                ],
+                'FROM'      => self::getTable(),
+                'LEFT JOIN' => [
+                    'glpi_tickets' => [
+                        'ON' => [
+                            'glpi_tickets' => 'id',
+                            self::getTable() => 'tickets_id',
+                        ],
+                    ],
+                    'glpi_itilcategories' => [
+                        'ON' => [
+                            'glpi_itilcategories' => 'id',
+                            'glpi_tickets' => 'itilcategories_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    self::getTable() . '.plugin_credit_entities_id' => $ID,
+                ],
+                'ORDER'     => [self::getTable() . '.id DESC'],
+            ]);
 
-                $itilcat = new ITILCategory();
-                $category = __('None');
-                if ($itilcat->getFromDB($Ticket->fields['itilcategories_id'])) {
-                    $category = $itilcat->getName(['comments' => true]);
+            $showuserlink = Session::haveRight('user', READ);
+            $usernames = [];
+
+            foreach ($iterator as $data) {
+                $Ticket = new Ticket();
+                $ticket_link = '';
+                $status = '';
+                $type = '';
+                // The ticket may have been purged since the consumption.
+                if ($data['id'] !== null) {
+                    $Ticket->fields = $data;
+                    $ticket_link = sprintf(
+                        '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+                        htmlescape($Ticket->getLinkURL()),
+                        htmlescape($Ticket->getNameID()),
+                    );
+                    $status = Ticket::getStatus($data['status']);
+                    $type = Ticket::getTicketTypeName($data['type']);
                 }
 
-                $showuserlink = Session::haveRight('user', READ) ? 1 : 0;
+                $category = __('None');
+                if ($data['credit_category_name'] !== null) {
+                    $itilcat = new ITILCategory();
+                    $itilcat->fields = [
+                        'id'           => $data['itilcategories_id'],
+                        'name'         => $data['credit_category_name'],
+                        'completename' => $data['credit_category_completename'],
+                    ];
+                    $category = $itilcat->getName();
+                }
 
-                $ticket_url = $Ticket->getLinkURL();
-                $ticket_name = $Ticket->getNameID();
-                $username = $showuserlink !== 0 ? getUserLink($data['users_id']) : getUserName($data['users_id']);
+                $users_id = $data['credit_users_id'];
+                $usernames[$users_id] ??= $showuserlink ? getUserLink($users_id) : getUserName($users_id);
 
                 $tickets_data[] = [
-                    'ticket_link' => sprintf(
-                        '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-                        htmlescape($ticket_url),
-                        htmlescape($ticket_name),
-                    ),
-                    'status' => Ticket::getStatus($Ticket->fields['status']),
-                    'type' => Ticket::getTicketTypeName($Ticket->fields['type']),
+                    'ticket_link' => $ticket_link,
+                    'status' => $status,
+                    'type' => $type,
                     'category' => $category,
-                    'date_creation' => $data["date_creation"],
-                    'username' => $username,
-                    'consumed' => $data['consumed'],
+                    'date_creation' => $data['credit_date_creation'],
+                    'username' => $usernames[$users_id],
+                    'consumed' => $data['credit_consumed'],
                 ];
             }
         }

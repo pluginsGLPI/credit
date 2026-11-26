@@ -208,21 +208,30 @@ class PluginCreditEntity extends CommonDBTM
             ];
         }
 
+        $vouchers = self::getAllForEntity($ID, $sqlfilter);
+        $consumed = self::getConsumedForCredits(array_keys($vouchers));
+        $type_links = [];
+
         $entries = [];
-        foreach (self::getAllForEntity($ID, $sqlfilter) as $data) {
+        foreach ($vouchers as $data) {
             $quantity_sold = (int) $data['quantity'];
             if (0 === $quantity_sold) {
                 $quantity_sold = __('Unlimited');
             }
 
+            // The row already holds every field getById() would load.
             $item = new self();
-            $item = $item->getById($data['id']);
+            $item->fields = $data;
+            $consumed_for_credit = $consumed[$data['id']] ?? 0;
 
             if (!empty($data['plugin_credit_types_id'])) {
-                $type = new PluginCreditType();
-                $type = $type->getById($data['plugin_credit_types_id']);
-                if ($type) {
-                    $data['plugin_credit_types_id'] = $type->getLink();
+                $types_id = $data['plugin_credit_types_id'];
+                if (!array_key_exists($types_id, $type_links)) {
+                    $type = PluginCreditType::getById((int) $types_id);
+                    $type_links[$types_id] = $type ? $type->getLink() : null;
+                }
+                if ($type_links[$types_id] !== null) {
+                    $data['plugin_credit_types_id'] = $type_links[$types_id];
                 }
             } else {
                 $data['plugin_credit_types_id'] = '';
@@ -238,7 +247,7 @@ class PluginCreditEntity extends CommonDBTM
                 ],
             );
 
-            $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __('Consumed details', 'credit') . "' alt='" . __('Consumed details', 'credit') . "'>" . PluginCreditEntity::getConsumedForCredit($data['id']) . "</a>";
+            $link = "<a href='#' data-bs-toggle='modal' data-bs-target='#displaycreditconsumed_{$data["id"]}' title='" . __('Consumed details', 'credit') . "' alt='" . __('Consumed details', 'credit') . "'>" . $consumed_for_credit . "</a>";
 
             $entries[] = array_merge($data, [
                 'name'                      => $item->getLink(),
@@ -246,7 +255,7 @@ class PluginCreditEntity extends CommonDBTM
                 'itemtype'                  => PluginCreditEntity::class,
                 'low_credit_alert'          => $data['low_credit_alert'] == -1 ? __('Disabled') : $data['low_credit_alert'] . '%',
                 'quantity_consumed'         => $modal . $link,
-                'quantity_remaining'        => $data['quantity'] > 0 ? $data['quantity'] - PluginCreditEntity::getConsumedForCredit($data['id']) : 'Unlimited',
+                'quantity_remaining'        => $data['quantity'] > 0 ? $data['quantity'] - $consumed_for_credit : 'Unlimited',
                 'entities_id'               => Entity::badgeCompletenameLink($entity),
             ]);
         }
@@ -673,5 +682,41 @@ SQL;
         $ticket_result = $DB->request($ticket_query)->current();
 
         return (int) $ticket_result['consumed_total'];
+    }
+
+    /**
+     * Get the total consumption of several credit vouchers in one query.
+     *
+     * @param int[] $credit_ids IDs of the credit vouchers
+     *
+     * @return array<int, int> Total consumption by voucher ID, vouchers without consumption are absent
+     */
+    public static function getConsumedForCredits(array $credit_ids): array
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        if ($credit_ids === []) {
+            return [];
+        }
+
+        $iterator = $DB->request([
+            'SELECT'  => [
+                'plugin_credit_entities_id',
+                'SUM' => 'consumed AS consumed_total',
+            ],
+            'FROM'    => 'glpi_plugin_credit_tickets',
+            'WHERE'   => [
+                'plugin_credit_entities_id' => $credit_ids,
+            ],
+            'GROUPBY' => 'plugin_credit_entities_id',
+        ]);
+
+        $consumed = [];
+        foreach ($iterator as $row) {
+            $consumed[$row['plugin_credit_entities_id']] = (int) $row['consumed_total'];
+        }
+
+        return $consumed;
     }
 }
