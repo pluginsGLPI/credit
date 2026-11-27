@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Credit vouchers can be restricted to incidents and/or requests (both enabled by default)
 
+### Changed
+
+- Make the plugin compatible with the Content Security Policy
+
 ## [1.16.1] - 2026-10-27
 
 ### Fixed
